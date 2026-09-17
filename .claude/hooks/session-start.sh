@@ -46,4 +46,14 @@ if [ -f Gemfile ]; then
   bundle install
 fi
 
+# claude-mem: local-only cross-session memory plugin for Claude Code.
+# Since this container is ephemeral, re-run the (idempotent) installer each
+# session so hooks/worker are set up. Cloud sync is off; memory lives in
+# ~/.claude-mem on the container and does NOT persist between sessions
+# unless you sign in interactively to enable cloud sync (see README.md).
+if command -v npx >/dev/null 2>&1; then
+  echo "Ensuring claude-mem is installed..."
+  CLAUDE_MEM_ONLINE_OPTIN=false npx --yes claude-mem@latest install --provider claude --ide claude-code || true
+fi
+
 exit 0
