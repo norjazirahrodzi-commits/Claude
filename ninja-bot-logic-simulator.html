@@ -249,17 +249,14 @@ const N = {
 
   A1: () => ({flow:'A', title:'Parcel status', text:["Here's your parcel status:" + statusCard(S.p)],
     then: () => ({transit: S.p.late ? 'A3' : 'A2', ofd:'A4', pending:'A5', hold:'A6', failed:'B1', done:'C1'})[S.p.code]}),
-  A2: () => ({flow:'A', title:'On track', text:[`Good news, your parcel is on track and should arrive by <b>${S.p.eta}</b>. You'll get an SMS when it's out for delivery.`], then:'G1'}),
-  A3: () => ({flow:'A', title:'Delayed', tag:'Delivery ETA > Beyond SLA', pri:'High',
-    text:[`Sorry, your parcel is taking longer than expected. It was due on <b>${S.p.eta}</b> and hasn't moved since ${S.p.last}.`, "We can flag this to our team to check it for you."],
-    buttons:[{t:'Flag it to the team', go:'H2'}]}),
-  A4: () => ({flow:'A', title:'Out for delivery', text:["Your parcel is out for delivery today. Please keep your phone nearby in case the courier calls."],
-    buttons:[{t:'Leave a note for the courier', do:()=>S.flow='D', go:'D3'}, {t:'Change my delivery', do:()=>S.flow='D', go:'D1'}]}),
+  A2: () => ({flow:'A', title:'On track', text:[`Good news, your parcel is on track and should arrive by <b>${S.p.eta}</b>. You'll get an SMS when it's out for delivery.`], noGlobal:1}),
+  A3: () => ({flow:'A', title:'Delayed', tag:'Delivery ETA > Beyond SLA', noGlobal:1,
+    text:[`Sorry, your parcel is taking longer than expected. It was due on <b>${S.p.eta}</b> and hasn't moved since ${S.p.last}. Delays like this are usually resolved within a few days.`]}),
+  A4: () => ({flow:'A', title:'Out for delivery', text:["Your parcel is out for delivery today. Please keep your phone nearby in case the courier calls."], noGlobal:1}),
   A5: () => ({flow:'A', title:'Waiting for seller', tag:'Delivery > General inquiry',
-    text:["The seller has created your order but hasn't handed the parcel to us yet. Please check with the seller for the shipping date."], then:'G1'}),
-  A6: () => ({flow:'A', title:'On hold', tag:'Parcel issues > On hold > PE/SI',
-    text:[`Your parcel is on hold. Reason: <b>${S.p.reason}</b>.`, "An agent can help fix this so your parcel gets moving again."],
-    buttons:[{t:'Fix it with an agent', go:'H1'}]}),
+    text:["The seller has created your order but hasn't handed the parcel to us yet. Please check with the seller for the shipping date."], noGlobal:1}),
+  A6: () => ({flow:'A', title:'On hold', tag:'Parcel issues > On hold > PE/SI', noGlobal:1,
+    text:[`Your parcel is on hold. Reason: <b>${S.p.reason}</b>. Once the issue is fixed, your parcel will move again.`]}),
 
   B1: () => {
     const p=S.p;
@@ -475,7 +472,7 @@ async function runQueue(my){
 }
 
 const INTN={INT01:'Parcel tracking',INT02:'Attempt history',INT03:'Delivery change',INT04:'Pickup point',INT05:'CRM case',INT06:'Live agent',INT07:'Attachments',INT08:'SMS',INT09:'Analytics / CSAT',INT10:'Config'};
-const RULE_TXT={R01:'Language chosen, go to Main menu',R02:'Option 1-5 and no tracking ID yet, ask for it',R03:'Tracking ID already known, skip the question',R04:'Option 6, no tracking ID needed',R05:'Tracking ID found, go to the chosen flow',R06:'ID not found and tries < 2, try again',R07:'2nd failed ID, hand to agent',R08:'Customer cannot find ID, show help',R09:'In transit, ETA not passed',R10:'In transit, ETA passed (Beyond SLA)',R11:'Out for delivery',R12:'Waiting for seller',R13:'On hold or RTS',R14:'Delivery failed, go to Courier didn\'t come',R15:'Delivered, go to Delivered not received',R16:'No failed attempt on record, show status',R17:'2nd failed attempt, priority Urgent',R18:'1st failed attempt, fix options',R19:'Customer was not there, rearrange',R20:'Redeliver, create case',R21:'Not delivered yet, show status',R22:'Still missing, case and identity check',R23:'Delivered, changes no longer possible',R24:'Out for delivery, note for courier only',R25:'Identity check needed, agent handles change',R26:'Courier note saved',R27:'Change saved',R28:'Photos then description, case with priority High',R29:'No scan for [X] days, case',R30:'Handoff payload sent to agent',R31:'No reply [2] min, nudge',R32:'No reply [5] more min, close chat',R33:'Did this help? logged',R34:'Main menu / Talk to an agent button'};
+const RULE_TXT={R01:'Language chosen, go to Main menu',R02:'Option 1-5 and no tracking ID yet, ask for it',R03:'Tracking ID already known, skip the question',R04:'Option 6, no tracking ID needed',R05:'Tracking ID found, go to the chosen flow',R06:'ID not found and tries < 2, try again',R07:'2nd failed ID, hand to agent',R08:'Customer cannot find ID, show help',R09:'In transit, ETA not passed. FAQ answer, chat ends',R10:'In transit, ETA passed (Beyond SLA). FAQ answer, chat ends',R11:'Out for delivery. FAQ answer, chat ends',R12:'Waiting for seller. FAQ answer, chat ends',R13:'On hold or RTS. FAQ answer, chat ends',R14:'Delivery failed, go to Courier didn\'t come',R15:'Delivered, go to Delivered not received',R16:'No failed attempt on record, show status',R17:'2nd failed attempt, priority Urgent',R18:'1st failed attempt, fix options',R19:'Customer was not there, rearrange',R20:'Redeliver, create case',R21:'Not delivered yet, show status',R22:'Still missing, case and identity check',R23:'Delivered, changes no longer possible',R24:'Out for delivery, note for courier only',R25:'Identity check needed, agent handles change',R26:'Courier note saved',R27:'Change saved',R28:'Photos then description, case with priority High',R29:'No scan for [X] days, case',R30:'Handoff payload sent to agent',R31:'No reply [2] min, nudge',R32:'No reply [5] more min, close chat',R33:'Did this help? logged',R34:'Main menu / Talk to an agent button'};
 function rulesFor(id){
   const p=S.p, prev=S.path[S.path.length-2], r=[];
   const m={W1:['R01'],T0:['R02'],T2:['R06'],T1:['R08'],A2:['R09'],A3:['R10'],A4:['R11'],A5:['R12'],A6:['R13'],
@@ -499,7 +496,7 @@ function toolsFor(id){
   if(id==='B1') add('INT02','GET /parcels/'+S.tid+'/attempts', p.attempt?'attempt_no='+p.attempts+', reason='+p.why:'no failed attempt');
   if(id==='C1') add('INT01','GET /parcels/'+S.tid, 'status='+p.status+', delivered_at='+(p.delivered||'-')+' (POD never shown, INT11 is agent-only)');
   if(id==='D1') add('INT01','GET /parcels/'+S.tid, 'status='+p.status+' → options filtered');
-  if(id==='A3') add('INT10','GET /config/sla', 'eta_passed=true');
+  if(id==='A3') add('INT10','GET /config/sla', 'eta_passed=true (no case created, FAQ only)');
   if(id==='E5') add('INT01','GET /parcels/'+S.tid, 'last_scan='+p.last+', stale='+!!p.stale);
   if(id==='F2') add('INT10','GET /config/hours','Mon–Sat 9 AM – 6 PM');
   if(id==='EP') add('INT07','POST /attachments','3 files → photo_refs');
@@ -545,24 +542,24 @@ function plain(f){ return FLOWS[f].name.replace(/^[A-Z] · /,''); }
 
 const SCEN = [
   {t:'Courier didn\'t come (fake fail)', pct:22.3, f:'B', id:'NVMY2001', opt:"Courier didn't come", end:'Show attempt, book redelivery', q:[{btn:'Yes, I was there'},{btn:'Deliver again'}]},
-  {t:'Where is my parcel (general inquiry)', pct:16.4, f:'A', id:'NVMY1004', opt:"Where's my parcel?", end:'Status shown, no agent', q:[]},
+  {t:'Where is my parcel (general inquiry)', pct:16.4, f:'A', id:'NVMY1004', opt:"Where's my parcel?", end:'FAQ answer, chat ends', q:[]},
   {t:'Says delivered, not received (fake success)', pct:11.4, f:'C', id:'NVMY3001', opt:'Says delivered', end:'Checklist, then case with identity check', q:[{btn:"Still can't"},{btn:'Still missing'},{input:'Checked guard house and neighbours at 6pm'}]},
-  {t:'Delivery ETA within SLA', pct:9.3, f:'A', id:'NVMY1001', opt:"Where's my parcel?", end:'ETA shown, no agent', q:[]},
+  {t:'Delivery ETA within SLA', pct:9.3, f:'A', id:'NVMY1001', opt:"Where's my parcel?", end:'FAQ answer, chat ends', q:[]},
   {t:'Silent call / chat', pct:5.5, f:'H', id:null, opt:'Talk to an agent', end:'Nudge, then chat auto-closed', q:[{input:'Hello'},{btn:'Simulate: customer says'},{btn:'Simulate: 5 more'}]},
   {t:'Special instructions', pct:5.3, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Note saved, no agent', q:[{btn:'Note for the courier'},{input:'Please leave at the guard house'}]},
   {t:'Change delivery details', pct:3.4, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Agent with identity check', q:[{btn:'Address or phone'},{btn:'Talk to an agent'},{input:'I moved, need to change my address'}]},
   {t:'Wrong item received (swapped)', pct:3.3, f:'E', id:'NVMY3001', opt:'Problem with my parcel', end:'Photos, then case', q:[{btn:'Wrong or swapped'},{btn:'📎 Attach'},{input:'Received a blue shirt, ordered black shoes'}]},
   {t:'Doorstep to self-collection', pct:2.8, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Agent with identity check', q:[{btn:'Collect at a pickup'},{btn:'Talk to an agent'},{input:'I want to collect it myself'}]},
-  {t:'Delivery ETA beyond SLA', pct:2.7, f:'A', id:'NVMY1002', opt:"Where's my parcel?", end:'Apologise, case logged', q:[{btn:'Flag it'}]},
+  {t:'Delivery ETA beyond SLA', pct:2.7, f:'A', id:'NVMY1002', opt:"Where's my parcel?", end:'FAQ answer, chat ends', q:[]},
   {t:'Tracking ID not found', pct:2.6, f:'Shared', id:'NVMX12345', opt:"Where's my parcel?", end:'Retry, then agent', q:[{btn:'Try again'},{input:'NVMY99999'}]},
   {t:'On hold: missing', pct:2.0, f:'E', id:'NVMY1002', opt:'Problem with my parcel', end:'No scan for days, case', q:[{btn:'Parcel not moving'},{btn:'Flag it'}]},
   {t:'POD request', pct:1.7, f:'C', id:'NVMY3001', opt:'Says delivered', end:'Bot never shows POD, agent verifies first', q:[{btn:"Still can't"},{btn:'Still missing'},{input:'I need the proof of delivery photo'}]},
   {t:'Map pin (latlong) issue', pct:1.5, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Agent with identity check', q:[{btn:'Map pin'},{btn:'Talk to an agent'},{input:'The pin is on the wrong street'}]},
-  {t:'On hold: PE/SI', pct:1.3, f:'A', id:'NVMY1005', opt:"Where's my parcel?", end:'Reason shown, then agent', q:[{btn:'Fix it with an agent'},{input:'Here is the missing unit number'}]},
+  {t:'On hold: PE/SI', pct:1.3, f:'A', id:'NVMY1005', opt:"Where's my parcel?", end:'FAQ answer with reason, chat ends', q:[]},
   {t:'Pickup general inquiry', pct:0.7, f:'F', id:null, opt:'Something else', end:'Info, no agent', q:[{btn:'Pickup for my business'}]},
   {t:'Wrong or incomplete content', pct:0.7, f:'E', id:'NVMY3001', opt:'Problem with my parcel', end:'Photos, then case', q:[{btn:'Items missing'},{btn:'📎 Attach'},{input:'Two of the three items are missing'}]},
   {t:'Cancellation request', pct:0.6, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Told to contact the seller', q:[{btn:'Cancel delivery'}]},
-  {t:'RTS: cannot revert', pct:0.6, f:'A', id:'NVMY1005', opt:"Where's my parcel?", end:'Uses the On hold sample, then agent', q:[{btn:'Fix it with an agent'},{input:'Please stop the return to seller'}]},
+  {t:'RTS: cannot revert', pct:0.6, f:'A', id:'NVMY1005', opt:"Where's my parcel?", end:'Uses the On hold sample. FAQ answer, chat ends', q:[]},
   {t:'Reschedule', pct:0.5, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'New date saved, no agent', q:[{btn:'Delivery date'},{btn:'Tue, 29 Sep'}]},
   {t:'Sales', pct:0.5, f:'F', id:null, opt:'Something else', end:'Sales info, then agent', q:[{btn:'Send a parcel'},{btn:'Talk to sales'},{input:'I want to ship 50 parcels a month'}]}
 ];

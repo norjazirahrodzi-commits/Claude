@@ -213,6 +213,10 @@ const ND=[
 ['END','H',0,0,'other','Feedback','Resolved','Great! Thanks for chatting with Ninja Bot. 👋','Start again | Main menu','Restart | Main menu','New','-','Resolved (CSAT logged)',[]]
 ];
 
+// Where's my parcel is FAQ only: answer screens end the chat, no follow-up question or button.
+['A2','A3','A4','A5','A6'].forEach(id=>{const r=ND.find(x=>x[0]===id);r[5]='Info (FAQ)';r[8]='-';r[9]='End of chat (FAQ answer)';r[12]='FAQ, ends here';r[13]=[]});
+ND.find(x=>x[0]==='A3')[7]=`Sorry, your parcel is taking longer than expected. Last update: [Last scan]. Delays like this are usually resolved within a few days.`;
+ND.find(x=>x[0]==='A6')[7]=`Your parcel is currently [On hold / Returning to seller]. Reason: [General reason, e.g. we need more address details]. Once the issue is fixed, your parcel will move again.`;
 // edges: from, to, label, style ('' main, agent, help)
 const ED=[
 ['W0','W1','Language'],['W1','T0','1–5'],['W1','F1','6','vh'],
@@ -225,7 +229,7 @@ const ED=[
 ['D3','D10',''],['D4','D10',''],['D6','D10','Confirm'],['D7','D10',''],
 ['E1','E2','Damaged'],['E1','E3','Wrong item'],['E1','E4','Missing items'],['E1','E5','Not moving'],['E2','EP','Photos'],['E3','EP','Photos'],['E4','EP','Photos'],['EP','ED','Attached'],['E5','E5ok','Still moving'],
 ['F1','F2','Operating hours'],['F1','F3','Status meanings'],['F1','F4','Send a parcel'],['F1','F5','Business pickup'],
-['A3','H2','','agent'],['A2','G1','','help'],['A5','G1','','help'],['A6','H1','','agent'],
+
 ['B3','H2','','agent'],['B5','G1','','help'],['C3','H2','','agent'],
 ['D2','H1','','agent'],['D9','H1','','agent'],['D5','H1','','agent'],['D10','G1','','help'],
 ['ED','H2','','agent'],['E5','H2','','agent'],
