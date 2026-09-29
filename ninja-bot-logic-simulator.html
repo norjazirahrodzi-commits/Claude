@@ -1,0 +1,599 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ninja Bot v2 Logic Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#F5F2F2; --surface:#FFFFFF; --ink:#231F20; --muted:#6E6567; --line:#E6DFE0;
+  --accent:#C8102E; --accent-soft:#FBE7EA; --bot:#F1ECED; --user:#C8102E; --user-ink:#FFFFFF;
+  --fA:#2F6FDB; --fB:#C8102E; --fC:#C2410C; --fD:#15803D; --fE:#7C3AED; --fF:#A16207; --fH:#0E7490; --fS:#6E6567;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#151213; --surface:#1F1B1C; --ink:#F2EDEE; --muted:#A99FA1; --line:#3A3334;
+    --accent:#F2455C; --accent-soft:#3A1D22; --bot:#2B2526; --user:#B40F2A; --user-ink:#FFFFFF;
+    --fA:#7AA7F5; --fB:#F2455C; --fC:#FB923C; --fD:#4ADE80; --fE:#B794F6; --fF:#E0B84A; --fH:#4FC3D9; --fS:#A99FA1;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#151213; --surface:#1F1B1C; --ink:#F2EDEE; --muted:#A99FA1; --line:#3A3334;
+  --accent:#F2455C; --accent-soft:#3A1D22; --bot:#2B2526; --user:#B40F2A; --user-ink:#FFFFFF;
+  --fA:#7AA7F5; --fB:#F2455C; --fC:#FB923C; --fD:#4ADE80; --fE:#B794F6; --fF:#E0B84A; --fH:#4FC3D9; --fS:#A99FA1;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.5}
+.wrap{max-width:1140px; margin:0 auto; padding-inline:16px; padding-block:24px 40px}
+header.top{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:20px}
+h1{font-family:var(--display); font-size:clamp(24px,4vw,32px); line-height:1.1; margin:0; text-wrap:balance; letter-spacing:-.01em}
+.lede{color:var(--muted); margin:6px 0 0; max-width:62ch}
+.grid{display:grid; grid-template-columns:minmax(0,400px) minmax(0,1fr); gap:24px; align-items:start}
+@media (max-width:860px){ .grid{grid-template-columns:1fr} }
+
+/* phone */
+.phone{background:var(--surface); border:1px solid var(--line); border-radius:28px; overflow:hidden; display:flex; flex-direction:column; height:min(740px, 84vh); min-height:520px; box-shadow:0 18px 40px -24px rgba(35,31,32,.35)}
+.bar{display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--accent); color:#fff}
+.avatar{width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.18); display:grid; place-items:center; flex:none}
+.bar .name{font-weight:700; line-height:1.1}
+.bar .sub{font-size:12px; opacity:.85}
+.bar .grow{flex:1; min-width:0}
+.iconbtn{background:rgba(255,255,255,.16); color:#fff; border:0; border-radius:999px; padding:6px 12px; font:600 13px var(--body); cursor:pointer}
+.iconbtn:hover{background:rgba(255,255,255,.28)}
+.iconbtn:focus-visible, button:focus-visible, input:focus-visible{outline:2px solid var(--fA); outline-offset:2px}
+#log{flex:1; overflow-y:auto; padding:16px 14px; display:flex; flex-direction:column; gap:8px; scroll-behavior:smooth}
+.b{max-width:86%; padding:9px 13px; border-radius:18px; overflow-wrap:anywhere}
+.b.bot{align-self:flex-start; background:var(--bot); border-bottom-left-radius:5px}
+.b.user{align-self:flex-end; background:var(--user); color:var(--user-ink); border-bottom-right-radius:5px}
+.b .soft{color:var(--muted); font-size:13px}
+.nodeTag{align-self:flex-start; font:600 12px var(--body); color:var(--fc); background:color-mix(in srgb, var(--fc) 12%, transparent); padding:2px 7px; border-radius:5px; margin-top:6px}
+.code{display:none; font:500 11px var(--mono); opacity:.8}
+body.show-ids .code{display:inline}
+.typing{align-self:flex-start; background:var(--bot); border-radius:18px; padding:12px 14px; display:flex; gap:4px}
+.typing i{width:6px; height:6px; border-radius:50%; background:var(--muted); animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:4px}
+.chips.list{flex-direction:column; align-items:stretch}
+.chip{border:1.5px solid var(--accent); color:var(--accent); background:var(--surface); border-radius:999px; padding:7px 13px; font:600 14px var(--body); cursor:pointer; text-align:left}
+.chips.list .chip{border-radius:12px}
+.chip:hover{background:var(--accent-soft)}
+.chip.sec{border-color:var(--line); color:var(--muted); font-weight:500; font-size:13px}
+.chip.sim{border-style:dashed; border-color:var(--fS); color:var(--muted); font-weight:500; font-size:13px}
+.divider{flex-basis:100%; height:0}
+.scard{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-top:6px; display:grid; gap:4px; font-size:14px}
+.scard .h{font-weight:700; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.scard .r{display:flex; justify-content:space-between; gap:12px}
+.scard .r span{color:var(--muted); flex:none}
+.scard .r b{text-align:right; font-weight:600}
+.pod{margin-top:6px; aspect-ratio:4/3; max-width:100%; border-radius:10px; background:repeating-linear-gradient(135deg, color-mix(in srgb,var(--muted) 14%, transparent) 0 10px, transparent 10px 20px), var(--surface); border:1px solid var(--line); display:grid; place-items:center; color:var(--muted); font-size:13px; text-align:center; gap:4px; align-content:center}
+form#composer{display:flex; gap:8px; padding:10px; border-top:1px solid var(--line); background:var(--surface)}
+#msg{flex:1; min-width:0; border:1px solid var(--line); background:var(--bg); color:var(--ink); border-radius:999px; padding:10px 14px; font:15px var(--body)}
+#msg:disabled{opacity:.6}
+#send{border:0; background:var(--accent); color:#fff; border-radius:999px; padding:0 16px; font:700 14px var(--body); cursor:pointer}
+#send:disabled{opacity:.4; cursor:default}
+
+/* panel */
+.panel{display:grid; gap:16px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px}
+.card h2{font-family:var(--display); font-size:18px; margin:0 0 4px}
+.card .hint{color:var(--muted); font-size:13px; margin:0 0 12px}
+.scen{max-height:300px; overflow-y:auto; padding-right:4px; display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:8px}
+.scen button{all:unset; box-sizing:border-box; cursor:pointer; border:1px solid var(--line); border-radius:12px; padding:10px 12px; display:grid; gap:3px; background:var(--surface)}
+.scen button:hover{border-color:var(--fc)}
+.scen button:focus-visible{outline:2px solid var(--fA); outline-offset:2px}
+.scen .t{font-weight:700; font-size:14px; display:flex; align-items:center; gap:6px}
+.scen .dot{width:8px; height:8px; border-radius:50%; background:var(--fc); flex:none}
+.scen .s{font-size:12.5px; color:var(--muted)}
+.scen code{font:500 12px var(--mono); color:var(--ink)}
+.now{display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px}
+.now .id{font:500 22px var(--mono); color:var(--fc)}
+.now .title{font-weight:700; font-size:16px}
+.pill{font-size:12px; font-weight:600; padding:3px 9px; border-radius:999px; color:var(--fc); background:color-mix(in srgb, var(--fc) 13%, transparent)}
+.path{display:flex; flex-wrap:wrap; gap:4px; margin-top:10px}
+.path span{font:600 12px var(--body); padding:2px 6px; border-radius:5px; color:var(--fc); background:color-mix(in srgb, var(--fc) 11%, transparent)}
+.path span+span::before{content:""}
+dl.cap{display:grid; grid-template-columns:minmax(110px,max-content) 1fr; gap:6px 14px; margin:0; font-size:14px}
+dl.cap dt{color:var(--muted)}
+dl.cap dd{margin:0; font-weight:600; overflow-wrap:anywhere}
+dl.cap dd.empty{color:var(--muted); font-weight:400}
+.tag-hi{color:var(--fB)}
+.toggles{display:flex; align-items:center; gap:8px; font-size:14px; color:var(--muted)}
+.legend{display:flex; flex-wrap:wrap; gap:6px}
+.trace{max-height:360px; overflow-y:auto; display:grid; gap:10px; align-content:start}
+.tr{border-left:3px solid var(--fc); padding-left:10px; display:grid; gap:4px; font-size:13px}
+.tr .h{font-weight:700}
+.tr .h code{font:500 11px var(--mono); color:var(--muted); margin-left:6px}
+.tr .rule{color:var(--ink)} .tr .rule b{font:600 12px var(--mono); color:var(--fc)}
+.tr .tool{font:500 11.5px var(--mono); background:var(--bot); border-radius:8px; padding:6px 8px; overflow-wrap:anywhere; color:var(--ink)}
+.tr .tool b{color:var(--fA)}
+.tr .none{color:var(--muted)}
+.rk{font:700 11px var(--mono); color:var(--muted)}
+@media (prefers-reduced-motion: reduce){ .typing i{animation:none} #log{scroll-behavior:auto} }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Ninja Bot v2 logic simulator</h1>
+      <p class="lede">Chat with the bot and watch the logic underneath: which routing rule fired, which tool was called, and what the agent and CRM receive. Scenarios follow the top 21 issue types by volume. All data is made up; nothing connects to real systems.</p>
+    </div>
+    <label class="toggles"><input type="checkbox" id="showIds"> Show Tech codes (for the Flow Mapping tab)</label>
+  </header>
+
+  <div class="grid">
+    <section class="phone" aria-label="Chat preview">
+      <div class="bar">
+        <div class="avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        </div>
+        <div class="grow"><div class="name">Ninja Bot</div><div class="sub">Prototype · sample data</div></div>
+        <button class="iconbtn" id="restart" type="button">Restart</button>
+      </div>
+      <div id="log" aria-live="polite"></div>
+      <form id="composer" autocomplete="off">
+        <input id="msg" type="text" placeholder="Choose an option above" disabled aria-label="Message">
+        <button id="send" type="submit" disabled>Send</button>
+      </form>
+    </section>
+
+    <aside class="panel">
+      <div class="card">
+        <h2>Try a scenario</h2>
+        <p class="hint">Ranked by share of chats (25 Jun – 24 Sep 2026). Each replays that issue type, then you can keep clicking.</p>
+        <div class="scen" id="scen"></div>
+      </div>
+
+      <div class="card" id="nowCard">
+        <h2>Where the customer is now</h2><p class="hint">The steps the customer has gone through so far.</p>
+        <div class="now" id="now"></div>
+        <div class="path" id="path" aria-label="Bot path"></div>
+      </div>
+
+      <div class="card">
+        <h2>Logic trace</h2><p class="hint">Rule IDs are from the Routing Logic tab. INT IDs are from the Integrations tab. Calls are mocked.</p>
+        <div id="trace" class="trace"></div>
+      </div>
+
+      <div class="card">
+        <h2>Data passed to agent &amp; CRM</h2>
+        <p class="hint">This is what the bot collects on the way, so agents don't need to ask again. See the Info Required tab.</p>
+        <dl class="cap" id="cap"></dl>
+      </div>
+
+      <div class="card">
+        <h2>Colour key</h2>
+        <div class="legend" id="legend"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const log = $('#log'), msg = $('#msg'), send = $('#send');
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const wait = ms => new Promise(r => setTimeout(r, reduce ? Math.min(ms,80) : ms));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rnd = n => String(Math.floor(Math.random()*Math.pow(10,n))).padStart(n,'0');
+
+const FLOWS = {
+  Start:{name:'Start', c:'--fS'}, Shared:{name:'Tracking ID', c:'--fS'},
+  A:{name:"A · Where's my parcel", c:'--fA'}, B:{name:"B · Courier didn't come", c:'--fB'},
+  C:{name:'C · Delivered, not received', c:'--fC'}, D:{name:'D · Change my delivery', c:'--fD'},
+  E:{name:'E · Problem with parcel', c:'--fE'}, F:{name:'F · Something else', c:'--fF'},
+  H:{name:'Agent handoff', c:'--fH'}, G:{name:'Global', c:'--fS'}
+};
+const START = {A:'A1', B:'B1', C:'C1', D:'D1', E:'E1'};
+const MENU = [
+  {t:"Where's my parcel?", f:'A'},
+  {t:"Courier didn't come", f:'B'},
+  {t:"Says delivered, but I didn't get it", f:'C'},
+  {t:"Change my delivery", f:'D'},
+  {t:"Problem with my parcel", f:'E'},
+  {t:"Something else", f:'F'}
+];
+
+// sample parcels
+const P = {
+  NVMY1001:{code:'transit', status:'In transit', hub:'Shah Alam Hub', last:'Today, 9:14 AM', eta:'Wed, 30 Sep', late:false, stale:false},
+  NVMY1002:{code:'transit', status:'In transit', hub:'Bukit Raja Hub', last:'Mon, 21 Sep, 6:02 PM', eta:'Thu, 24 Sep', late:true, stale:true},
+  NVMY1003:{code:'ofd', status:'Out for delivery', hub:'Cheras Station', last:'Today, 7:45 AM', eta:'Today'},
+  NVMY1004:{code:'pending', status:'Waiting for seller', hub:'-', last:'Order created Sun, 27 Sep', eta:'After seller ships'},
+  NVMY1005:{code:'hold', status:'On hold', hub:'Petaling Jaya Station', last:'Sat, 26 Sep, 3:20 PM', eta:'-', reason:'We need more address details to deliver'},
+  NVMY2001:{code:'failed', status:'Delivery failed', hub:'Subang Station', last:'Sat, 26 Sep, 2:18 PM', eta:'-', attempt:'Sat, 26 Sep, 2:18 PM', why:'Recipient not available', attempts:1},
+  NVMY2002:{code:'failed', status:'Delivery failed', hub:'Klang Station', last:'Mon, 28 Sep, 11:05 AM', eta:'-', attempt:'Mon, 28 Sep, 11:05 AM', why:'Recipient not available', attempts:2},
+  NVMY3001:{code:'done', status:'Delivered', hub:'Puchong Station', last:'Fri, 25 Sep, 4:32 PM', eta:'-', delivered:'Fri, 25 Sep, 4:32 PM', receiver:'Left at guard house'}
+};
+
+const S = {};
+function reset(){
+  Object.assign(S,{lang:null, flow:null, tid:null, p:null, tries:0, path:[], trace:[], pend:[], tag:null, pri:null, remarks:null, photos:null, change:null, caseId:null, csat:null, idcheck:null});
+  log.innerHTML=''; setComposer(null);
+}
+
+const card = (h, rows) => `<div class="scard"><div class="h">${h}</div>${rows.map(([k,v])=>`<div class="r"><span>${k}</span><b>${v}</b></div>`).join('')}</div>`;
+const statusCard = p => card('Parcel ' + esc(S.tid), [['Status', p.status], ['Last update', p.last], ['Location', p.hub], ['Estimated delivery', p.eta]]);
+
+const N = {
+  W0: () => ({flow:'Start', title:'Language', noGlobal:1,
+    text:["Hi! I'm Ninja Bot 👋 Please choose your language.<br><span class='soft'>Sila pilih bahasa anda.</span>"],
+    buttons:[{t:'English', do:()=>S.lang='English', go:'W1'}, {t:'Bahasa Melayu', do:()=>S.lang='Bahasa Melayu', go:'W1'}]}),
+  W1: () => ({flow:'Start', title:'Main menu', noGlobal:1,
+    text:["How can we help you today?" + (S.lang==='Bahasa Melayu' ? "<br><span class='soft'>(This preview shows English text only.)</span>" : '')],
+    list:1,
+    buttons: MENU.map(m => ({t:m.t, do:()=>{S.flow=m.f}, go:()=> m.f==='F' ? 'F1' : (S.tid ? START[m.f] : 'T0')})).concat([{t:'Talk to an agent', sec:1, go:'H1'}])}),
+
+  T0: () => ({flow:'Shared', title:'Enter tracking ID',
+    text:["Please type your tracking ID.<br><span class='soft'>You'll find it on your order page in the shopping app, or in the SMS from Ninja Van.</span>"],
+    input:{ph:'e.g. NVMY1001', submit:v=>{
+      const id = v.replace(/\s+/g,'').toUpperCase();
+      S.pend.push({int:'INT01', call:'GET /parcels/'+id, resp: P[id] ? '200 · status='+P[id].status+', last_scan='+P[id].last : '404 not_found (try '+(S.tries+1)+' of 2)'});
+      if(P[id]){ S.tid=id; S.p=P[id]; return START[S.flow]; }
+      S.tries++;
+      if(S.tries>=2){ S.tag='Tracking ID not found'; return 'H1'; }
+      return 'T2';
+    }},
+    buttons:[{t:"I can't find my tracking ID", go:'T1'}]}),
+  T1: () => ({flow:'Shared', title:"Can't find tracking ID",
+    text:["The seller sends your tracking ID once your order ships. Check:<br>1. Order details in the shopping app<br>2. SMS or email from Ninja Van<br><span class='soft'>If the seller shipped less than 24 hours ago, it may not show yet.</span>"],
+    buttons:[{t:'Try again', go:'T0'}]}),
+  T2: () => ({flow:'Shared', title:'Tracking ID not found',
+    text:["We couldn't find that tracking ID. Please check for typos and try again."],
+    buttons:[{t:'Try again', go:'T0'}, {t:"I can't find it", go:'T1'}]}),
+
+  A1: () => ({flow:'A', title:'Parcel status', text:["Here's your parcel status:" + statusCard(S.p)],
+    then: () => ({transit: S.p.late ? 'A3' : 'A2', ofd:'A4', pending:'A5', hold:'A6', failed:'B1', done:'C1'})[S.p.code]}),
+  A2: () => ({flow:'A', title:'On track', text:[`Good news, your parcel is on track and should arrive by <b>${S.p.eta}</b>. You'll get an SMS when it's out for delivery.`], then:'G1'}),
+  A3: () => ({flow:'A', title:'Delayed', tag:'Delivery ETA > Beyond SLA', pri:'High',
+    text:[`Sorry, your parcel is taking longer than expected. It was due on <b>${S.p.eta}</b> and hasn't moved since ${S.p.last}.`, "We can flag this to our team to check it for you."],
+    buttons:[{t:'Flag it to the team', go:'H2'}]}),
+  A4: () => ({flow:'A', title:'Out for delivery', text:["Your parcel is out for delivery today. Please keep your phone nearby in case the courier calls."],
+    buttons:[{t:'Leave a note for the courier', do:()=>S.flow='D', go:'D3'}, {t:'Change my delivery', do:()=>S.flow='D', go:'D1'}]}),
+  A5: () => ({flow:'A', title:'Waiting for seller', tag:'Delivery > General inquiry',
+    text:["The seller has created your order but hasn't handed the parcel to us yet. Please check with the seller for the shipping date."], then:'G1'}),
+  A6: () => ({flow:'A', title:'On hold', tag:'Parcel issues > On hold > PE/SI',
+    text:[`Your parcel is on hold. Reason: <b>${S.p.reason}</b>.`, "An agent can help fix this so your parcel gets moving again."],
+    buttons:[{t:'Fix it with an agent', go:'H1'}]}),
+
+  B1: () => {
+    const p=S.p;
+    if(p.code!=='failed') return {flow:'B', title:'No failed attempt', text:["We don't see a failed delivery attempt on this parcel. Here's where it is now."], then:'A1'};
+    return {flow:'B', title:'Last attempt',
+      text:["Our record shows a delivery attempt:" + card('Delivery attempt', [['Date & time', p.attempt], ['Reason given', p.why], ['Attempt no.', p.attempts]]), "Were you at the address at that time?"],
+      buttons:[{t:'Yes, I was there', go:()=>{ if(p.attempts>=2){ S.tag='Courier > Delivery > Fake fail'; S.pri='Urgent'; return 'B3'; } return 'B2'; }},
+               {t:"No, I wasn't", go:'B4'}]};
+  },
+  B2: () => ({flow:'B', title:'Fix options', tag:'Courier > Delivery > Fake fail',
+    text:["We're sorry about that. How would you like us to fix it?"], list:1,
+    buttons:[{t:'Deliver again next working day', go:'B5'}, {t:'Choose another date', go:'D4'}, {t:'Collect at a pickup point', go:'D5'}, {t:'Report this delivery', go:'B3'}]}),
+  B3: () => ({flow:'B', title:'Report attempt', pri: S.pri==='Urgent' ? 'Urgent' : 'High', tag:'Courier > Delivery > Fake fail',
+    text:[(S.pri==='Urgent' ? "This is the <b>2nd failed attempt</b> on your parcel, so we'll treat it as urgent.<br>" : '') + "Please tell us what happened (e.g. I was home all day, no call received)."],
+    input:{ph:'What happened?', submit:v=>{ S.remarks=v; return 'H2'; }}}),
+  B4: () => ({flow:'B', title:'Rearrange delivery', tag:'Delivery > Reschedule',
+    text:["No problem. What would you like to do?"], list:1,
+    buttons:[{t:'Choose a delivery date', go:'D4'}, {t:'Collect at a pickup point', go:'D5'}, {t:'Leave a note for the courier', go:'D3'}]}),
+  B5: () => { S.caseId = S.caseId || 'CS-' + rnd(6); S.change='Redelivery on Tue, 29 Sep';
+    return {flow:'B', title:'Redelivery booked', text:[`Done! We'll deliver again on <b>Tue, 29 Sep</b>. We've also logged case <b>${S.caseId}</b> so our team can review the last attempt.`], then:'G1'}; },
+
+  C1: () => {
+    const p=S.p;
+    if(p.code!=='done') return {flow:'C', title:'Not delivered yet', text:["Our record doesn't show this parcel as delivered yet. Here's where it is now."], then:'A1'};
+    return {flow:'C', title:'Delivery confirmed',
+      text:["Our record shows your parcel was delivered:" + card('Delivery', [['Date & time', p.delivered]]) + "<span class='soft'>For your privacy, we don't show delivery photos, signatures or names in chat.</span>"],
+      buttons:[{t:'I found it', go:'END'}, {t:"Still can't find it", go:'C2'}]};
+  },
+  C2: () => ({flow:'C', title:'Quick checklist',
+    text:["Please check with:<br>• Neighbours<br>• Guard house or reception<br>• Family members<br>• Your mailbox or parcel locker"],
+    buttons:[{t:'Found it', go:'END'}, {t:'Still missing', go:'C3'}]}),
+  C3: () => ({flow:'C', title:'Report not received', tag:'Courier > Delivery > Fake success', pri:'High',
+    text:["Sorry about this. We'll open a case. Please tell us where and when you last checked.<br><span class='soft'>Our agent will verify your identity before sharing any delivery details.</span>"],
+    input:{ph:'e.g. Checked guard house and neighbours at 6pm', submit:v=>{ S.remarks=v; S.idcheck='Needed before sharing POD'; return 'H2'; }}}),
+
+  D1: () => {
+    const p=S.p;
+    if(p.code==='done') return {flow:'D', title:'Change not possible', text:["This parcel has already been delivered, so changes are no longer possible."]};
+    if(p.code==='ofd') return {flow:'D', title:'Change options (limited)', text:["Your parcel is already out for delivery, so today you can only leave a note for the courier."], buttons:[{t:'Leave a note for the courier', go:'D3'}]};
+    return {flow:'D', title:'Change options', text:["What would you like to change?"], list:1,
+      buttons:[{t:'Address or phone number', go:'D2'}, {t:'Map pin location', go:'D9'}, {t:'Note for the courier', go:'D3'}, {t:'Delivery date', go:'D4'},
+               {t:'Collect at a pickup point', go:'D5'}, {t:'Deliver to my door instead', go:'D6'}, {t:'Keep at pickup point longer', go:'D7'}, {t:'Cancel delivery', go:'D8'}]};
+  },
+  D2: () => ({flow:'D', title:'Change address / phone', tag:'Delivery > Change delivery details',
+    text:["For your security, changes to the delivery address or phone number are made by our agent after a quick identity check."],
+    buttons:[{t:'Talk to an agent', do:()=>{S.idcheck='Needed before change'}, go:'H1'}]}),
+  D3: () => ({flow:'D', title:'Note for courier', tag:'Delivery > Special instructions',
+    text:["Type a note for the courier.<br><span class='soft'>e.g. Leave at guard house, call before arriving</span>"],
+    input:{ph:'Note for courier (max 200 characters)', max:200, submit:v=>{ S.change='Courier note: "' + v + '"'; return 'D10'; }}}),
+  D4: () => ({flow:'D', title:'Delivery date', tag: S.tag==='Courier > Delivery > Fake fail' ? S.tag : 'Delivery > Reschedule',
+    text:["Pick a new delivery date:"],
+    buttons:['Tue, 29 Sep','Wed, 30 Sep','Thu, 1 Oct'].map(d=>({t:d, do:()=>S.change='New delivery date: '+d, go:'D10'}))}),
+  D5: () => ({flow:'D', title:'Pickup point', tag:'PUDO > Change from doorstep delivery to self-collection',
+    text:["For your security, switches to a pickup point are made by our agent after a quick identity check."],
+    buttons:[{t:'Talk to an agent', do:()=>{S.idcheck='Needed before change'}, go:'H1'}]}),
+  D6: () => ({flow:'D', title:'Deliver to my door', tag:'PUDO > Change to doorstep (TO CONFIRM)',
+    text:["We'll deliver to the address on your order. Confirm?"],
+    buttons:[{t:'Confirm', do:()=>S.change='Switched to doorstep delivery', go:'D10'}, {t:'Change address', go:'D2'}]}),
+  D7: () => ({flow:'D', title:'Keep longer', tag:'PUDO > Extend holding (TO CONFIRM)',
+    text:["Your parcel is at your pickup point until <b>Fri, 2 Oct</b>. Extend by 3 days?"],
+    buttons:[{t:'Yes, extend to Mon, 5 Oct', do:()=>S.change='Holding extended to Mon, 5 Oct', go:'D10'}, {t:'Back', go:'D1'}]}),
+  D8: () => ({flow:'D', title:'Cancel delivery', tag:'Delivery > Cancellation request',
+    text:["To cancel, please contact the seller you bought from. They can cancel the order and ask us to return the parcel.<br><span class='soft'>(Policy wording: TO CONFIRM)</span>"]}),
+  D9: () => ({flow:'D', title:'Map pin', tag:'Delivery > Latlong issue',
+    text:["For your security, location changes are made by our agent after a quick identity check."],
+    buttons:[{t:'Talk to an agent', do:()=>{S.idcheck='Needed before change'}, go:'H1'}]}),
+  D10: () => { const ref='REQ-'+rnd(5);
+    return {flow:'D', title:'Change saved', text:[`Done! Your change is saved.<br><b>${esc(S.change||'')}</b><br><span class='soft'>Reference: ${ref}</span>`], then:'G1'}; },
+
+  E1: () => ({flow:'E', title:'Parcel problem', text:["Sorry to hear that. What's wrong with your parcel?"], list:1,
+    buttons:[{t:'Damaged', do:()=>{S.tag='Parcel issues > Completed > Damaged (TO CONFIRM)'; S.pri='High'}, go:'EP'},
+             {t:'Wrong or swapped item', do:()=>{S.tag='Parcel issues > Completed > Swapped'; S.pri='High'}, go:'EP'},
+             {t:'Items missing inside', do:()=>{S.tag='Parcel issues > Completed > Wrong / incomplete content'; S.pri='High'}, go:'EP'},
+             {t:'Parcel not moving', go:'E5'}]}),
+  EP: () => ({flow:'E', title:'Upload photos',
+    text:["Please upload photos of:<br>1. The outer box<br>2. The item<br>3. The airway bill label"],
+    buttons:[{t:'📎 Attach 3 photos (sample)', do:()=>S.photos='3 photos attached', go:'ED'}]}),
+  ED: () => ({flow:'E', title:'Describe the problem', text:["Thanks, photos received. Briefly describe the problem."],
+    input:{ph:'e.g. Received a blue shirt, ordered black shoes', submit:v=>{ S.remarks=v; return 'H2'; }}}),
+  E5: () => ({flow:'E', title:'Parcel not moving', text:[`Your parcel's last update was <b>${S.p.last}</b> at ${S.p.hub}.`],
+    buttons:[{t:'Flag it to the team', go:()=>{ if(S.p.stale){ S.tag='Parcel issues > On hold > Missing'; S.pri='High'; return 'H2'; } return 'E5ok'; }}]}),
+  E5ok: () => ({flow:'E', title:'Still moving', text:["Your parcel was scanned recently, so it's still moving. No need to worry yet."], then:'A2'}),
+
+  F1: () => ({flow:'F', title:'Other help', text:["What do you need help with?"], list:1,
+    buttons:[{t:'Operating hours', go:'F2'}, {t:'What does my status mean?', go:'F3'}, {t:'Send a parcel with Ninja Van', go:'F4'}, {t:'Pickup for my business', go:'F5'}]}),
+  F2: () => ({flow:'F', title:'Operating hours', text:["Our chat agents are available <b>Mon–Sat, 9 AM – 6 PM</b>. Ninja Bot is available 24/7.<br><span class='soft'>(Hours: TO CONFIRM)</span>"]}),
+  F3: () => ({flow:'F', title:'Status meanings', text:["<b>In transit</b>: moving between our hubs<br><b>Out for delivery</b>: with the courier today<br><b>Delivery failed</b>: the courier couldn't deliver<br><b>On hold</b>: we need something fixed before delivering<br><b>Delivered</b>: the courier completed the delivery"],
+    buttons:[{t:'Track my parcel', do:()=>S.flow='A', go:()=> S.tid ? 'A1' : 'T0'}]}),
+  F4: () => ({flow:'F', title:'Send a parcel', tag:'Sales', text:["Want to send with Ninja Van? You can book a shipment on our website or at any Ninja Point."], buttons:[{t:'Talk to sales', go:'H1'}]}),
+  F5: () => ({flow:'F', title:'Business pickup', tag:'Pickup > General inquiry', text:["For pickups of your business parcels, you can schedule one in your shipper dashboard."]}),
+
+  H1: () => ({flow:'H', title:'Talk to an agent', noGlobal:1,
+    text:[(S.tag==='Tracking ID not found' && S.tries>=2 ? "We still couldn't find that tracking ID, so let's get an agent to help.<br>" : '') +
+      "Before we connect you, tell us briefly what happened.<br><span class='soft'>Our agent will see your answers from this chat, so you won't need to repeat them.</span>"],
+    input:{ph:'Describe your issue', submit:v=>{ S.remarks = S.remarks ? S.remarks + ' / ' + v : v; return 'HC'; }},
+    buttons:[{t:'Main menu', sec:1, go:'W1'}]}),
+  HC: () => ({flow:'H', title:'Connected to agent', noGlobal:1,
+    text:["Connecting you to an agent… Our agent can already see:" + card('Agent view', [
+      ['Tracking ID', S.tid ? esc(S.tid) : '-'], ['Parcel status', S.p ? S.p.status : '-'], ['Customer chose', S.flow ? plain(S.flow) : '-'],
+      ['Auto-tag', esc(S.tag || 'Agent to select')], ['Priority', S.pri || 'Normal'], ['Identity check', S.idcheck || 'Not needed'], ['Customer says', esc(S.remarks || '-')]]) + "<span class='soft'>Only the agent sees POD, receiver name and address.</span>"],
+    buttons:[{t:'Simulate: customer says nothing for 2 min', sim:1, go:'G2'}]}),
+  H2: () => { S.caseId = S.caseId || 'CS-' + rnd(6);
+    return {flow:'H', title:'Case created', noGlobal:1,
+      text:[`Thanks, we've logged case <b>${S.caseId}</b>. Our team will contact you within 24 hours.<br><span class='soft'>(Response time: TO CONFIRM)</span>`],
+      buttons:[{t:'Chat with an agent now', go:'H1'}, {t:'Main menu', sec:1, go:'W1'}]}; },
+  G1: () => ({flow:'G', title:'Did this help?', noGlobal:1, text:["Did this solve your issue?"],
+    buttons:[{t:'Yes', do:()=>S.csat='Yes', go:'END'}, {t:'No', do:()=>S.csat='No', go:'H1'}]}),
+  G2: () => ({flow:'G', title:'Inactivity nudge', noGlobal:1,
+    text:["Are you still there? Tell us briefly what happened so we can help."],
+    input:{ph:'Type your reply', submit:v=>{ S.remarks = S.remarks ? S.remarks + ' / ' + v : v; return 'HC'; }},
+    buttons:[{t:'Simulate: 5 more minutes of silence', sim:1, go:'CLOSED'}]}),
+  CLOSED: () => ({flow:'G', title:'Chat closed', noGlobal:1, tag:'Silent call / chat > General inquiry',
+    text:["We've closed this chat because we didn't hear back. Message us anytime."],
+    buttons:[{t:'Start again', go:'RESTART'}]}),
+  END: () => ({flow:'G', title:'Resolved', noGlobal:1, text:["Great! Thanks for chatting with Ninja Bot. 👋"],
+    buttons:[{t:'Start again', go:'RESTART'}, {t:'Main menu', sec:1, go:'W1'}]})
+};
+
+let cur = null, queue = [], runId = 0;
+
+function flowVar(f){ return `var(${FLOWS[f].c})`; }
+
+function addBot(html){ const d=document.createElement('div'); d.className='b bot'; d.innerHTML=html; log.appendChild(d); scroll(); }
+function addUser(t){ const d=document.createElement('div'); d.className='b user'; d.textContent=t; log.appendChild(d); scroll(); }
+function scroll(){ log.scrollTop = log.scrollHeight; }
+function clearChips(){ log.querySelectorAll('.chips').forEach(c=>c.remove()); }
+
+async function typing(my){
+  const t=document.createElement('div'); t.className='typing'; t.innerHTML='<i></i><i></i><i></i>'; log.appendChild(t); scroll();
+  await wait(450); t.remove(); return my===runId;
+}
+
+async function go(id){
+  if(id==='RESTART'){ start(); return; }
+  const my = runId;
+  const def = N[id]();
+  cur = {id, def};
+  S.path.push(id);
+  if(def.tag) S.tag = def.tag;
+  if(def.pri) S.pri = def.pri;
+  setComposer(null);
+  traceStep(id, def);
+  updatePanel();
+  const tag=document.createElement('div'); tag.className='nodeTag'; tag.style.setProperty('--fc', flowVar(def.flow)); tag.innerHTML = `${esc(plain(def.flow))}: ${esc(def.title)} <span class="code">(${id})</span>`;
+  log.appendChild(tag);
+  for(const t of def.text){ if(!(await typing(my))) return; addBot(t); }
+  if(def.then){ await wait(400); if(my!==runId) return; const nx = typeof def.then==='function' ? def.then() : def.then; return go(nx); }
+  renderActions(def);
+  runQueue(my);
+}
+
+function allButtons(def){
+  const b = (def.buttons||[]).slice();
+  if(!def.noGlobal){ b.push({t:'Main menu', sec:1, go:'W1'}); b.push({t:'Talk to an agent', sec:1, go:'H1'}); }
+  return b;
+}
+
+function renderActions(def){
+  const btns = allButtons(def);
+  if(btns.length){
+    const wrap=document.createElement('div'); wrap.className='chips' + (def.list ? ' list':'');
+    btns.forEach(b=>{
+      const el=document.createElement('button'); el.type='button';
+      el.className='chip' + (b.sec?' sec':'') + (b.sim?' sim':'');
+      el.textContent=b.t; el.addEventListener('click', ()=>choose(b));
+      wrap.appendChild(el);
+    });
+    log.appendChild(wrap); scroll();
+  }
+  setComposer(def.input || null);
+}
+
+function choose(b){
+  clearChips(); setComposer(null);
+  addUser(b.t);
+  if(b.do) b.do();
+  const nx = typeof b.go==='function' ? b.go() : b.go;
+  go(nx);
+}
+
+let activeInput=null;
+function setComposer(inp){
+  activeInput=inp;
+  msg.disabled = !inp; send.disabled = !inp;
+  msg.placeholder = inp ? inp.ph : 'Choose an option above';
+  msg.maxLength = inp && inp.max ? inp.max : 500;
+  if(!inp) msg.value='';
+}
+
+$('#composer').addEventListener('submit', e=>{
+  e.preventDefault();
+  if(!activeInput) return;
+  const v = msg.value.trim(); if(!v) return;
+  const inp = activeInput, def = cur.def;
+  clearChips(); setComposer(null);
+  addUser(v);
+  const err = inp.validate ? inp.validate(v) : null;
+  if(err){ addBot(err); renderActions(def); return; }
+  go(inp.submit(v));
+});
+
+async function runQueue(my){
+  if(!queue.length) return;
+  await wait(750);
+  if(my!==runId) return;
+  const a = queue.shift();
+  if(a.btn){
+    const b = allButtons(cur.def).find(x=>x.t.startsWith(a.btn));
+    if(b) choose(b); else queue=[];
+  } else if(a.input!==undefined && activeInput){
+    msg.value=a.input; $('#composer').requestSubmit();
+  }
+}
+
+const INTN={INT01:'Parcel tracking',INT02:'Attempt history',INT03:'Delivery change',INT04:'Pickup point',INT05:'CRM case',INT06:'Live agent',INT07:'Attachments',INT08:'SMS',INT09:'Analytics / CSAT',INT10:'Config'};
+const RULE_TXT={R01:'Language chosen, go to Main menu',R02:'Option 1-5 and no tracking ID yet, ask for it',R03:'Tracking ID already known, skip the question',R04:'Option 6, no tracking ID needed',R05:'Tracking ID found, go to the chosen flow',R06:'ID not found and tries < 2, try again',R07:'2nd failed ID, hand to agent',R08:'Customer cannot find ID, show help',R09:'In transit, ETA not passed',R10:'In transit, ETA passed (Beyond SLA)',R11:'Out for delivery',R12:'Waiting for seller',R13:'On hold or RTS',R14:'Delivery failed, go to Courier didn\'t come',R15:'Delivered, go to Delivered not received',R16:'No failed attempt on record, show status',R17:'2nd failed attempt, priority Urgent',R18:'1st failed attempt, fix options',R19:'Customer was not there, rearrange',R20:'Redeliver, create case',R21:'Not delivered yet, show status',R22:'Still missing, case and identity check',R23:'Delivered, changes no longer possible',R24:'Out for delivery, note for courier only',R25:'Identity check needed, agent handles change',R26:'Courier note saved',R27:'Change saved',R28:'Photos then description, case with priority High',R29:'No scan for [X] days, case',R30:'Handoff payload sent to agent',R31:'No reply [2] min, nudge',R32:'No reply [5] more min, close chat',R33:'Did this help? logged',R34:'Main menu / Talk to an agent button'};
+function rulesFor(id){
+  const p=S.p, prev=S.path[S.path.length-2], r=[];
+  const m={W1:['R01'],T0:['R02'],T2:['R06'],T1:['R08'],A2:['R09'],A3:['R10'],A4:['R11'],A5:['R12'],A6:['R13'],
+    B2:['R18'],B3:S.pri==='Urgent'?['R17']:[],B4:['R19'],B5:['R20'],C2:['R22'],C3:['R22'],D2:['R25'],D5:['R25'],D9:['R25'],
+    EP:['R28'],ED:['R28'],E5ok:['R29'],HC:['R30'],G2:['R31'],CLOSED:['R32'],G1:['R33'],END:['R33'],F1:['R04']};
+  (m[id]||[]).forEach(x=>r.push(x));
+  if(id==='B1') r.push(p&&p.code==='failed'?'R14':'R16');
+  if(id==='C1') r.push(p&&p.code==='done'?(prev==='A1'?'R15':'R05'):'R21');
+  if(id==='D1'&&p) r.push(p.code==='done'?'R23':p.code==='ofd'?'R24':'R05');
+  if(id==='D10') r.push(String(S.change||'').startsWith('Courier note')?'R26':'R27');
+  if(id==='H1') r.push(S.tries>=2&&S.tag==='Tracking ID not found'?'R07':'R34');
+  if(id==='H2'&&prev==='E5') r.push('R29');
+  if(['A1','E1'].includes(id)&&prev==='T0') r.push('R05');
+  if(['A1','E1'].includes(id)&&prev==='W1') r.push('R03');
+  return [...new Set(r)];
+}
+function toolsFor(id){
+  const p=S.p||{}, t=[];
+  const add=(i,call,resp)=>t.push({int:i,call,resp});
+  if(id==='A1') add('INT01','GET /parcels/'+S.tid, 'status='+p.status+', last_scan='+p.last+', eta='+p.eta);
+  if(id==='B1') add('INT02','GET /parcels/'+S.tid+'/attempts', p.attempt?'attempt_no='+p.attempts+', reason='+p.why:'no failed attempt');
+  if(id==='C1') add('INT01','GET /parcels/'+S.tid, 'status='+p.status+', delivered_at='+(p.delivered||'-')+' (POD never shown, INT11 is agent-only)');
+  if(id==='D1') add('INT01','GET /parcels/'+S.tid, 'status='+p.status+' → options filtered');
+  if(id==='A3') add('INT10','GET /config/sla', 'eta_passed=true');
+  if(id==='E5') add('INT01','GET /parcels/'+S.tid, 'last_scan='+p.last+', stale='+!!p.stale);
+  if(id==='F2') add('INT10','GET /config/hours','Mon–Sat 9 AM – 6 PM');
+  if(id==='EP') add('INT07','POST /attachments','3 files → photo_refs');
+  if(id==='D10') add('INT03','POST /parcels/'+S.tid+'/changes', S.change+' → request saved');
+  if(id==='H2') add('INT05','POST /cases','issue_type='+(S.tag||'-')+', priority='+(S.pri||'Normal')+', origin=CS - SNS Chat, tracking_id='+(S.tid||'-')+' → '+S.caseId);
+  if(id==='B5') add('INT05','POST /cases','issue_type=Courier > Delivery > Fake fail → '+S.caseId);
+  if(id==='HC') add('INT06','POST /handoff','tracking_id='+(S.tid||'-')+', status='+(p.status||'-')+', flow='+(S.flow||'-')+', tag='+(S.tag||'-')+', priority='+(S.pri||'Normal')+', identity_check='+(S.idcheck||'no')+', remarks="'+(S.remarks||'')+'"');
+  if(id==='D5'||id==='D7') add('INT04','GET /pickup/'+S.tid, 'holding_expiry=Fri, 2 Oct');
+  if(id==='G1'||id==='END') add('INT09','POST /analytics','path='+S.path.join('>')+(S.csat?', csat='+S.csat:''));
+  if(id==='CLOSED') add('INT05','POST /cases','issue_type=Silent call / chat > General inquiry, closed_by=timeout');
+  return t;
+}
+function traceStep(id,def){
+  const tools=(S.pend||[]).splice(0).concat(toolsFor(id));
+  S.trace.push({id,title:def.title,flow:def.flow,rules:rulesFor(id),tools});
+  renderTrace();
+}
+function renderTrace(){
+  const box=$('#trace'); if(!box) return;
+  box.innerHTML=S.trace.map(e=>`<div class="tr" style="--fc:${flowVar(e.flow)}"><div class="h">${esc(e.title)}<code>${e.id}</code></div>`+
+    (e.rules.length?e.rules.map(r=>`<div class="rule"><b>${r}</b> ${esc(RULE_TXT[r]||'')}</div>`).join(''):'<div class="none">No rule, customer choice</div>')+
+    e.tools.map(t=>`<div class="tool"><b>${t.int}</b> ${esc(INTN[t.int]||'')} · ${esc(t.call)}<br>→ ${esc(t.resp)}</div>`).join('')+'</div>').join('');
+  box.scrollTop=box.scrollHeight;
+}
+function updatePanel(){
+  const def = cur.def, f = FLOWS[def.flow];
+  const now = $('#now'); now.style.setProperty('--fc', flowVar(def.flow));
+  now.innerHTML = `<span class="title" style="font-size:20px">${esc(def.title)}</span><span class="pill">${esc(plain(def.flow))}</span><span class="code">${cur.id}</span>`;
+  const path = $('#path');
+  pathFlow[cur.id] = def.flow; titles[cur.id] = def.title;
+  path.innerHTML = S.path.map(id=>`<span data-id="${id}">${esc(titles[id]||id)}<span class="code"> ${id}</span></span>`).join('<span style="background:none;color:var(--muted)">›</span>');
+  path.querySelectorAll('[data-id]').forEach(s=>{ s.style.setProperty('--fc', flowVar(pathFlow[s.dataset.id] || 'Start')); });
+
+  const rows = [
+    ['Language', S.lang], ['Customer chose', S.flow ? plain(S.flow) : null], ['Tracking ID', S.tid], ['Parcel status', S.p && S.p.status],
+    ['Auto-tag (issue type)', S.tag], ['Priority', S.pri || (S.path.length>1 ? 'Normal' : null)], ['Customer remarks', S.remarks], ['Photos', S.photos],
+    ['Identity check', S.idcheck], ['Change made', S.change], ['Case ID', S.caseId], ['Did this help?', S.csat], ['Case origin', 'CS - SNS Chat']
+  ];
+  $('#cap').innerHTML = rows.map(([k,v])=>`<dt>${k}</dt><dd class="${v?'':'empty'}${k==='Priority' && (v==='High'||v==='Urgent') ? ' tag-hi':''}">${v?esc(v):'not yet'}</dd>`).join('');
+}
+const pathFlow = {}; const titles = {};
+function plain(f){ return FLOWS[f].name.replace(/^[A-Z] · /,''); }
+
+const SCEN = [
+  {t:'Courier didn\'t come (fake fail)', pct:22.3, f:'B', id:'NVMY2001', opt:"Courier didn't come", end:'Show attempt, book redelivery', q:[{btn:'Yes, I was there'},{btn:'Deliver again'}]},
+  {t:'Where is my parcel (general inquiry)', pct:16.4, f:'A', id:'NVMY1004', opt:"Where's my parcel?", end:'Status shown, no agent', q:[]},
+  {t:'Says delivered, not received (fake success)', pct:11.4, f:'C', id:'NVMY3001', opt:'Says delivered', end:'Checklist, then case with identity check', q:[{btn:"Still can't"},{btn:'Still missing'},{input:'Checked guard house and neighbours at 6pm'}]},
+  {t:'Delivery ETA within SLA', pct:9.3, f:'A', id:'NVMY1001', opt:"Where's my parcel?", end:'ETA shown, no agent', q:[]},
+  {t:'Silent call / chat', pct:5.5, f:'H', id:null, opt:'Talk to an agent', end:'Nudge, then chat auto-closed', q:[{input:'Hello'},{btn:'Simulate: customer says'},{btn:'Simulate: 5 more'}]},
+  {t:'Special instructions', pct:5.3, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Note saved, no agent', q:[{btn:'Note for the courier'},{input:'Please leave at the guard house'}]},
+  {t:'Change delivery details', pct:3.4, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Agent with identity check', q:[{btn:'Address or phone'},{btn:'Talk to an agent'},{input:'I moved, need to change my address'}]},
+  {t:'Wrong item received (swapped)', pct:3.3, f:'E', id:'NVMY3001', opt:'Problem with my parcel', end:'Photos, then case', q:[{btn:'Wrong or swapped'},{btn:'📎 Attach'},{input:'Received a blue shirt, ordered black shoes'}]},
+  {t:'Doorstep to self-collection', pct:2.8, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Agent with identity check', q:[{btn:'Collect at a pickup'},{btn:'Talk to an agent'},{input:'I want to collect it myself'}]},
+  {t:'Delivery ETA beyond SLA', pct:2.7, f:'A', id:'NVMY1002', opt:"Where's my parcel?", end:'Apologise, case logged', q:[{btn:'Flag it'}]},
+  {t:'Tracking ID not found', pct:2.6, f:'Shared', id:'NVMX12345', opt:"Where's my parcel?", end:'Retry, then agent', q:[{btn:'Try again'},{input:'NVMY99999'}]},
+  {t:'On hold: missing', pct:2.0, f:'E', id:'NVMY1002', opt:'Problem with my parcel', end:'No scan for days, case', q:[{btn:'Parcel not moving'},{btn:'Flag it'}]},
+  {t:'POD request', pct:1.7, f:'C', id:'NVMY3001', opt:'Says delivered', end:'Bot never shows POD, agent verifies first', q:[{btn:"Still can't"},{btn:'Still missing'},{input:'I need the proof of delivery photo'}]},
+  {t:'Map pin (latlong) issue', pct:1.5, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Agent with identity check', q:[{btn:'Map pin'},{btn:'Talk to an agent'},{input:'The pin is on the wrong street'}]},
+  {t:'On hold: PE/SI', pct:1.3, f:'A', id:'NVMY1005', opt:"Where's my parcel?", end:'Reason shown, then agent', q:[{btn:'Fix it with an agent'},{input:'Here is the missing unit number'}]},
+  {t:'Pickup general inquiry', pct:0.7, f:'F', id:null, opt:'Something else', end:'Info, no agent', q:[{btn:'Pickup for my business'}]},
+  {t:'Wrong or incomplete content', pct:0.7, f:'E', id:'NVMY3001', opt:'Problem with my parcel', end:'Photos, then case', q:[{btn:'Items missing'},{btn:'📎 Attach'},{input:'Two of the three items are missing'}]},
+  {t:'Cancellation request', pct:0.6, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Told to contact the seller', q:[{btn:'Cancel delivery'}]},
+  {t:'RTS: cannot revert', pct:0.6, f:'A', id:'NVMY1005', opt:"Where's my parcel?", end:'Uses the On hold sample, then agent', q:[{btn:'Fix it with an agent'},{input:'Please stop the return to seller'}]},
+  {t:'Reschedule', pct:0.5, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'New date saved, no agent', q:[{btn:'Delivery date'},{btn:'Tue, 29 Sep'}]},
+  {t:'Sales', pct:0.5, f:'F', id:null, opt:'Something else', end:'Sales info, then agent', q:[{btn:'Send a parcel'},{btn:'Talk to sales'},{input:'I want to ship 50 parcels a month'}]}
+];
+
+function renderScen(){
+  const box=$('#scen');
+  SCEN.forEach(s=>{
+    const b=document.createElement('button'); b.type='button'; b.style.setProperty('--fc', flowVar(s.f));
+    b.innerHTML = `<span class="t"><span class="dot"></span>${esc(s.t)}<span class="rk" style="margin-left:auto">${s.pct}%</span></span><span class="s">${s.id?`Tracking ID <code>${s.id}</code> · `:''}${esc(s.opt)}</span><span class="s">Result: ${esc(s.end)}</span>`;
+    b.addEventListener('click', ()=>{
+      const q=[{btn:'English'},{btn:s.opt}];
+      if(s.id) q.push({input:s.id});
+      start(q.concat(s.q));
+      if(window.innerWidth<860) document.querySelector('.phone').scrollIntoView({behavior: reduce?'auto':'smooth', block:'start'});
+    });
+    box.appendChild(b);
+  });
+  $('#legend').innerHTML = ['A','B','C','D','E','F','H','Shared'].map(k=>`<span class="pill" style="--fc:${flowVar(k)}">${esc(FLOWS[k].name)}</span>`).join('');
+}
+
+function start(q){
+  runId++; queue = q || [];
+  for(const k in pathFlow) delete pathFlow[k];
+  reset(); go('W0');
+}
+
+$('#restart').addEventListener('click', ()=>start());
+$('#showIds').addEventListener('change', e=>document.body.classList.toggle('show-ids', e.target.checked));
+renderScen();
+start();
+})();
+</script>
+
+</body></html>
