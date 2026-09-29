@@ -1,0 +1,343 @@
+<title>Ninja Bot Flow Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: full-bleed infinite canvas, flow frames stacked in two columns, node cards linked by curves, detail panel on the right (bottom sheet on phones). */
+:root{
+  --bg:#eef0f5; --dot:#c5cbd8; --surface:#ffffff; --fg:#1b2233; --muted:#5a647a; --line:#d9deea;
+  --edge:#8892aa; --accent:#0a58f5; --frame:#e4e8f1; --frame-line:#c9d0e0; --danger:#c62f3e; --danger-bg:#fde8ea;
+  --k-menu:#2358c8; --k-menu-bg:#e3ebfc;
+  --k-input:#7a3fc4; --k-input-bg:#f0e6fb;
+  --k-info:#0b7a72; --k-info-bg:#dcf4f1;
+  --k-system:#9a5b00; --k-system-bg:#fdf0d5;
+  --k-confirm:#2b7a2f; --k-confirm-bg:#e1f4e2;
+  --k-other:#4b566d; --k-other-bg:#e6e9f0;
+  --shadow:0 1px 2px rgba(20,30,60,.10),0 4px 12px rgba(20,30,60,.06);
+  --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12151d; --dot:#2b3143; --surface:#1c212e; --fg:#e6e9f2; --muted:#98a2b8; --line:#2f3648;
+  --edge:#6c7690; --accent:#6e9bff; --frame:#181c27; --frame-line:#2c3345; --danger:#ff7a86; --danger-bg:#3a1c22;
+  --k-menu:#8fb0ff; --k-menu-bg:#1f2c52; --k-input:#c5a1f5; --k-input-bg:#33234d;
+  --k-info:#62d2c8; --k-info-bg:#15373a; --k-system:#f2c164; --k-system-bg:#40311a;
+  --k-confirm:#7fd685; --k-confirm-bg:#1b3a1e; --k-other:#b3bdd3; --k-other-bg:#2b3244;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12151d; --dot:#2b3143; --surface:#1c212e; --fg:#e6e9f2; --muted:#98a2b8; --line:#2f3648;
+  --edge:#6c7690; --accent:#6e9bff; --frame:#181c27; --frame-line:#2c3345; --danger:#ff7a86; --danger-bg:#3a1c22;
+  --k-menu:#8fb0ff; --k-menu-bg:#1f2c52; --k-input:#c5a1f5; --k-input-bg:#33234d;
+  --k-info:#62d2c8; --k-info-bg:#15373a; --k-system:#f2c164; --k-system-bg:#40311a;
+  --k-confirm:#7fd685; --k-confirm-bg:#1b3a1e; --k-other:#b3bdd3; --k-other-bg:#2b3244;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.25); color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px;overflow:hidden}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.app{height:100%;display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line);z-index:5}
+.bar h1{font-size:15px;font-weight:600;margin:0;white-space:nowrap}
+.bar h1 small{font-weight:400;color:var(--muted);margin-left:8px}
+.search{flex:0 1 220px;min-width:140px;height:32px;padding:0 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);font:inherit}
+.flows{display:flex;gap:6px;overflow-x:auto;min-width:0;flex:1 1 320px;padding-block:2px;scrollbar-width:thin}
+.flows button{flex:none;height:28px;padding:0 10px;border:1px solid var(--line);border-radius:14px;background:var(--surface);cursor:pointer;white-space:nowrap;font-size:12.5px}
+.flows button:hover{border-color:var(--accent);color:var(--accent)}
+
+.view{position:relative;flex:1;min-height:0;overflow:hidden;cursor:grab;touch-action:none;
+  background-image:radial-gradient(var(--dot) 1.2px,transparent 1.3px);background-size:24px 24px}
+.view.drag{cursor:grabbing}
+#stage{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+#stage.anim{transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+#edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none;z-index:1}
+
+.frame{position:absolute;z-index:0;background:var(--frame);border:1px solid var(--frame-line);border-radius:14px}
+.frame .ft{position:absolute;left:28px;top:16px;right:28px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.frame .ft b{font-size:17px;font-weight:600}
+.frame .ft span{color:var(--muted);font-size:12.5px}
+
+.node{position:absolute;z-index:2;width:244px;height:116px;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;gap:5px;overflow:hidden;text-align:left;transition:opacity .15s,border-color .15s}
+.node:hover{border-color:var(--accent)}
+.node.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent),var(--shadow)}
+.node.dim,.edge.dim,.elabel.dim{opacity:.22}
+.nh{display:flex;align-items:center;gap:6px}
+.pill{font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.k-menu{color:var(--k-menu);background:var(--k-menu-bg)} .k-input{color:var(--k-input);background:var(--k-input-bg)}
+.k-info{color:var(--k-info);background:var(--k-info-bg)} .k-system{color:var(--k-system);background:var(--k-system-bg)}
+.k-confirm{color:var(--k-confirm);background:var(--k-confirm-bg)} .k-other{color:var(--k-other);background:var(--k-other-bg)}
+.esc{color:var(--danger);background:var(--danger-bg)}
+.code{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.nt{font-weight:600;font-size:14px;line-height:1.25}
+.nm{font-size:12px;line-height:1.35;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nf{margin-top:auto;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--mono)}
+
+.edge{fill:none;stroke:var(--edge);stroke-width:1.6}
+.edge.x{stroke-dasharray:6 5}
+.edge.hl{stroke:var(--accent);stroke-width:2.6}
+.elabel{font-size:11px;fill:var(--muted);font-family:var(--sans);paint-order:stroke;stroke:var(--frame);stroke-width:5px;stroke-linejoin:round}
+.elabel.hl{fill:var(--accent);font-weight:600}
+
+.legend{position:absolute;left:16px;bottom:16px;z-index:4;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 120px);padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);font-size:12px;align-items:center}
+.legend .lg{display:flex;align-items:center;gap:5px;color:var(--muted)}
+.zoom{position:absolute;right:16px;bottom:16px;z-index:4;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
+.zoom button{width:36px;height:36px;border:0;background:none;cursor:pointer;font-size:17px}
+.zoom button+button{border-top:1px solid var(--line)}
+.zoom button:hover{background:var(--bg)}
+.zoom .pct{font-size:11px;width:36px;text-align:center;padding:4px 0;color:var(--muted);border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+
+.panel{position:absolute;top:0;right:0;bottom:0;width:380px;max-width:100%;z-index:6;background:var(--surface);border-left:1px solid var(--line);
+  box-shadow:-6px 0 20px rgba(20,30,60,.10);overflow-y:auto;padding:18px 20px 28px;transform:translateX(102%);transition:transform .25s;cursor:auto}
+.panel.open{transform:none}
+.panel .x{position:absolute;right:12px;top:12px;width:30px;height:30px;border:1px solid var(--line);border-radius:6px;background:none;cursor:pointer}
+.panel h2{font-size:19px;margin:10px 32px 2px 0;line-height:1.25;text-wrap:balance}
+.panel .sub{color:var(--muted);font-size:12.5px;margin-bottom:14px}
+.panel dl{margin:0;display:grid;gap:14px}
+.panel dt{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.panel dd{margin:0;white-space:pre-line;line-height:1.5;overflow-wrap:anywhere}
+.bubble{background:var(--bg);border:1px solid var(--line);border-radius:12px 12px 12px 3px;padding:10px 12px}
+.links{display:flex;flex-wrap:wrap;gap:6px}
+.links button{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:4px 10px;font-size:12px;cursor:pointer;text-align:left}
+.links button:hover{border-color:var(--accent);color:var(--accent)}
+.links .end{color:var(--muted);padding:4px 2px;font-size:12px}
+
+@media (max-width:640px){
+  .bar h1 small{display:none}
+  .panel{top:auto;width:100%;height:58%;border-left:0;border-top:1px solid var(--line);transform:translateY(102%);border-radius:14px 14px 0 0}
+  .panel.open{transform:none}
+  .legend{display:none}
+}
+@media (prefers-reduced-motion:reduce){#stage.anim,.panel{transition:none}}
+</style>
+
+<div class="app">
+  <div class="bar">
+    <h1>Ninja Bot v2 <small>Flow Mapping · 43 screens · 9 flows</small></h1>
+    <input id="q" class="search" type="search" placeholder="Search screens or messages" aria-label="Search screens">
+    <div class="flows" id="flows" role="toolbar" aria-label="Jump to flow"></div>
+  </div>
+  <div class="view" id="view">
+    <div id="stage"><svg id="edges" width="1" height="1"><defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--edge)"/></marker>
+      <marker id="ahh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker>
+    </defs><g id="eg"></g></svg></div>
+    <div class="legend" id="legend"></div>
+    <div class="zoom"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button><button id="zfit" aria-label="Fit overview" title="Overview">⤢</button><div class="pct" id="pct">100%</div></div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+</div>
+
+<script>
+const KIND={menu:'Menu',input:'Input',info:'Info',system:'Lookup',confirm:'Confirm',other:'Global'};
+const CW=340, RH=132, NW=244, NH=116, PADX=36, HEAD=68, PADB=30;
+// frames: id, title, subtitle, side (0 left / 1 right), columns, rows
+const FR=[
+ ['Start','Start','Language, then the 6-button main menu',0,2,1],
+ ['TID','Tracking ID','Asked once, remembered for the whole flow',0,2,2],
+ ['A',`Where's my parcel`,'Main menu option 1',0,2,5],
+ ['E','Problem with parcel','Main menu option 5',0,2,4],
+ ['F','Something else','Main menu option 6',0,2,4],
+ ['B',`Courier didn't come`,'Main menu option 2',1,3,2],
+ ['C','Delivered, not received','Main menu option 3',1,3,1],
+ ['D','Change my delivery','Main menu option 4',1,3,8],
+ ['H','Agent handoff and global screens','Reachable from any screen',1,3,2]
+];
+// node: id, frame, col, row, kind, type, name, message, buttons, goes to, replaces, CRM tag, outcome, links[[label,target]]
+const ND=[
+['W0','Start',0,0,'menu','Menu','Choose language',`Hi! 👋 I'm Ninja Bot. Please choose your language. / Sila pilih bahasa anda.`,'English | Bahasa Melayu','Main menu','01 Welcome (Settings)','-','-',[]],
+['W1','Start',1,0,'menu','Menu','Main menu','How can we help you today?',`1. Where's my parcel?\n2. Courier didn't come\n3. Says delivered, but I didn't get it\n4. Change my delivery\n5. Problem with my parcel\n6. Something else`,'1–5 → Enter tracking ID (remembers chosen option)\n6 → Other help menu','01 Welcome','-','-',[]],
+['T0','TID',0,0,'input','Input','Enter tracking ID','Please type your tracking ID. You can find it on your order page in the shopping app, or in the SMS from Ninja Van.',`Free text: tracking ID\nButton: Can't find my tracking ID`,'Found → flow chosen at Main menu (see Piping tab, Rule 4)\nNot found → Tracking ID not found\nCan\'t find → Help finding tracking ID','02 Track my order','-','-',[]],
+['T2','TID',1,0,'info','Info','Tracking ID not found',`We couldn't find that tracking ID. Please check for typos and try again.`,`Try again | Can't find my tracking ID | Talk to an agent`,'Enter tracking ID | Help finding tracking ID | Talk to an agent\n2nd failed try → Talk to an agent','New','Tracking ID not found','Self-serve / Escalate',[['Try again','T0'],['Talk to an agent','H1']]],
+['T1','TID',1,1,'info','Info','Help finding tracking ID','Your tracking ID is sent by the seller once your order ships. Check: 1) order details in the shopping app, 2) SMS / email from Ninja Van. If the seller shipped less than 24 hours ago, it may not show yet.','Try again | Talk to an agent','Enter tracking ID | Talk to an agent','New','Tracking ID not found (if escalated)','Self-serve',[['Try again','T0'],['Talk to an agent','H1']]],
+
+['A1','A',0,2,'system','System lookup + Info','Parcel status',"Here's your parcel status: [Status]. Last update: [Last scan time] at [Hub]. Estimated delivery: [ETA].",'Buttons depend on status (see Piping tab, Rules 7–13)','On track / Delayed / Out for delivery / Waiting for seller / On hold / returning / Show last attempt / Delivery confirmed','05 Tracking – Parcel not here','-','-',[['Delivery confirmed','C1'],['Show last attempt','B1']]],
+['A2','A',1,0,'info','Info','On track',`Good news – your parcel is on track and should arrive by [ETA]. You'll get an SMS when it's out for delivery.`,'Did this help? Yes | No','Yes → END (Did this help?)\nNo → Talk to an agent, then a new selection appears:\n- Change details\n- Update special instruction\n- Main Menu','05 Tracking','Delivery ETA > Within SLA (if No)','Self-serve',[['Yes → END'],['No → Talk to an agent','H1'],['Change details','D2'],['Update special instruction','D3'],['Main menu','W1']]],
+['A3','A',1,1,'info','Info + Escalate','Delayed',`Sorry, your parcel is taking longer than expected. Last update: [Last scan]. We'll flag this to our team to check it for you.`,'Flag it to the team | Talk to an agent','Case created | Talk to an agent','New','Delivery ETA > Beyond SLA','Escalate (case)',[['Case created','H2'],['Talk to an agent','H1']]],
+['A4','A',1,2,'info','Info','Out for delivery','Your parcel is out for delivery today. Please keep your phone nearby in case the courier calls.','Leave a note for the courier | Change my delivery | Main menu','Note for courier | Change options | Main menu','New','-','Self-serve',[['Note for courier','D3'],['Change options','D1'],['Main menu','W1']]],
+['A5','A',1,3,'info','Info','Waiting for seller',`The seller has created your order but hasn't handed the parcel to us yet. Please check with the seller for the shipping date.`,'Main menu | Talk to an agent','Main menu | Talk to an agent','New','Delivery > General inquiry','Self-serve',[['Main menu','W1'],['Talk to an agent','H1']]],
+['A6','A',1,4,'info','Info','On hold / returning','Your parcel is currently [On hold / Returning to seller]. Reason: [General reason, e.g. we need more address details].','Talk to an agent | Main menu','Talk to an agent | Main menu','New','Parcel issues > On hold > PE/SI  or  Delivery > RTS tagged > Cannot revert','Escalate',[['Talk to an agent','H1'],['Main menu','W1']]],
+
+['B1','B',0,0,'system','System lookup + Question','Show last attempt','Our record shows a delivery attempt on [Attempt date & time]. Reason: [General reason, e.g. recipient not available]. Were you at the address at that time?',`Yes, I was there | No, I wasn't`,'Fix options | Rearrange delivery\nNo attempt on record → Parcel status','08 Recipient unavailable','-','Shows date, time and general reason only (Legal to confirm it matches the tracking page)',[['No attempt on record','A1']]],
+['B2','B',1,0,'menu','Menu','Fix options',`We're sorry about that. How would you like us to fix it?`,'Deliver again next working day | Choose another date | Collect at a pickup point | Report this delivery','Redelivery booked | Pick delivery date | Pickup point | Report the attempt','New','Courier > Delivery > Fake fail','-',[['Choose another date','D4'],['Collect at a pickup point','D5']]],
+['B4','B',1,1,'menu','Menu','Rearrange delivery','No problem. What would you like to do?','Choose a delivery date | Collect at a pickup point | Leave a note for the courier','Pick delivery date | Pickup point | Note for courier','08 Delivery Options 2/2','Delivery > Reschedule','Self-serve',[['Pick delivery date','D4'],['Pickup point','D5'],['Note for courier','D3']]],
+['B3','B',2,0,'input','Input + Escalate','Report the attempt','Please tell us what happened (e.g. I was home all day, no call received) and confirm your contact number.','Remarks (optional) | Phone number','Case created','New','Courier > Delivery > Fake fail','Escalate (case)',[['Case created','H2']]],
+['B5','B',2,1,'confirm','Confirm','Redelivery booked',`Done! We'll deliver again on [Next date]. We've also logged [Case ID] so our team can review the last attempt.`,'Main menu','Did this help?','New','Courier > Delivery > Fake fail','Self-serve + case',[['Did this help?','G1'],['Main menu','W1']]],
+
+['C1','C',0,0,'system','System lookup + Info','Delivery confirmed',`Our record shows your parcel was delivered on [Delivery date & time]. For your privacy, we don't show delivery photos, signatures or names in chat.`,`I found it | Still can't find it`,'Did this help? | Quick checklist','09 Delivered but not received','-','Self-serve (no POD, receiver name or address shown)',[['I found it → Did this help?','G1']]],
+['C2','C',1,0,'info','Info','Quick checklist','Please check with: neighbours, guard house / reception, family members, your mailbox or parcel locker.','Found it | Still missing','Did this help? | Report not received','New','-','Self-serve',[['Found it → Did this help?','G1']]],
+['C3','C',2,0,'input','Input + Escalate','Report not received','Sorry about this. We\'ll open a case. Please tell us where and when you last checked. Our agent will verify your identity before sharing any delivery details.','Remarks (where / when checked)','Case created','New','Courier > Delivery > Fake success','Escalate (case; agent verifies identity before sharing POD)',[['Case created','H2']]],
+
+['D1','D',0,3,'menu','System check + Menu','Change options',`What would you like to change? (Only options allowed for your parcel's current status are shown.)`,'Address or phone | Map pin location | Note for courier | Delivery date | Collect at pickup point | Deliver to my door instead | Keep at pickup point longer | Cancel delivery','Change address / phone | Map pin | Note for courier | Pick delivery date | Pickup point | Deliver to my door | Keep longer at pickup point | Cancel delivery','07, 08, 10, 11','-','-',[]],
+['D2','D',1,0,'info','Info + Escalate','Change address / phone','For your security, changes to the delivery address or phone number are made by our agent after a quick identity check.','Talk to an agent','Talk to an agent (flag: identity check needed)','07 Change of Details','Delivery > Change delivery details','Escalate (agent verifies identity)',[['Talk to an agent','H1']]],
+['D9','D',1,1,'info','Info + Escalate','Map pin','For your security, location changes are made by our agent after a quick identity check.','Talk to an agent','Talk to an agent (flag: identity check needed)','New','Delivery > Latlong issue','Escalate (agent verifies identity)',[['Talk to an agent','H1']]],
+['D3','D',1,2,'input','Input','Note for courier','Type a note for the courier (e.g. leave at guard house, call before arriving).','Free text (max 200 characters)','Change saved','07 Special Instructions','Delivery > Special instructions','Self-serve',[]],
+['D4','D',1,3,'menu','Menu','Pick delivery date','Pick a new delivery date:','[Available date 1] | [Date 2] | [Date 3]','Change saved','05 Reschedule delivery, 08 Specific delivery timeslot','Delivery > Reschedule','Self-serve',[]],
+['D5','D',1,4,'info','Info + Escalate','Pickup point','For your security, switching your parcel to a pickup point is done by our agent after a quick identity check.','Talk to an agent','Talk to an agent (flag: identity check needed)','10 Collection point','PUDO > Change from doorstep delivery to self-collection','Escalate (agent verifies identity; risk level TO CONFIRM with Legal)',[['Talk to an agent','H1']]],
+['D6','D',1,5,'confirm','Confirm','Deliver to my doorstep','We\'ll deliver to the address on your order. Confirm?','Confirm | Change address','Change saved | Change address / phone','10 Doorstep redirection, 11 Doorstep delivery (merged)','PUDO > Change to doorstep (TO CONFIRM L3 name)','Self-serve',[['Change address / phone','D2']]],
+['D7','D',1,6,'confirm','Confirm','Keep longer at pickup point','Your parcel is at your pickup point until [Holding expiry]. Extend by [X] days?','Confirm | Back','Change saved | Change options','10 Holding period, 11 Extend holding period','PUDO > Extend holding (TO CONFIRM L3 name)','Self-serve',[['Back','D1']]],
+['D8','D',1,7,'info','Info','Cancel delivery','Cancellations need to be requested through the seller. Please contact the seller to cancel your order. (TO CONFIRM policy wording)','Talk to an agent | Main menu','Talk to an agent | Main menu','07 Delivery Cancellation, 11 Cancel pickup','Delivery > Cancellation request','Self-serve / Escalate',[['Talk to an agent','H1'],['Main menu','W1']]],
+['D10','D',2,3,'confirm','Confirm','Change saved','Done! Your change is saved: [Change summary]. Reference: [Request ID].','Did this help? Yes | No','Did this help? | Talk to an agent','New','Same as the option chosen','Self-serve',[['Did this help?','G1'],['Talk to an agent','H1']]],
+
+['E1','E',0,1,'menu','Menu','Parcel problem menu',`Sorry to hear that. What's wrong with your parcel?`,'Damaged | Wrong / swapped item | Items missing inside | Parcel not moving','Damaged | Wrong item | Missing items | Parcel not moving','09 Missing or damaged parcel','-','-',[]],
+['E2','E',1,0,'input','Input + Escalate','Damaged','Please upload photos of: 1) the outer box, 2) the damaged item, 3) the airway bill label.','Photo upload x3 | Short description','Case created','09 Missing or damaged parcel','Parcel issues > Completed > Damaged (TO CONFIRM L3 name)','Escalate (case)',[['Case created','H2']]],
+['E3','E',1,1,'input','Input + Escalate','Wrong item','Please upload a photo of the item you received and the airway bill label on the parcel, and tell us what you ordered.','Photo upload x2 | Expected item','Case created','New','Parcel issues > Completed > Swapped','Escalate (case)',[['Case created','H2']]],
+['E4','E',1,2,'input','Input + Escalate','Missing items','Which items are missing? Please upload a photo of the parcel and its contents.','Missing items | Photo upload','Case created','New','Parcel issues > Completed > Wrong / incomplete content','Escalate (case)',[['Case created','H2']]],
+['E5','E',1,3,'system','System lookup','Parcel not moving',`Your parcel's last update was [Last scan] on [Last scan date].`,'Flag it to the team | Main menu','No update > [X] days → Case created\nOtherwise → On track','09 Missing or damaged parcel','Parcel issues > On hold > Missing','Escalate (case)',[['Case created','H2'],['Otherwise → On track','A2'],['Main menu','W1']]],
+
+['F1','F',0,1,'menu','Menu','Other help menu','What do you need help with?','Operating hours | What does my status mean? | Send a parcel with Ninja Van | Pickup for my business | Talk to an agent','Operating hours | Status meanings | Send a parcel | Business pickup | Talk to an agent','03 Help & support, 04 FAQ categories, 06 Tracking 2/2','-','-',[['Talk to an agent','H1']]],
+['F2','F',1,0,'info','Info','Operating hours','Our customer support hours are [Operating hours].','Main menu','Main menu','06 Operating Hours','-','Self-serve',[['Main menu','W1']]],
+['F3','F',1,1,'info','Info','Status meanings','Here\'s what each status means: [Status glossary – plain words].','Main menu | Track my parcel','Main menu | Enter tracking ID','05 Status meaning','-','Self-serve',[['Main menu','W1'],['Track my parcel','T0']]],
+['F4','F',1,2,'info','Info','Send a parcel','Want to send with Ninja Van? [Sales info / link].','Talk to sales | Main menu','Talk to an agent | Main menu','New','Sales','Self-serve',[['Talk to an agent','H1'],['Main menu','W1']]],
+['F5','F',1,3,'info','Info','Business pickup','For pickup of your business parcels: [Pickup info / link].','Talk to an agent | Main menu','Talk to an agent | Main menu','New','Pickup > General inquiry','Self-serve',[['Talk to an agent','H1'],['Main menu','W1']]],
+
+['H1','H',0,0,'other','Input','Talk to an agent','Before we connect you, please share a few details so our agent can help faster.','Tracking ID (skipped if already given) | Topic | Short description | Name | Phone','Agent queue (with all captured data + identity-check flag)','02 / 03 Live agent',`Auto-tag = last flow node's tag`,'Escalate (agent verifies identity before sharing POD or changing address / phone / pickup point)',[]],
+['H2','H',0,1,'other','Auto case','Case created',`Thanks – we've logged case [Case ID]. Our team will contact you within [Case SLA]. You can also chat with an agent now.`,'Chat with an agent now | Main menu','Talk to an agent (priority) | Main menu','New','From the flow that created it','Escalate (case)',[['Talk to an agent','H1'],['Main menu','W1']]],
+['G1','H',1,0,'other','Feedback','Did this help?','Did this solve your issue?','Yes | No','Yes → END (log CSAT)\nNo → Talk to an agent','New','-','-',[['Yes → END'],['No → Talk to an agent','H1']]],
+['G2','H',1,1,'other','Timeout','Inactivity nudge','Are you still there? Tell us briefly what happened so we can help. (sent after [2] min of no reply)','-','No reply after [5] min → close chat','New','Silent call / chat > General inquiry','Close',[]]
+];
+// edges: from, to, label
+const ED=[
+['W0','W1','Language'],['W1','T0','1–5'],['W1','F1','6'],
+['T0','T2','Not found'],['T0','T1',`Can't find`],['T2','T1',`Can't find`],
+['T0','A1','Option 1'],['T0','B1','Option 2'],['T0','C1','Option 3'],['T0','D1','Option 4'],['T0','E1','Option 5'],
+['A1','A2','On track'],['A1','A3','Delayed'],['A1','A4','Out for delivery'],['A1','A5','Waiting for seller'],['A1','A6','On hold / returning'],
+['B1','B2',`Yes, I was there`],['B1','B4',`No, I wasn't`],['B2','B5','Deliver again'],['B2','B3','Report this delivery'],
+['C1','C2',`Still can't find it`],['C2','C3','Still missing'],
+['D1','D2','Address or phone'],['D1','D9','Map pin'],['D1','D3','Note for courier'],['D1','D4','Delivery date'],['D1','D5','Pickup point'],['D1','D6','Deliver to my door'],['D1','D7','Keep longer'],['D1','D8','Cancel'],
+['D3','D10',''],['D4','D10',''],['D6','D10','Confirm'],['D7','D10','Confirm'],
+['E1','E2','Damaged'],['E1','E3','Wrong item'],['E1','E4','Missing items'],['E1','E5','Not moving'],
+['F1','F2','Operating hours'],['F1','F3','Status meanings'],['F1','F4','Send a parcel'],['F1','F5','Business pickup']
+];
+
+const $=s=>document.querySelector(s);
+const view=$('#view'), stage=$('#stage'), eg=$('#eg'), panel=$('#panel');
+const NS='http://www.w3.org/2000/svg';
+const nodes={}, frames={}, colY=[0,0], colX=[0,0]; let world={w:0,h:0};
+
+// frame geometry
+const sideW=[0,0];
+FR.forEach(f=>{const w=f[4]*CW-96+PADX*2; sideW[f[3]]=Math.max(sideW[f[3]],w)});
+colX[0]=0; colX[1]=sideW[0]+130;
+FR.forEach(f=>{
+  const [id,title,sub,side,nc,nr]=f;
+  const h=HEAD+nr*RH-(RH-NH)+PADB;
+  frames[id]={id,title,sub,x:colX[side],y:colY[side],w:sideW[side],h};
+  colY[side]+=h+56;
+});
+world.w=colX[1]+sideW[1]; world.h=Math.max(colY[0],colY[1]);
+
+FR.forEach(f=>{
+  const g=frames[f[0]], d=document.createElement('div');
+  d.className='frame'; d.style.cssText=`left:${g.x}px;top:${g.y}px;width:${g.w}px;height:${g.h}px`;
+  d.innerHTML=`<div class="ft"><b>${esc(g.title)}</b><span>${esc(g.sub)}</span></div>`;
+  stage.appendChild(d);
+});
+
+ND.forEach(a=>{
+  const [id,fr,c,r,k,type,name,msg,btn,goes,rep,tag,out,links]=a;
+  const F=frames[fr];
+  const n={id,fr,k,type,name,msg,btn,goes,rep,tag,out,links,x:F.x+PADX+c*CW,y:F.y+HEAD+r*RH,esc:/escalate/i.test(type+' '+out)};
+  nodes[id]=n;
+  const el=document.createElement('button');
+  el.className='node'; el.style.cssText=`left:${n.x}px;top:${n.y}px`; el.dataset.id=id;
+  el.innerHTML=`<div class="nh"><span class="pill k-${k}">${KIND[k]}</span>${n.esc?'<span class="pill esc">Agent</span>':''}<span class="code">${id}</span></div>
+    <div class="nt">${esc(name)}</div><div class="nm">${esc(msg)}</div><div class="nf">${esc(tag==='-'?'no CRM tag':tag)}</div>`;
+  n.el=el; stage.appendChild(el);
+});
+
+// edges
+const edgeEls=[];
+document.querySelector('#edges').setAttribute('width',world.w); document.querySelector('#edges').setAttribute('height',world.h);
+ED.forEach(([a,b,label])=>{
+  const s=nodes[a], t=nodes[b]; let x1,y1,x2,y2,d,mx,my;
+  if(t.x>s.x+NW-10){
+    x1=s.x+NW;y1=s.y+NH/2;x2=t.x;y2=t.y+NH/2;const dx=Math.max(40,Math.abs(x2-x1)*.45);
+    d=`M${x1} ${y1}C${x1+dx} ${y1} ${x2-dx} ${y2} ${x2} ${y2}`;mx=(x1+x2)/2;my=(y1+y2)/2;
+  } else {
+    const down=t.y>s.y; x1=s.x+NW/2;x2=t.x+NW/2;y1=down?s.y+NH:s.y;y2=down?t.y:t.y+NH;const dy=(down?1:-1)*Math.max(40,Math.abs(y2-y1)*.4);
+    d=`M${x1} ${y1}C${x1} ${y1+dy} ${x2} ${y2-dy} ${x2} ${y2}`;mx=(x1+x2)/2;my=(y1+y2)/2;
+  }
+  const cross=s.fr!==t.fr;
+  const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); p.setAttribute('class','edge'+(cross?' x':'')); p.setAttribute('marker-end','url(#ah)');
+  eg.appendChild(p);
+  let tx=null;
+  if(label){tx=document.createElementNS(NS,'text');tx.setAttribute('x',mx);tx.setAttribute('y',my+4);tx.setAttribute('text-anchor','middle');tx.setAttribute('class','elabel');tx.textContent=label;eg.appendChild(tx)}
+  edgeEls.push({a,b,p,tx});
+});
+
+// header chips, legend
+const fl=$('#flows'); FR.forEach(f=>{const b=document.createElement('button');b.textContent=f[1];b.onclick=()=>fitRect(frames[f[0]],true);fl.appendChild(b)});
+$('#legend').innerHTML=Object.keys(KIND).map(k=>`<span class="lg"><span class="pill k-${k}">${KIND[k]}</span></span>`).join('')+`<span class="lg"><span class="pill esc">Agent</span>hands off</span><span class="lg">— screen link</span><span class="lg">- - jump to another flow</span>`;
+
+// pan / zoom
+let S=1,TX=0,TY=0;
+function apply(anim){stage.classList.toggle('anim',!!anim);stage.style.transform=`translate(${TX}px,${TY}px) scale(${S})`;view.style.backgroundSize=`${24*S}px ${24*S}px`;view.style.backgroundPosition=`${TX}px ${TY}px`;$('#pct').textContent=Math.round(S*100)+'%'}
+function fitRect(r,anim){const vw=view.clientWidth,vh=view.clientHeight,m=40;S=Math.min(vw/(r.w+m*2),vh/(r.h+m*2),1.2);TX=(vw-r.w*S)/2-r.x*S;TY=(vh-r.h*S)/2-r.y*S;apply(anim)}
+function fitTop(){const vw=view.clientWidth;S=Math.min(1,Math.max(.32,(vw-32)/world.w));TX=16;TY=16;apply()}
+function zoomAt(f,cx,cy,anim){const ns=Math.min(2.5,Math.max(.12,S*f));const k=ns/S;TX=cx-(cx-TX)*k;TY=cy-(cy-TY)*k;S=ns;apply(anim)}
+view.addEventListener('wheel',e=>{e.preventDefault();const r=view.getBoundingClientRect();
+  if(e.ctrlKey||e.metaKey||Math.abs(e.deltaY)>0&&!e.shiftKey&&Math.abs(e.deltaX)<1){zoomAt(Math.exp(-e.deltaY*(e.ctrlKey?.01:.0015)),e.clientX-r.left,e.clientY-r.top)}
+  else{TX-=e.deltaX;TY-=e.deltaY;apply()}},{passive:false});
+const ptrs=new Map(); let moved=0,pinch=0;
+view.addEventListener('pointerdown',e=>{if(e.target.closest('.panel,.zoom,.legend'))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});moved=0;view.setPointerCapture(e.pointerId);view.classList.add('drag');
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch=Math.hypot(a.x-b.x,a.y-b.y)}});
+view.addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;moved+=Math.abs(dx)+Math.abs(dy);
+  if(ptrs.size===1){TX+=dx;TY+=dy;apply()}
+  p.x=e.clientX;p.y=e.clientY;
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);const r=view.getBoundingClientRect();if(pinch)zoomAt(d/pinch,(a.x+b.x)/2-r.left,(a.y+b.y)/2-r.top);pinch=d}});
+function up(e){ptrs.delete(e.pointerId);pinch=0;if(!ptrs.size)view.classList.remove('drag')}
+view.addEventListener('pointerup',e=>{const wasClick=moved<6&&ptrs.size===1;const t=document.elementFromPoint(e.clientX,e.clientY);up(e);
+  if(!wasClick||e.target.closest('.panel,.zoom,.legend'))return;const nd=t&&t.closest('.node');if(nd)select(nd.dataset.id);else select(null)});
+view.addEventListener('pointercancel',up);
+$('#zin').onclick=()=>zoomAt(1.25,view.clientWidth/2,view.clientHeight/2,true);
+$('#zout').onclick=()=>zoomAt(.8,view.clientWidth/2,view.clientHeight/2,true);
+$('#zfit').onclick=()=>fitRect({x:0,y:0,w:world.w,h:world.h},true);
+
+// selection
+let sel=null;
+function select(id,focus){
+  sel=id;
+  Object.values(nodes).forEach(n=>n.el.classList.remove('sel','dim'));
+  edgeEls.forEach(e=>{e.p.classList.remove('hl','dim');e.p.setAttribute('marker-end','url(#ah)');if(e.tx)e.tx.classList.remove('hl','dim')});
+  if(!id){panel.classList.remove('open');return}
+  const rel=new Set([id]);
+  edgeEls.forEach(e=>{const on=e.a===id||e.b===id;if(on){rel.add(e.a);rel.add(e.b)}
+    e.p.classList.toggle('hl',on);e.p.classList.toggle('dim',!on);if(on)e.p.setAttribute('marker-end','url(#ahh)');if(e.tx){e.tx.classList.toggle('hl',on);e.tx.classList.toggle('dim',!on)}});
+  nodes[id].links.forEach(l=>l[1]&&rel.add(l[1]));
+  Object.values(nodes).forEach(n=>{n.el.classList.toggle('dim',!rel.has(n.id));});
+  nodes[id].el.classList.add('sel');
+  render(nodes[id]);panel.classList.add('open');
+  if(focus)centerOn(nodes[id]);
+}
+function centerOn(n){const vw=view.clientWidth-(innerWidth>640?380:0),vh=view.clientHeight*(innerWidth>640?1:.42);
+  S=Math.max(S,.7);TX=vw/2-(n.x+NW/2)*S;TY=vh/2-(n.y+NH/2)*S;apply(true)}
+function render(n){
+  const F=frames[n.fr];
+  const row=(t,v,cls)=>v&&v!=='-'?`<div><dt>${t}</dt><dd${cls?` class="${cls}"`:''}>${esc(v)}</dd></div>`:'';
+  const links=n.links.length?`<div><dt>Also leads to</dt><dd class="links">${n.links.map(l=>l[1]?`<button data-go="${l[1]}">${esc(l[0])} <span class="code">${l[1]}</span></button>`:`<span class="end">${esc(l[0])}</span>`).join('')}</dd></div>`:'';
+  const inc=ED.filter(e=>e[1]===n.id).map(e=>e[0]);
+  const from=inc.length?`<div><dt>Reached from</dt><dd class="links">${inc.map(i=>`<button data-go="${i}">${esc(nodes[i].name)} <span class="code">${i}</span></button>`).join('')}</dd></div>`:'';
+  panel.innerHTML=`<button class="x" aria-label="Close" id="px">✕</button>
+   <div class="nh"><span class="pill k-${n.k}">${KIND[n.k]}</span>${n.esc?'<span class="pill esc">Agent</span>':''}<span class="code">${n.id}</span></div>
+   <h2>${esc(n.name)}</h2><div class="sub">${esc(F.title)} · ${esc(n.type)}</div>
+   <dl>${row('Bot message (EN)',n.msg,'bubble')}${row('Buttons / customer input',n.btn)}${row('Goes to',n.goes)}${links}${from}
+   ${row('CRM issue type (auto-tag)',n.tag)}${row('Outcome',n.out)}${row('Replaces old screen',n.rep)}</dl>`;
+  panel.querySelector('#px').onclick=()=>select(null);
+  panel.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>select(b.dataset.go,true));
+  panel.scrollTop=0;
+}
+addEventListener('keydown',e=>{if(e.key==='Escape')select(null)});
+
+// search
+$('#q').addEventListener('input',e=>{const v=e.target.value.trim().toLowerCase();
+  if(sel)select(null);
+  Object.values(nodes).forEach(n=>n.el.classList.toggle('dim',!!v&&!(n.name+' '+n.msg+' '+n.id+' '+n.tag).toLowerCase().includes(v)))});
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){const m=Object.values(nodes).find(n=>!n.el.classList.contains('dim'));if(m&&e.target.value.trim()){centerOn(m)}}});
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+fitTop();
+addEventListener('resize',()=>apply());
+</script>
