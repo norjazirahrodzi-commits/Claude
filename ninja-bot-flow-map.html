@@ -13,6 +13,7 @@
   --k-system:#9a5b00; --k-system-bg:#fdf0d5;
   --k-confirm:#2b7a2f; --k-confirm-bg:#e1f4e2;
   --k-other:#4b566d; --k-other-bg:#e6e9f0;
+  --fS:#6e6567; --fA:#2f6fdb; --fB:#c8102e; --fC:#c2410c; --fD:#15803d; --fE:#7c3aed; --fF:#a16207; --fH:#0e7490;
   --shadow:0 1px 2px rgba(20,30,60,.10),0 4px 12px rgba(20,30,60,.06);
   --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
@@ -23,6 +24,7 @@
   --k-menu:#8fb0ff; --k-menu-bg:#1f2c52; --k-input:#c5a1f5; --k-input-bg:#33234d;
   --k-info:#62d2c8; --k-info-bg:#15373a; --k-system:#f2c164; --k-system-bg:#40311a;
   --k-confirm:#7fd685; --k-confirm-bg:#1b3a1e; --k-other:#b3bdd3; --k-other-bg:#2b3244;
+  --fS:#a99fa1; --fA:#7aa7f5; --fB:#f2455c; --fC:#fb923c; --fD:#4ade80; --fE:#b794f6; --fF:#e0b84a; --fH:#4fc3d9;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.25); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#12151d; --dot:#2b3143; --surface:#1c212e; --fg:#e6e9f2; --muted:#98a2b8; --line:#2f3648;
@@ -30,6 +32,7 @@
   --k-menu:#8fb0ff; --k-menu-bg:#1f2c52; --k-input:#c5a1f5; --k-input-bg:#33234d;
   --k-info:#62d2c8; --k-info-bg:#15373a; --k-system:#f2c164; --k-system-bg:#40311a;
   --k-confirm:#7fd685; --k-confirm-bg:#1b3a1e; --k-other:#b3bdd3; --k-other-bg:#2b3244;
+  --fS:#a99fa1; --fA:#7aa7f5; --fB:#f2455c; --fC:#fb923c; --fD:#4ade80; --fE:#b794f6; --fF:#e0b84a; --fH:#4fc3d9;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.25); color-scheme:dark}
 
 html,body{height:100%}
@@ -42,6 +45,7 @@ button{font:inherit;color:inherit}
 .bar{display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line);z-index:5}
 .bar h1{font-size:15px;font-weight:600;margin:0;white-space:nowrap}
 .bar h1 small{font-weight:400;color:var(--muted);margin-left:8px}
+.sim{font-size:12.5px;color:var(--accent);text-decoration:none;white-space:nowrap}.sim:hover{text-decoration:underline}
 .search{flex:0 1 220px;min-width:140px;height:32px;padding:0 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);font:inherit}
 .flows{display:flex;gap:6px;overflow-x:auto;min-width:0;flex:1 1 320px;padding-block:2px;scrollbar-width:thin}
 .flows button{flex:none;height:28px;padding:0 10px;border:1px solid var(--line);border-radius:14px;background:var(--surface);cursor:pointer;white-space:nowrap;font-size:12.5px}
@@ -54,9 +58,9 @@ button{font:inherit;color:inherit}
 #stage.anim{transition:transform .45s cubic-bezier(.2,.7,.2,1)}
 #edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none;z-index:1}
 
-.frame{position:absolute;z-index:0;background:var(--frame);border:1px solid var(--frame-line);border-radius:14px}
+.frame{position:absolute;z-index:0;background:color-mix(in srgb,var(--fc,var(--fS)) 8%,var(--frame));border:1px solid var(--frame-line);border-radius:14px}
 .frame .ft{position:absolute;left:28px;top:16px;right:28px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-.frame .ft b{font-size:19px;font-weight:600}
+.frame .ft b{font-size:19px;font-weight:600;color:var(--fc,var(--fg))}
 .frame .ft span{color:var(--muted);font-size:13px}
 
 .node{position:absolute;z-index:2;width:244px;height:116px;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;
@@ -71,6 +75,7 @@ button{font:inherit;color:inherit}
 .k-confirm{color:var(--k-confirm);background:var(--k-confirm-bg)} .k-other{color:var(--k-other);background:var(--k-other-bg)}
 .esc{color:var(--danger);background:var(--danger-bg)}
 .code{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.node .code{color:var(--fc,var(--muted));font-weight:500}
 .nt{font-weight:600;font-size:14px;line-height:1.25}
 .nm{font-size:12px;line-height:1.35;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .nf{margin-top:auto;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--mono)}
@@ -81,7 +86,7 @@ button{font:inherit;color:inherit}
 .elabel{font-size:12px;fill:var(--muted);font-family:var(--sans);paint-order:stroke;stroke:var(--frame);stroke-width:5px;stroke-linejoin:round}
 .elabel.hl{fill:var(--accent);font-weight:600}
 
-.legend{position:absolute;left:16px;bottom:16px;z-index:4;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 120px);padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);font-size:12px;align-items:center}
+.legend{position:absolute;left:16px;bottom:16px;z-index:4;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 340px);padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);font-size:12px;align-items:center}
 .legend .lg{display:flex;align-items:center;gap:5px;color:var(--muted)}
 .zoom{position:absolute;right:16px;bottom:16px;z-index:4;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
 .zoom button{width:36px;height:36px;border:0;background:none;cursor:pointer;font-size:17px}
@@ -104,18 +109,27 @@ button{font:inherit;color:inherit}
 .links button:hover{border-color:var(--accent);color:var(--accent)}
 .links .end{color:var(--muted);padding:4px 2px;font-size:12px}
 
+
+.edge.sh{stroke-width:1.2;opacity:.6}
+.edge.sh.agent{stroke:var(--danger)} .edge.sh.help{stroke:var(--k-confirm)}
+.edge.sh.hl{opacity:1;stroke-width:2.4}
+.edge.sh.dim{opacity:.08}
+.mini{position:absolute;right:68px;bottom:16px;z-index:4;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer;touch-action:none}
+.mini canvas{display:block}
+.mini .vp{position:absolute;border:2px solid var(--accent);border-radius:3px;background:color-mix(in srgb,var(--accent) 14%,transparent);pointer-events:none}
 @media (max-width:640px){
   .bar h1 small{display:none}
   .panel{top:auto;width:100%;height:58%;border-left:0;border-top:1px solid var(--line);transform:translateY(102%);border-radius:14px 14px 0 0}
   .panel.open{transform:none}
-  .legend{display:none}
+  .legend,.mini{display:none}
 }
 @media (prefers-reduced-motion:reduce){#stage.anim,.panel{transition:none}}
 </style>
 
 <div class="app">
   <div class="bar">
-    <h1>Ninja Bot v2 <small>Flow Mapping · 43 screens · 9 frames</small></h1>
+    <h1>Ninja Bot v2 <small>Flow Mapping · 49 screens · 1 continuous flow</small></h1>
+    <a class="sim" href="https://claude.ai/artifact/RmwMNJN5bK15PSEcVGDCFe" target="_blank" rel="noopener">Open simulator ↗</a>
     <input id="q" class="search" type="search" placeholder="Search screens or messages" aria-label="Search screens">
     <div class="flows" id="flows" role="toolbar" aria-label="Jump to flow"></div>
   </div>
@@ -125,6 +139,7 @@ button{font:inherit;color:inherit}
       <marker id="ahh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker>
     </defs><g id="eg"></g></svg></div>
     <div class="legend" id="legend"></div>
+    <div class="mini" id="mini"><canvas id="mc"></canvas><div class="vp" id="vp"></div></div>
     <div class="zoom"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button><button id="zfit" aria-label="Fit overview" title="Overview">⤢</button><div class="pct" id="pct">100%</div></div>
     <aside class="panel" id="panel" aria-live="polite"></aside>
   </div>
@@ -132,20 +147,13 @@ button{font:inherit;color:inherit}
 
 <script>
 const KIND={menu:'Menu',input:'Input',info:'Info',system:'Lookup',confirm:'Confirm',other:'Global'};
-const CW=380, RH=132, NW=244, NH=116, PADX=36, HEAD=68, PADB=30;
-// frames: id, title, subtitle, side (0 left / 1 right), columns, rows
-const FR=[
- ['Start','Start','Language, then the 6-button main menu',0,2,1],
- ['TID','Tracking ID','Asked once, then routed to the flow picked at Main menu (options 1–5)',0,2,2],
- ['A',`Where's my parcel`,'Entered from Main menu option 1, after tracking ID',0,2,5],
- ['E','Problem with parcel','Entered from Main menu option 5, after tracking ID',0,2,4],
-  ['B',`Courier didn't come`,'Entered from Main menu option 2, after tracking ID',1,3,2],
- ['C','Delivered, not received','Entered from Main menu option 3, after tracking ID',1,3,1],
- ['D','Change my delivery','Entered from Main menu option 4, after tracking ID',2,3,8],
- ['F','Something else','Entered from Main menu option 6 (no tracking ID needed)',1,2,4],
-['H','Agent handoff and global screens','Reachable from any screen',1,3,2]
-];
-// node: id, frame, col, row, kind, type, name, message, buttons, goes to, replaces, CRM tag, outcome, links[[label,target]]
+const CW=430,X0=70,Y0=50,NW=244,NH=116,RH=128,HEAD=64;
+const TITLES={Start:'Start & tracking ID',TID:'Start & tracking ID',A:`Where's my parcel`,B:`Courier didn't come`,C:'Delivered, not received',D:'Change my delivery',E:'Problem with parcel',F:'Something else',H:'Agent handoff & global'};
+const LANES=[['A','Main menu option 1'],['B','Main menu option 2'],['C','Main menu option 3'],['D','Main menu option 4'],['E','Main menu option 5'],['F','Main menu option 6 (no tracking ID)']];
+const OFF={Start:0,TID:2,A:4,B:4,C:4,D:4,E:4,F:4,H:8};
+const LK={E2:[['Upload photos','EP']],E3:[['Upload photos','EP']],E4:[['Upload photos','EP']],G1:[['Yes → Resolved','END'],['No → Talk to an agent','H1']],C1:[['I found it → Resolved','END'],['Show status first','A1']],C2:[['Found it → Resolved','END']],H2:[['Talk to an agent','H1'],['Main menu','W1']]};
+const ROW1={B1:.5,D1:3.5,E1:1.5,F1:1.5};
+const REL={W0:0,W1:0,T0:0,T2:-1,T1:1,H2:-5.4,H1:-3.8,HC:-2.2,G2:-.6,CLOSED:1,G1:2.6,END:4.2};
 const ND=[
 ['W0','Start',0,0,'menu','Menu','Choose language',`Hi! 👋 I'm Ninja Bot. Please choose your language. / Sila pilih bahasa anda.`,'English | Bahasa Melayu','Main menu','01 Welcome (Settings)','-','-',[]],
 ['W1','Start',1,0,'menu','Menu','Main menu','How can we help you today?',`1. Where's my parcel?\n2. Courier didn't come\n3. Says delivered, but I didn't get it\n4. Change my delivery\n5. Problem with my parcel\n6. Something else`,'1–5 → Enter tracking ID (remembers chosen option)\n6 → Other help menu','01 Welcome','-','-',[['Option 1–5 → Enter tracking ID','T0'],['Option 6 → Other help menu','F1']]],
@@ -196,93 +204,112 @@ const ND=[
 ['H1','H',0,0,'other','Input','Talk to an agent','Before we connect you, please share a few details so our agent can help faster.','Tracking ID (skipped if already given) | Topic | Short description | Name | Phone','Agent queue (with all captured data + identity-check flag)','02 / 03 Live agent',`Auto-tag = last flow node's tag`,'Escalate (agent verifies identity before sharing POD or changing address / phone / pickup point)',[]],
 ['H2','H',0,1,'other','Auto case','Case created',`Thanks – we've logged case [Case ID]. Our team will contact you within [Case SLA]. You can also chat with an agent now.`,'Chat with an agent now | Main menu','Talk to an agent (priority) | Main menu','New','From the flow that created it','Escalate (case)',[['Talk to an agent','H1'],['Main menu','W1']]],
 ['G1','H',1,0,'other','Feedback','Did this help?','Did this solve your issue?','Yes | No','Yes → END (log CSAT)\nNo → Talk to an agent','New','-','-',[['Yes → END'],['No → Talk to an agent','H1']]],
-['G2','H',1,1,'other','Timeout','Inactivity nudge','Are you still there? Tell us briefly what happened so we can help. (sent after [2] min of no reply)','-','No reply after [5] min → close chat','New','Silent call / chat > General inquiry','Close',[]]
+['G2','H',1,1,'other','Timeout','Inactivity nudge','Are you still there? Tell us briefly what happened so we can help. (sent after [2] min of no reply)','-','No reply after [5] min → close chat','New','Silent call / chat > General inquiry','Close',[]],
+['EP','E',2,1,'input','Input','Upload photos','Please upload photos of: 1. The outer box 2. The item 3. The airway bill label','Attach 3 photos','Describe the problem','09 Missing or damaged parcel','Set by the choice made (Damaged / Wrong item / Missing items)','-',[]],
+['ED','E',2,2,'input','Input + Escalate','Describe the problem','Thanks, photos received. Briefly describe the problem.','Free text','Case created','New','Set by the choice made','Escalate (case, priority High)',[]],
+['E5ok','E',2,3,'info','Info','Still moving','Your parcel was scanned recently, so it\'s still moving. No need to worry yet.','-','On track','New','-','Self-serve',[['On track','A2']]],
+['HC','H',0,0,'other','Auto case','Connected to agent','Connecting you to an agent… The agent already sees: tracking ID, parcel status, flow chosen, auto-tag, priority, identity-check flag and what the customer wrote. Only the agent sees POD, receiver name and address.','Simulate: customer says nothing for 2 min','Inactivity nudge','New','Auto-tag = last flow node\'s tag','Escalate (live agent)',[]],
+['CLOSED','H',0,0,'other','Timeout','Chat closed','We\'ve closed this chat because we didn\'t hear back. Message us anytime.','Start again','Restart','New','Silent call / chat > General inquiry','Close',[]],
+['END','H',0,0,'other','Feedback','Resolved','Great! Thanks for chatting with Ninja Bot. 👋','Start again | Main menu','Restart | Main menu','New','-','Resolved (CSAT logged)',[]]
 ];
-// edges: from, to, label
-const ED=[
-['W0','W1','Language'],['W1','T0','1–5'],
-['T0','T2','Not found'],['T0','T1',`Can't find`],['T2','T1',`Can't find`],
 
-['A1','A2','On track'],['A1','A3','Delayed'],['A1','A4','Out for delivery'],['A1','A5','Waiting for seller'],['A1','A6','On hold / returning'],
+// edges: from, to, label, style ('' main, agent, help)
+const ED=[
+['W0','W1','Language'],['W1','T0','1–5'],['W1','F1','6','vh'],
+['T0','T2','Not found'],['T0','T1',`Can't find`],['T2','T1',`Can't find`],
+['T0','A1','Option 1'],['T0','B1','Option 2'],['T0','C1','Option 3'],['T0','D1','Option 4'],['T0','E1','Option 5'],
+['A1','A2','On time'],['A1','A3','Past ETA'],['A1','A4','Out for delivery'],['A1','A5','Waiting for seller'],['A1','A6','On hold'],['A1','B1','Delivery failed','x'],
 ['B1','B2',`Yes, I was there`],['B1','B4',`No, I wasn't`],['B2','B5','Deliver again'],['B2','B3','Report this delivery'],
 ['C1','C2',`Still can't find it`],['C2','C3','Still missing'],
 ['D1','D2','Address or phone'],['D1','D9','Map pin'],['D1','D3','Note for courier'],['D1','D4','Delivery date'],['D1','D5','Pickup point'],['D1','D6','Deliver to my door'],['D1','D7','Keep longer'],['D1','D8','Cancel'],
-['D3','D10',''],['D4','D10',''],['D6','D10','Confirm'],['D7','D10','Confirm'],
-['E1','E2','Damaged'],['E1','E3','Wrong item'],['E1','E4','Missing items'],['E1','E5','Not moving'],
-['F1','F2','Operating hours'],['F1','F3','Status meanings'],['F1','F4','Send a parcel'],['F1','F5','Business pickup']
+['D3','D10',''],['D4','D10',''],['D6','D10','Confirm'],['D7','D10',''],
+['E1','E2','Damaged'],['E1','E3','Wrong item'],['E1','E4','Missing items'],['E1','E5','Not moving'],['E2','EP','Photos'],['E3','EP','Photos'],['E4','EP','Photos'],['EP','ED','Attached'],['E5','E5ok','Still moving'],
+['F1','F2','Operating hours'],['F1','F3','Status meanings'],['F1','F4','Send a parcel'],['F1','F5','Business pickup'],
+['A3','H2','','agent'],['A2','G1','','help'],['A5','G1','','help'],['A6','H1','','agent'],
+['B3','H2','','agent'],['B5','G1','','help'],['C3','H2','','agent'],
+['D2','H1','','agent'],['D9','H1','','agent'],['D5','H1','','agent'],['D10','G1','','help'],
+['ED','H2','','agent'],['E5','H2','','agent'],
+['F4','H1','','agent'],
+['H2','H1','Chat now'],['H1','HC','Details sent'],['HC','G2','Silent 2 min'],['G2','CLOSED','Silent 5 min'],['G1','END','Yes']
 ];
 
 const $=s=>document.querySelector(s);
 const view=$('#view'), stage=$('#stage'), eg=$('#eg'), panel=$('#panel');
 const NS='http://www.w3.org/2000/svg';
-const nodes={}, frames={}, colY=[0,0,0], colX=[0,0,0]; let world={w:0,h:0};
+const nodes={}, bands=[]; let world={w:0,h:0};
 
-// frame geometry
-const sideW=[0,0,0];
-FR.forEach(f=>{const w=f[4]*CW-96+PADX*2; sideW[f[3]]=Math.max(sideW[f[3]],w)});
-colX[0]=0; colX[1]=sideW[0]+150; colX[2]=colX[1]+sideW[1]+150;
-FR.forEach(f=>{
-  const [id,title,sub,side,nc,nr]=f;
-  const h=HEAD+nr*RH-(RH-NH)+PADB;
-  frames[id]={id,title,sub,x:colX[side],y:colY[side],w:sideW[side],h};
-  colY[side]+=h+56;
+// ---- layout: one long left-to-right flow, lane per menu option ----
+const laneOf={}; let cur=Y0;
+LANES.forEach(([id,sub])=>{
+  const rows=ND.filter(a=>a[1]===id).map(a=>ROW1[a[0]]??a[3]);
+  const h=HEAD+Math.max(...rows)*RH+NH+30;
+  laneOf[id]={id,sub,top:cur,h}; cur+=h+36;
 });
-world.w=colX[2]+sideW[2]; world.h=Math.max(colY[0],colY[1],colY[2]);
-
-FR.forEach(f=>{
-  const g=frames[f[0]], d=document.createElement('div');
-  d.className='frame'; d.style.cssText=`left:${g.x}px;top:${g.y}px;width:${g.w}px;height:${g.h}px`;
-  d.innerHTML=`<div class="ft"><b>${esc(g.title)}</b><span>${esc(g.sub)}</span></div>`;
-  stage.appendChild(d);
+world.h=cur-36+Y0; world.w=X0+8*CW+NW+X0;
+const cy=(world.h-NH)/2;
+const bx=c=>X0+c*CW;
+LANES.forEach(([id])=>{const L=laneOf[id];bands.push({id,title:TITLES[id],sub:L.sub,x:bx(4)-36,y:L.top,w:2*CW+NW+72,h:L.h})});
+bands.push({id:'Start',title:TITLES.Start,sub:'Language, main menu, then tracking ID',x:bx(0)-36,y:cy-RH-HEAD,w:3*CW+NW+72,h:HEAD+2*RH+NH+30});
+bands.push({id:'H',title:TITLES.H,sub:'Reached from any screen',x:bx(8)-36,y:cy-5.4*RH-HEAD,w:NW+72,h:HEAD+9.6*RH+NH+30});
+bands.forEach(g=>{
+  const d=document.createElement('div');d.className='frame';d.style.setProperty('--fc',`var(--f${g.id==='TID'||g.id==='Start'?'S':g.id})`);d.style.cssText=`left:${g.x}px;top:${g.y}px;width:${g.w}px;height:${g.h}px`;
+  d.innerHTML=`<div class="ft"><b>${esc(g.title)}</b><span>${esc(g.sub)}</span></div>`;stage.appendChild(d);
 });
 
 ND.forEach(a=>{
   const [id,fr,c,r,k,type,name,msg,btn,goes,rep,tag,out,links]=a;
-  const F=frames[fr];
-  const n={id,fr,k,type,name,msg,btn,goes,rep,tag,out,links,x:F.x+PADX+c*CW,y:F.y+HEAD+r*RH,esc:/escalate/i.test(type+' '+out)};
+  const col=fr==='H'?8:OFF[fr]+c;
+  const x=bx(col);
+  const y=(id in REL)?cy+REL[id]*RH:laneOf[fr].top+HEAD+(ROW1[id]??r)*RH;
+  const n={id,fr,k,type,name,msg,btn,goes,rep,tag,out,links:LK[id]||links,x,y,esc:/escalate/i.test(type+' '+out)};
   nodes[id]=n;
   const el=document.createElement('button');
-  el.className='node'; el.style.cssText=`left:${n.x}px;top:${n.y}px`; el.dataset.id=id;
+  el.className='node';el.style.setProperty('--fc',`var(--f${fr==='TID'||fr==='Start'?'S':fr})`);el.style.cssText=`left:${x}px;top:${y}px`;el.dataset.id=id;
   el.innerHTML=`<div class="nh"><span class="pill k-${k}">${KIND[k]}</span>${n.esc?'<span class="pill esc">Agent</span>':''}<span class="code">${id}</span></div>
     <div class="nt">${esc(name)}</div><div class="nm">${esc(msg)}</div><div class="nf">${esc(tag==='-'?'no CRM tag':tag)}</div>`;
-  n.el=el; stage.appendChild(el);
+  n.el=el;stage.appendChild(el);
 });
 
-// edges
+// ---- edges: rounded right-angle connectors ----
+const svg=$('#edges');svg.setAttribute('width',world.w);svg.setAttribute('height',world.h);
 const edgeEls=[];
-document.querySelector('#edges').setAttribute('width',world.w); document.querySelector('#edges').setAttribute('height',world.h);
-ED.forEach(([a,b,label])=>{
-  const s=nodes[a], t=nodes[b]; let x1,y1,x2,y2,d,mx,my;
-  if(t.x>s.x+NW-10){
-    x1=s.x+NW;y1=s.y+NH/2;x2=t.x;y2=t.y+NH/2;const dx=Math.max(40,Math.abs(x2-x1)*.45);
-    d=`M${x1} ${y1}C${x1+dx} ${y1} ${x2-dx} ${y2} ${x2} ${y2}`;mx=(x1+x2)/2;my=(y1+y2)/2;
-  } else {
-    const down=t.y>s.y; x1=s.x+NW/2;x2=t.x+NW/2;y1=down?s.y+NH:s.y;y2=down?t.y:t.y+NH;const dy=(down?1:-1)*Math.max(40,Math.abs(y2-y1)*.4);
-    d=`M${x1} ${y1}C${x1} ${y1+dy} ${x2} ${y2-dy} ${x2} ${y2}`;mx=(x1+x2)/2;my=(y1+y2)/2;
+ED.forEach(([a,b,label,st])=>{
+  const s=nodes[a],t=nodes[b];let d,lx,ly,anchor='start';const sh=st==='agent'||st==='help';
+  const x1=s.x+NW,y1=s.y+NH/2,x2=t.x,y2=t.y+NH/2,R=12;
+  if(st==='vh'){
+    const X=s.x+NW/2,Y1=s.y+NH;d=`M${X} ${Y1}V${y2-R}Q${X} ${y2} ${X+R} ${y2}H${x2}`;lx=X+R+8;ly=y2-7;
+  }else if(s.x===t.x){
+    const down=t.y>s.y,X=s.x+NW/2,Ya=down?s.y+NH:s.y,Yb=down?t.y:t.y+NH;d=`M${X} ${Ya}V${Yb}`;lx=X+8;ly=(Ya+Yb)/2;
+  }else if(Math.abs(y2-y1)<2){
+    d=`M${x1} ${y1}H${x2}`;lx=(x1+x2)/2;ly=y1-7;anchor='middle';
+  }else{
+    const xm=sh?x2-(t.id==='H2'?60:t.id==='H1'?85:110):x2-150,dir=Math.sign(y2-y1),r=Math.min(R,Math.abs(y2-y1)/2);
+    d=`M${x1} ${y1}H${xm-r}Q${xm} ${y1} ${xm} ${y1+dir*r}V${y2-dir*r}Q${xm} ${y2} ${xm+r} ${y2}H${x2}`;lx=xm+10;ly=y2-7;
   }
-  const cross=s.fr!==t.fr;
-  const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); p.setAttribute('class','edge'+(cross?' x':'')); p.setAttribute('marker-end','url(#ah)');
-  eg.appendChild(p);
+  const p=document.createElementNS(NS,'path');p.setAttribute('d',d);p.setAttribute('class','edge'+(sh?' sh '+st:st==='x'?' x':''));p.setAttribute('marker-end','url(#ah)');eg.appendChild(p);
   let tx=null;
-  if(label){tx=document.createElementNS(NS,'text');tx.setAttribute('x',mx);tx.setAttribute('y',my+4);tx.setAttribute('text-anchor','middle');tx.setAttribute('class','elabel');tx.textContent=label;eg.appendChild(tx)}
+  if(label){tx=document.createElementNS(NS,'text');tx.setAttribute('x',lx);tx.setAttribute('y',ly);tx.setAttribute('text-anchor',anchor);tx.setAttribute('class','elabel');tx.textContent=label;eg.appendChild(tx)}
   edgeEls.push({a,b,p,tx});
 });
 
-// header chips, legend
-const fl=$('#flows'); FR.forEach(f=>{const b=document.createElement('button');b.textContent=f[1];b.onclick=()=>fitRect(frames[f[0]],true);fl.appendChild(b)});
-$('#legend').innerHTML=Object.keys(KIND).map(k=>`<span class="lg"><span class="pill k-${k}">${KIND[k]}</span></span>`).join('')+`<span class="lg"><span class="pill esc">Agent</span>hands off</span><span class="lg">Click a screen for details and links</span>`;
+// ---- header chips, legend ----
+const fl=$('#flows');
+[['Start','Start'],...LANES.map(l=>[l[0],TITLES[l[0]]]),['H','Agent & global']].forEach(([id,label])=>{
+  const b=document.createElement('button');b.textContent=label;b.onclick=()=>fitRect(bands.find(g=>g.id===id),true);fl.appendChild(b)});
+$('#legend').innerHTML=Object.keys(KIND).map(k=>`<span class="lg"><span class="pill k-${k}">${KIND[k]}</span></span>`).join('')+
+ `<span class="lg"><span class="pill esc">Agent</span>hands off</span><span class="lg"><svg width="22" height="8"><path d="M0 4H22" stroke="var(--danger)" stroke-width="2" fill="none"/></svg>to agent / case</span><span class="lg"><svg width="22" height="8"><path d="M0 4H22" stroke="var(--k-confirm)" stroke-width="2" fill="none"/></svg>to Did this help?</span>`;
 
-// pan / zoom
+// ---- pan / zoom ----
 let S=1,TX=0,TY=0;
-function apply(anim){stage.classList.toggle('anim',!!anim);stage.style.transform=`translate(${TX}px,${TY}px) scale(${S})`;view.style.backgroundSize=`${24*S}px ${24*S}px`;view.style.backgroundPosition=`${TX}px ${TY}px`;$('#pct').textContent=Math.round(S*100)+'%'}
+function apply(anim){stage.classList.toggle('anim',!!anim);stage.style.transform=`translate(${TX}px,${TY}px) scale(${S})`;view.style.backgroundSize=`${24*S}px ${24*S}px`;view.style.backgroundPosition=`${TX}px ${TY}px`;$('#pct').textContent=Math.round(S*100)+'%';vpUpdate()}
 function fitRect(r,anim){const vw=view.clientWidth,vh=view.clientHeight,m=40;S=Math.min(vw/(r.w+m*2),vh/(r.h+m*2),1.2);TX=(vw-r.w*S)/2-r.x*S;TY=(vh-r.h*S)/2-r.y*S;apply(anim)}
-function fitTop(){const vw=view.clientWidth;S=Math.min(1,Math.max(.32,(vw-32)/world.w));TX=16;TY=16;apply()}
-function zoomAt(f,cx,cy,anim){const ns=Math.min(2.5,Math.max(.12,S*f));const k=ns/S;TX=cx-(cx-TX)*k;TY=cy-(cy-TY)*k;S=ns;apply(anim)}
+function startView(){S=innerWidth>640?.55:.4;TX=24-(bx(0)-36)*S;TY=view.clientHeight/2-(cy+NH/2)*S;apply()}
+function zoomAt(f,cx,cy2,anim){const ns=Math.min(2.5,Math.max(.1,S*f));const k=ns/S;TX=cx-(cx-TX)*k;TY=cy2-(cy2-TY)*k;S=ns;apply(anim)}
 view.addEventListener('wheel',e=>{e.preventDefault();const r=view.getBoundingClientRect();
-  if(e.ctrlKey||e.metaKey||Math.abs(e.deltaY)>0&&!e.shiftKey&&Math.abs(e.deltaX)<1){zoomAt(Math.exp(-e.deltaY*(e.ctrlKey?.01:.0015)),e.clientX-r.left,e.clientY-r.top)}
+  if(e.ctrlKey||e.metaKey||(Math.abs(e.deltaY)>0&&!e.shiftKey&&Math.abs(e.deltaX)<1)){zoomAt(Math.exp(-e.deltaY*(e.ctrlKey?.01:.0015)),e.clientX-r.left,e.clientY-r.top)}
   else{TX-=e.deltaX;TY-=e.deltaY;apply()}},{passive:false});
-const ptrs=new Map(); let moved=0,pinch=0;
-view.addEventListener('pointerdown',e=>{if(e.target.closest('.panel,.zoom,.legend'))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});moved=0;view.setPointerCapture(e.pointerId);view.classList.add('drag');
+const ptrs=new Map();let moved=0,pinch=0;
+view.addEventListener('pointerdown',e=>{if(e.target.closest('.panel,.zoom,.legend,.mini'))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});moved=0;view.setPointerCapture(e.pointerId);view.classList.add('drag');
   if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch=Math.hypot(a.x-b.x,a.y-b.y)}});
 view.addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;moved+=Math.abs(dx)+Math.abs(dy);
   if(ptrs.size===1){TX+=dx;TY+=dy;apply()}
@@ -290,13 +317,23 @@ view.addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p)retu
   if(ptrs.size===2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);const r=view.getBoundingClientRect();if(pinch)zoomAt(d/pinch,(a.x+b.x)/2-r.left,(a.y+b.y)/2-r.top);pinch=d}});
 function up(e){ptrs.delete(e.pointerId);pinch=0;if(!ptrs.size)view.classList.remove('drag')}
 view.addEventListener('pointerup',e=>{const wasClick=moved<6&&ptrs.size===1;const t=document.elementFromPoint(e.clientX,e.clientY);up(e);
-  if(!wasClick||e.target.closest('.panel,.zoom,.legend'))return;const nd=t&&t.closest('.node');if(nd)select(nd.dataset.id);else select(null)});
+  if(!wasClick||e.target.closest('.panel,.zoom,.legend,.mini'))return;const nd=t&&t.closest('.node');if(nd)select(nd.dataset.id);else select(null)});
 view.addEventListener('pointercancel',up);
 $('#zin').onclick=()=>zoomAt(1.25,view.clientWidth/2,view.clientHeight/2,true);
 $('#zout').onclick=()=>zoomAt(.8,view.clientWidth/2,view.clientHeight/2,true);
 $('#zfit').onclick=()=>fitRect({x:0,y:0,w:world.w,h:world.h},true);
 
-// selection
+// ---- minimap ----
+const MW=190,MH=Math.round(MW*world.h/world.w),mc=$('#mc'),mini=$('#mini'),vp=$('#vp'),mk=MW/world.w;
+mc.width=MW;mc.height=MH;
+(function(){const g=mc.getContext('2d');g.fillStyle='rgba(136,146,170,.12)';bands.forEach(b=>g.fillRect(b.x*mk,b.y*mk,b.w*mk,b.h*mk));
+  g.fillStyle='rgba(120,130,160,.85)';Object.values(nodes).forEach(n=>g.fillRect(n.x*mk,n.y*mk,Math.max(2,NW*mk),Math.max(2,NH*mk)))})();
+function vpUpdate(){const x=-TX/S*mk,y=-TY/S*mk,w=view.clientWidth/S*mk,h=view.clientHeight/S*mk;vp.style.cssText=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`}
+function miniGo(e){const r=mini.getBoundingClientRect();const wx=(e.clientX-r.left)/mk,wy=(e.clientY-r.top)/mk;TX=view.clientWidth/2-wx*S;TY=view.clientHeight/2-wy*S;apply()}
+let md=false;mini.addEventListener('pointerdown',e=>{md=true;mini.setPointerCapture(e.pointerId);miniGo(e)});
+mini.addEventListener('pointermove',e=>{if(md)miniGo(e)});mini.addEventListener('pointerup',()=>md=false);
+
+// ---- selection ----
 let sel=null;
 function select(id,focus){
   sel=id;
@@ -307,7 +344,7 @@ function select(id,focus){
   edgeEls.forEach(e=>{const on=e.a===id||e.b===id;if(on){rel.add(e.a);rel.add(e.b)}
     e.p.classList.toggle('hl',on);e.p.classList.toggle('dim',!on);if(on)e.p.setAttribute('marker-end','url(#ahh)');if(e.tx){e.tx.classList.toggle('hl',on);e.tx.classList.toggle('dim',!on)}});
   nodes[id].links.forEach(l=>l[1]&&rel.add(l[1]));
-  Object.values(nodes).forEach(n=>{n.el.classList.toggle('dim',!rel.has(n.id));});
+  Object.values(nodes).forEach(n=>n.el.classList.toggle('dim',!rel.has(n.id)));
   nodes[id].el.classList.add('sel');
   render(nodes[id]);panel.classList.add('open');
   if(focus)centerOn(nodes[id]);
@@ -315,14 +352,13 @@ function select(id,focus){
 function centerOn(n){const vw=view.clientWidth-(innerWidth>640?380:0),vh=view.clientHeight*(innerWidth>640?1:.42);
   S=Math.max(S,.7);TX=vw/2-(n.x+NW/2)*S;TY=vh/2-(n.y+NH/2)*S;apply(true)}
 function render(n){
-  const F=frames[n.fr];
   const row=(t,v,cls)=>v&&v!=='-'?`<div><dt>${t}</dt><dd${cls?` class="${cls}"`:''}>${esc(v)}</dd></div>`:'';
   const links=n.links.length?`<div><dt>Also leads to</dt><dd class="links">${n.links.map(l=>l[1]?`<button data-go="${l[1]}">${esc(l[0])} <span class="code">${l[1]}</span></button>`:`<span class="end">${esc(l[0])}</span>`).join('')}</dd></div>`:'';
   const inc=ED.filter(e=>e[1]===n.id).map(e=>e[0]);
   const from=inc.length?`<div><dt>Reached from</dt><dd class="links">${inc.map(i=>`<button data-go="${i}">${esc(nodes[i].name)} <span class="code">${i}</span></button>`).join('')}</dd></div>`:'';
   panel.innerHTML=`<button class="x" aria-label="Close" id="px">✕</button>
    <div class="nh"><span class="pill k-${n.k}">${KIND[n.k]}</span>${n.esc?'<span class="pill esc">Agent</span>':''}<span class="code">${n.id}</span></div>
-   <h2>${esc(n.name)}</h2><div class="sub">${esc(F.title)} · ${esc(n.type)}</div>
+   <h2>${esc(n.name)}</h2><div class="sub">${esc(TITLES[n.fr])} · ${esc(n.type)}</div>
    <dl>${row('Bot message (EN)',n.msg,'bubble')}${row('Buttons / customer input',n.btn)}${row('Goes to',n.goes)}${links}${from}
    ${row('CRM issue type (auto-tag)',n.tag)}${row('Outcome',n.out)}${row('Replaces old screen',n.rep)}</dl>`;
   panel.querySelector('#px').onclick=()=>select(null);
@@ -330,14 +366,11 @@ function render(n){
   panel.scrollTop=0;
 }
 addEventListener('keydown',e=>{if(e.key==='Escape')select(null)});
-
-// search
 $('#q').addEventListener('input',e=>{const v=e.target.value.trim().toLowerCase();
   if(sel)select(null);
   Object.values(nodes).forEach(n=>n.el.classList.toggle('dim',!!v&&!(n.name+' '+n.msg+' '+n.id+' '+n.tag).toLowerCase().includes(v)))});
-$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){const m=Object.values(nodes).find(n=>!n.el.classList.contains('dim'));if(m&&e.target.value.trim()){centerOn(m)}}});
-
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){const m=Object.values(nodes).find(n=>!n.el.classList.contains('dim'));if(m&&e.target.value.trim())centerOn(m)}});
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-fitTop();
+startView();
 addEventListener('resize',()=>apply());
 </script>
