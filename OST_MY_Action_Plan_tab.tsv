@@ -1,0 +1,24 @@
+One Support Team (MY) – Action Plan: Near-Target & Not-Met Measures
+Source: Summary tab scorecard. Owners and dates are placeholders – please edit.
+
+A. Focus measures
+Measure	Result	Target	Gap	Status	Root cause (from responses)
+Training prepared agents for real cases (Q8)	3.87	4.0	-0.13	Not met	Agents want more real cases and hands-on practice; unsure on queue/status/next action
+Work without TL / Anchor help (Q17)	3.93	4.0	-0.07	Near target	Need support for complicated cases; still confirm some actions; ask seniors before KB/SOP
+
+B. Action plan
+#	Action	Addresses	Detail	Owner	Start	End	Success measure
+1	Anchor 1:1 case review for at-risk agents	Q17	Pair agents who rated 3 on Q8/Q17 (or "need support for complicated cases") with an Anchor; review 5-10 live cases weekly; log every help request and cover repeats in refresher	TL / Anchor	Week 1	Week 2	Q17 >= 4.0 at re-check
+2	Real-case scenario workshop	Q8	15-20 anonymised real tickets with correct queue, status and next action. Cover Scam, TikTok Pending, XB MY/SG, Chat, Recovery vs Monitoring vs Pending, escalations. 30-min sessions + graded mini-quiz	Trainer	Week 1	Week 3	Q8 >= 4.0; quiz pass rate
+3	Weekly Thursday refresher	Q8, Q17	One topic per session (one SS case type or one decision e.g. Monitoring vs Recovery). Rotate topics from Q6/Q7 "still need support" answers	Trainer	Week 1	Ongoing	Fewer repeat questions in help log
+4	KB / SOP decision aid	Q17	One-page aid: queue, status, next action and SLA timeline per case type; GChat follow-up template and stakeholder guide	Trainer / TL	Week 2	Week 4	Fewer "ask a senior" answers in Q14
+5	Anchor buddying / shadowing	Q17	Supervised shadowing before fully independent handling; buddy for first weeks on floor	TL	Week 2	Week 4	More agents choose "handle most cases independently" in Q18
+6	Update training curriculum for future batches	Q8	Add more on-floor practice and real cases; add supervised shadowing week	Training	Week 3	Week 4	Next-batch Q8 >= 4.0
+7	Pulse re-check survey	All	5 questions: Q8, Q17, Q5, Q9, Q18	Trainer	Week 4	Week 4	Q8 and Q17 both >= 4.0
+
+C. Weak areas to prioritise (from Q6 / Q7 / Q13)
+Area	Notes
+SS: ID XB MY SG, SS Scam, SS TikTok Pending, SS Chat, SS Recovery, SS New, SS Open	Mentioned by agents needing SS support
+Queue / status / next action	Recovery vs Monitoring vs Pending decisions; correct queue assignment (CNE)
+SLA & follow-up timelines, GChat stakeholder follow-up	Hard to remember timelines; follow-up with stakeholders
+Complicated / unusual cases	Most common challenge across agents
