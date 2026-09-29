@@ -56,8 +56,8 @@ button{font:inherit;color:inherit}
 
 .frame{position:absolute;z-index:0;background:var(--frame);border:1px solid var(--frame-line);border-radius:14px}
 .frame .ft{position:absolute;left:28px;top:16px;right:28px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-.frame .ft b{font-size:17px;font-weight:600}
-.frame .ft span{color:var(--muted);font-size:12.5px}
+.frame .ft b{font-size:19px;font-weight:600}
+.frame .ft span{color:var(--muted);font-size:13px}
 
 .node{position:absolute;z-index:2;width:244px;height:116px;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;
   box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;gap:5px;overflow:hidden;text-align:left;transition:opacity .15s,border-color .15s}
@@ -78,7 +78,7 @@ button{font:inherit;color:inherit}
 .edge{fill:none;stroke:var(--edge);stroke-width:1.6}
 .edge.x{stroke-dasharray:6 5}
 .edge.hl{stroke:var(--accent);stroke-width:2.6}
-.elabel{font-size:11px;fill:var(--muted);font-family:var(--sans);paint-order:stroke;stroke:var(--frame);stroke-width:5px;stroke-linejoin:round}
+.elabel{font-size:12px;fill:var(--muted);font-family:var(--sans);paint-order:stroke;stroke:var(--frame);stroke-width:5px;stroke-linejoin:round}
 .elabel.hl{fill:var(--accent);font-weight:600}
 
 .legend{position:absolute;left:16px;bottom:16px;z-index:4;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 120px);padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);font-size:12px;align-items:center}
@@ -115,7 +115,7 @@ button{font:inherit;color:inherit}
 
 <div class="app">
   <div class="bar">
-    <h1>Ninja Bot v2 <small>Flow Mapping · 43 screens · 9 flows</small></h1>
+    <h1>Ninja Bot v2 <small>Flow Mapping · 43 screens · 9 frames</small></h1>
     <input id="q" class="search" type="search" placeholder="Search screens or messages" aria-label="Search screens">
     <div class="flows" id="flows" role="toolbar" aria-label="Jump to flow"></div>
   </div>
@@ -132,24 +132,24 @@ button{font:inherit;color:inherit}
 
 <script>
 const KIND={menu:'Menu',input:'Input',info:'Info',system:'Lookup',confirm:'Confirm',other:'Global'};
-const CW=340, RH=132, NW=244, NH=116, PADX=36, HEAD=68, PADB=30;
+const CW=380, RH=132, NW=244, NH=116, PADX=36, HEAD=68, PADB=30;
 // frames: id, title, subtitle, side (0 left / 1 right), columns, rows
 const FR=[
  ['Start','Start','Language, then the 6-button main menu',0,2,1],
- ['TID','Tracking ID','Asked once, remembered for the whole flow',0,2,2],
- ['A',`Where's my parcel`,'Main menu option 1',0,2,5],
- ['E','Problem with parcel','Main menu option 5',0,2,4],
- ['F','Something else','Main menu option 6',0,2,4],
- ['B',`Courier didn't come`,'Main menu option 2',1,3,2],
- ['C','Delivered, not received','Main menu option 3',1,3,1],
- ['D','Change my delivery','Main menu option 4',1,3,8],
- ['H','Agent handoff and global screens','Reachable from any screen',1,3,2]
+ ['TID','Tracking ID','Asked once, then routed to the flow picked at Main menu (options 1–5)',0,2,2],
+ ['A',`Where's my parcel`,'Entered from Main menu option 1, after tracking ID',0,2,5],
+ ['E','Problem with parcel','Entered from Main menu option 5, after tracking ID',0,2,4],
+  ['B',`Courier didn't come`,'Entered from Main menu option 2, after tracking ID',1,3,2],
+ ['C','Delivered, not received','Entered from Main menu option 3, after tracking ID',1,3,1],
+ ['D','Change my delivery','Entered from Main menu option 4, after tracking ID',2,3,8],
+ ['F','Something else','Entered from Main menu option 6 (no tracking ID needed)',1,2,4],
+['H','Agent handoff and global screens','Reachable from any screen',1,3,2]
 ];
 // node: id, frame, col, row, kind, type, name, message, buttons, goes to, replaces, CRM tag, outcome, links[[label,target]]
 const ND=[
 ['W0','Start',0,0,'menu','Menu','Choose language',`Hi! 👋 I'm Ninja Bot. Please choose your language. / Sila pilih bahasa anda.`,'English | Bahasa Melayu','Main menu','01 Welcome (Settings)','-','-',[]],
-['W1','Start',1,0,'menu','Menu','Main menu','How can we help you today?',`1. Where's my parcel?\n2. Courier didn't come\n3. Says delivered, but I didn't get it\n4. Change my delivery\n5. Problem with my parcel\n6. Something else`,'1–5 → Enter tracking ID (remembers chosen option)\n6 → Other help menu','01 Welcome','-','-',[]],
-['T0','TID',0,0,'input','Input','Enter tracking ID','Please type your tracking ID. You can find it on your order page in the shopping app, or in the SMS from Ninja Van.',`Free text: tracking ID\nButton: Can't find my tracking ID`,'Found → flow chosen at Main menu (see Piping tab, Rule 4)\nNot found → Tracking ID not found\nCan\'t find → Help finding tracking ID','02 Track my order','-','-',[]],
+['W1','Start',1,0,'menu','Menu','Main menu','How can we help you today?',`1. Where's my parcel?\n2. Courier didn't come\n3. Says delivered, but I didn't get it\n4. Change my delivery\n5. Problem with my parcel\n6. Something else`,'1–5 → Enter tracking ID (remembers chosen option)\n6 → Other help menu','01 Welcome','-','-',[['Option 1–5 → Enter tracking ID','T0'],['Option 6 → Other help menu','F1']]],
+['T0','TID',0,0,'input','Input','Enter tracking ID','Please type your tracking ID. You can find it on your order page in the shopping app, or in the SMS from Ninja Van.',`Free text: tracking ID\nButton: Can't find my tracking ID`,'Found → flow chosen at Main menu (see Piping tab, Rule 4)\nNot found → Tracking ID not found\nCan\'t find → Help finding tracking ID','02 Track my order','-','-',[[`Option 1 → Where's my parcel`,'A1'],[`Option 2 → Courier didn't come`,'B1'],['Option 3 → Delivered, not received','C1'],['Option 4 → Change my delivery','D1'],['Option 5 → Problem with parcel','E1']]],
 ['T2','TID',1,0,'info','Info','Tracking ID not found',`We couldn't find that tracking ID. Please check for typos and try again.`,`Try again | Can't find my tracking ID | Talk to an agent`,'Enter tracking ID | Help finding tracking ID | Talk to an agent\n2nd failed try → Talk to an agent','New','Tracking ID not found','Self-serve / Escalate',[['Try again','T0'],['Talk to an agent','H1']]],
 ['T1','TID',1,1,'info','Info','Help finding tracking ID','Your tracking ID is sent by the seller once your order ships. Check: 1) order details in the shopping app, 2) SMS / email from Ninja Van. If the seller shipped less than 24 hours ago, it may not show yet.','Try again | Talk to an agent','Enter tracking ID | Talk to an agent','New','Tracking ID not found (if escalated)','Self-serve',[['Try again','T0'],['Talk to an agent','H1']]],
 
@@ -200,9 +200,9 @@ const ND=[
 ];
 // edges: from, to, label
 const ED=[
-['W0','W1','Language'],['W1','T0','1–5'],['W1','F1','6'],
+['W0','W1','Language'],['W1','T0','1–5'],
 ['T0','T2','Not found'],['T0','T1',`Can't find`],['T2','T1',`Can't find`],
-['T0','A1','Option 1'],['T0','B1','Option 2'],['T0','C1','Option 3'],['T0','D1','Option 4'],['T0','E1','Option 5'],
+
 ['A1','A2','On track'],['A1','A3','Delayed'],['A1','A4','Out for delivery'],['A1','A5','Waiting for seller'],['A1','A6','On hold / returning'],
 ['B1','B2',`Yes, I was there`],['B1','B4',`No, I wasn't`],['B2','B5','Deliver again'],['B2','B3','Report this delivery'],
 ['C1','C2',`Still can't find it`],['C2','C3','Still missing'],
@@ -215,19 +215,19 @@ const ED=[
 const $=s=>document.querySelector(s);
 const view=$('#view'), stage=$('#stage'), eg=$('#eg'), panel=$('#panel');
 const NS='http://www.w3.org/2000/svg';
-const nodes={}, frames={}, colY=[0,0], colX=[0,0]; let world={w:0,h:0};
+const nodes={}, frames={}, colY=[0,0,0], colX=[0,0,0]; let world={w:0,h:0};
 
 // frame geometry
-const sideW=[0,0];
+const sideW=[0,0,0];
 FR.forEach(f=>{const w=f[4]*CW-96+PADX*2; sideW[f[3]]=Math.max(sideW[f[3]],w)});
-colX[0]=0; colX[1]=sideW[0]+130;
+colX[0]=0; colX[1]=sideW[0]+150; colX[2]=colX[1]+sideW[1]+150;
 FR.forEach(f=>{
   const [id,title,sub,side,nc,nr]=f;
   const h=HEAD+nr*RH-(RH-NH)+PADB;
   frames[id]={id,title,sub,x:colX[side],y:colY[side],w:sideW[side],h};
   colY[side]+=h+56;
 });
-world.w=colX[1]+sideW[1]; world.h=Math.max(colY[0],colY[1]);
+world.w=colX[2]+sideW[2]; world.h=Math.max(colY[0],colY[1],colY[2]);
 
 FR.forEach(f=>{
   const g=frames[f[0]], d=document.createElement('div');
@@ -270,7 +270,7 @@ ED.forEach(([a,b,label])=>{
 
 // header chips, legend
 const fl=$('#flows'); FR.forEach(f=>{const b=document.createElement('button');b.textContent=f[1];b.onclick=()=>fitRect(frames[f[0]],true);fl.appendChild(b)});
-$('#legend').innerHTML=Object.keys(KIND).map(k=>`<span class="lg"><span class="pill k-${k}">${KIND[k]}</span></span>`).join('')+`<span class="lg"><span class="pill esc">Agent</span>hands off</span><span class="lg">— screen link</span><span class="lg">- - jump to another flow</span>`;
+$('#legend').innerHTML=Object.keys(KIND).map(k=>`<span class="lg"><span class="pill k-${k}">${KIND[k]}</span></span>`).join('')+`<span class="lg"><span class="pill esc">Agent</span>hands off</span><span class="lg">Click a screen for details and links</span>`;
 
 // pan / zoom
 let S=1,TX=0,TY=0;
