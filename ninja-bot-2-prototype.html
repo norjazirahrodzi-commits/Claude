@@ -153,6 +153,7 @@ form#composer{display:flex; gap:8px; padding:10px; border-top:1px solid var(--li
         <div class="box"><h3>Logic trace</h3><div id="trace" class="trace"></div></div>
         <div class="box"><h3>Where the customer is now</h3><div class="now" id="now"></div><div class="path" id="path"></div></div>
         <div class="box"><h3>Data passed to agent and CRM</h3><dl class="cap" id="cap"></dl></div>
+        <div class="box"><h3>Sample tracking IDs</h3><p class="help" style="margin:0 0 8px">Type one into the chat, or press Use when the bot asks for a tracking ID. Any other ID is treated as not found.</p><div class="tablewrap"><table id="ids-table"></table></div></div>
         <div class="box"><h3>Path key</h3><div id="legend"></div></div>
       </aside>
     </div>
@@ -645,6 +646,9 @@ function initUI(){
     b.title=`${ISS[i][0]}`; b.addEventListener('click',()=>runScenario(s)); box.appendChild(b);
   });
   $('#legend').innerHTML=Object.keys(CLS).map(k=>`<span class="pp p-${k}" title="${CLSHELP[k]}">${CLS[k]}</span>`).join('');
+  const IDS=[['NVMY1001','In transit, on time','Where\'s my parcel: ETA answer, chat ends'],['NVMY1002','In transit, past ETA, no scan for days','Where\'s my parcel: delayed answer. Problem with parcel > Parcel not moving: case'],['NVMY1003','Out for delivery','Where\'s my parcel: out-for-delivery answer. Change my delivery: note only'],['NVMY1004','Waiting for seller','Where\'s my parcel: waiting-for-seller answer'],['NVMY1005','On hold (needs address details)','Where\'s my parcel: on-hold reason'],['NVMY2001','Delivery failed, 1st attempt','Courier didn\'t come: fix options, redelivery'],['NVMY2002','Delivery failed, 2nd attempt','Courier didn\'t come: Urgent case'],['NVMY3001','Delivered','Says delivered: checklist, case. Problem with parcel: photos, case'],['NVMX12345','Not found (any unknown ID)','Tracking ID not found: retry, then agent']];
+  $('#ids-table').innerHTML='<thead><tr><th>ID</th><th>Parcel</th><th>Try it with</th><th></th></tr></thead><tbody>'+IDS.map(r=>`<tr><td class="mono"><b>${r[0]}</b></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td><button type="button" class="open" data-id="${r[0]}">Use</button></td></tr>`).join('')+'</tbody>';
+  $('#ids-table').querySelectorAll('button.open').forEach(b=>b.addEventListener('click',()=>{ if(!msg.disabled){ msg.value=b.dataset.id; msg.focus(); } else { msg.placeholder='Pick a menu option first, then use a tracking ID'; } }));
   // tabs
   document.querySelectorAll('[data-view]').forEach(t=>t.addEventListener('click',()=>showView(t.dataset.view)));
   // map
