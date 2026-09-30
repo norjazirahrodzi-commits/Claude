@@ -6,19 +6,19 @@
 :root{
   --ground:#ECEEF1; --bg:#ECEEF1; --surface:#FFFFFF; --surface-2:#F6F7F9; --ink:#15171C; --ink-2:#3A3F4A; --muted:#626978; --line:#D3D7DE; --line-2:#E4E7EC;
   --accent:#C8102E; --accent-soft:#FBE7EA; --bot:#F1ECED; --user:#C8102E; --user-ink:#FFFFFF; --focus:#3558C9;
-  --p-self:#0E8A67; --p-faq:#B26B00; --p-case:#3558C9; --p-agent:#C2417A; --p-auto:#626978;
+  --p-self:#0E8A67; --p-faqcase:#0E8A67; --p-faq:#B26B00; --p-case:#3558C9; --p-agent:#C2417A; --p-auto:#626978;
   --fA:#2F6FDB; --fB:#C8102E; --fC:#C2410C; --fD:#15803D; --fE:#7C3AED; --fF:#A16207; --fH:#0E7490; --fS:#6E6567;
   --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif; --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){color-scheme:dark;
   --ground:#0E1014; --bg:#0E1014; --surface:#171A20; --surface-2:#1D2129; --ink:#E9EBEF; --ink-2:#C4C8D0; --muted:#98A0AD; --line:#2E343E; --line-2:#252A33;
   --accent:#FF4A62; --accent-soft:#3A1820; --bot:#262B34; --user:#B40F2A; --focus:#7C9BFF;
-  --p-self:#2BA87F; --p-faq:#E0A03A; --p-case:#7C9BFF; --p-agent:#E872A6; --p-auto:#98A0AD;
+  --p-self:#2BA87F; --p-faqcase:#2BA87F; --p-faq:#E0A03A; --p-case:#7C9BFF; --p-agent:#E872A6; --p-auto:#98A0AD;
   --fA:#7AA7F5; --fB:#F2455C; --fC:#FB923C; --fD:#4ADE80; --fE:#B794F6; --fF:#E0B84A; --fH:#4FC3D9; --fS:#A99FA1}}
 :root[data-theme="dark"]{color-scheme:dark;
   --ground:#0E1014; --bg:#0E1014; --surface:#171A20; --surface-2:#1D2129; --ink:#E9EBEF; --ink-2:#C4C8D0; --muted:#98A0AD; --line:#2E343E; --line-2:#252A33;
   --accent:#FF4A62; --accent-soft:#3A1820; --bot:#262B34; --user:#B40F2A; --focus:#7C9BFF;
-  --p-self:#2BA87F; --p-faq:#E0A03A; --p-case:#7C9BFF; --p-agent:#E872A6; --p-auto:#98A0AD;
+  --p-self:#2BA87F; --p-faqcase:#2BA87F; --p-faq:#E0A03A; --p-case:#7C9BFF; --p-agent:#E872A6; --p-auto:#98A0AD;
   --fA:#7AA7F5; --fB:#F2455C; --fC:#FB923C; --fD:#4ADE80; --fE:#B794F6; --fF:#E0B84A; --fH:#4FC3D9; --fS:#A99FA1}
 *{box-sizing:border-box}
 body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:14.5px;line-height:1.5}
@@ -49,7 +49,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--focus);outline-
 .box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
 .box h3{font:700 15px var(--display);margin:0 0 8px}
 .pp{display:inline-block;font:600 12px var(--body);padding:2px 9px;border-radius:999px;color:var(--pc);background:color-mix(in srgb,var(--pc) 14%,transparent)}
-.p-self{--pc:var(--p-self)} .p-faq{--pc:var(--p-faq)} .p-case{--pc:var(--p-case)} .p-agent{--pc:var(--p-agent)} .p-auto{--pc:var(--p-auto)}
+.p-self{--pc:var(--p-self)} .p-faqcase{--pc:var(--p-faqcase)} .p-faq{--pc:var(--p-faq)} .p-case{--pc:var(--p-case)} .p-agent{--pc:var(--p-agent)} .p-auto{--pc:var(--p-auto)}
 i.sw{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--pc);margin-right:6px;vertical-align:-1px}
 .legend,#legend{display:flex;flex-wrap:wrap;gap:6px}
 .pill{font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;color:var(--fc);background:color-mix(in srgb,var(--fc) 13%,transparent)}
@@ -138,7 +138,7 @@ form#composer{display:flex; gap:8px; padding:10px; border-top:1px solid var(--li
   </header>
 
   <section id="view-journey">
-    <p class="lede">Chat with the bot as a customer would. The panel on the right shows what operations receives at each step: backend issue type, destination, priority, the routing rule that fired and the tool that was called. Replay any of the top 21 issue types below.</p>
+    <p class="lede">The menus follow the Webform 2.0 selections (audience, category, issue). Chat with the bot as a customer would. The panel on the right shows what operations receives at each step: backend issue type, destination, priority, the routing rule that fired and the tool that was called. Replay any of the top 21 issue types below.</p>
     <div class="picker"><p class="capt">Replay an issue type, ranked by share of chats</p><div class="scen" id="scen"></div></div>
     <label class="toggles"><input type="checkbox" id="showIds"> Show tech codes (Flow Mapping tab)</label>
     <div class="proto">
@@ -160,7 +160,7 @@ form#composer{display:flex; gap:8px; padding:10px; border-top:1px solid var(--li
   </section>
 
   <section id="view-map" hidden>
-    <p class="lede">The top 21 issue types (25 Jun – 24 Sep 2026), how each is resolved and which screens handle it. "Open" replays it in the Journey.</p>
+    <p class="lede">The top 21 issue types (25 Jun – 24 Sep 2026), the Webform 2.0 selection that catches each one, and how it is resolved. "Open" replays it in the Journey.</p>
     <div class="toolbar"><div class="seg" id="map-seg"></div><div class="legend2" id="map-legend"></div></div>
     <div class="tablewrap"><table id="map-table"></table></div>
     <div class="panel"><h3>Chatbot backend contract</h3>
@@ -169,14 +169,14 @@ form#composer{display:flex; gap:8px; padding:10px; border-top:1px solid var(--li
   </section>
 
   <section id="view-impact" hidden>
-    <p class="lede">Historical case counts for the top 21 issue types, mapped onto the new routing. The resolution rates are adjustable assumptions, not measured results.</p>
+    <p class="lede">Historical case counts for the top 21 issue types, mapped onto the Webform 2.0 selections and CRM queues. The resolution rates are adjustable assumptions, not measured results.</p>
     <div class="stats" id="stats"></div>
     <div class="panel"><h3>Where historical cases would land</h3><p class="cap2">Each issue type counted once, under the path the bot gives it.</p><div class="stack" id="stack" role="img" aria-label="Cases by path"></div><div class="stack-legend" id="stack-legend"></div></div>
     <div class="grid2">
-      <div class="panel"><h3>Projected tickets by destination</h3><p class="cap2">Grey = historical volume. Coloured = projected after the bot resolves cases at the rates below.</p>
+      <div class="panel"><h3>Projected tickets by CRM queue</h3><p class="cap2">Grey = historical volume for issues routed to the queue. Coloured = projected cases after FAQ resolution at the rates below.</p>
         <div class="sliders">
-          <div class="slider"><label for="r-faq"><span>FAQ answers resolve the customer</span><span id="r-faq-v" class="mono">80%</span></label><input type="range" id="r-faq" min="0" max="100" step="5" value="80"><div class="help">Applies to FAQ-only issue types, where the chat ends after the answer.</div></div>
-          <div class="slider"><label for="r-self"><span>Self-serve actions complete</span><span id="r-self-v" class="mono">70%</span></label><input type="range" id="r-self" min="0" max="100" step="5" value="70"><div class="help">Applies where the bot saves a note, date or redelivery itself.</div></div>
+          <div class="slider"><label for="r-self"><span>FAQ-only answers resolve the customer</span><span id="r-self-v" class="mono">80%</span></label><input type="range" id="r-self" min="0" max="100" step="5" value="80"><div class="help">Applies to issues answered by a FAQ only, where the chat ends after the answer.</div></div>
+          <div class="slider"><label for="r-faq"><span>FAQ-first issues resolve before the form</span><span id="r-faq-v" class="mono">25%</span></label><input type="range" id="r-faq" min="0" max="100" step="5" value="25"><div class="help">Applies where a FAQ is shown before "Has this resolved your issue?".</div></div>
         </div>
         <div id="qbars"></div></div>
       <div class="panel"><h3>Not yet covered</h3><p class="cap2">Smaller issue types outside the top 21. They fall to "Something else" and Talk to an agent.</p><div id="gaps"></div></div>
@@ -193,25 +193,12 @@ const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const wait = ms => new Promise(r => setTimeout(r, reduce ? Math.min(ms,80) : ms));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rnd = n => String(Math.floor(Math.random()*Math.pow(10,n))).padStart(n,'0');
-
-const FLOWS = {
-  Start:{name:'Start', c:'--fS'}, Shared:{name:'Tracking ID', c:'--fS'},
-  A:{name:"A · Where's my parcel", c:'--fA'}, B:{name:"B · Courier didn't come", c:'--fB'},
-  C:{name:'C · Delivered, not received', c:'--fC'}, D:{name:'D · Change my delivery', c:'--fD'},
-  E:{name:'E · Problem with parcel', c:'--fE'}, F:{name:'F · Something else', c:'--fF'},
-  H:{name:'Agent handoff', c:'--fH'}, G:{name:'Global', c:'--fS'}
-};
-const START = {A:'A1', B:'B1', C:'C1', D:'D1', E:'E1'};
-const MENU = [
-  {t:"Where's my parcel?", f:'A'},
-  {t:"Courier didn't come", f:'B'},
-  {t:"Says delivered, but I didn't get it", f:'C'},
-  {t:"Change my delivery", f:'D'},
-  {t:"Problem with my parcel", f:'E'},
-  {t:"Something else", f:'F'}
-];
-
-// sample parcels
+const WF = {"FAQ": {"where": [{"h": "Where is my parcel?", "t": "You can check your parcel’s latest delivery status and estimated delivery timeline on our tracking page.\nTrack your parcel here: ninjavan.co/en-my/tracking\nEnter your Tracking ID to see the latest update on your parcel."}], "delivered": [{"h": "Quick checks before you continue", "t": "Check whether someone at the delivery address received it. A family member, housemate or building reception may have accepted it on your behalf.\nConfirm your delivery address is correct and up to date. An incorrect unit number or incomplete address may cause the parcel to be delivered to the wrong location."}], "onhold": [{"h": "Why is my parcel on hold?", "t": "Your parcel may be placed on hold when further verification or investigation is needed. This can happen because of:\n• Inaccurate or incomplete details — such as the delivery address or recipient details.\n• Suspected damage — the parcel needs inspection before delivery can continue.\n• Suspected misplaced parcel — the parcel isn’t at its expected facility and needs investigation.\nWhile the parcel is on hold, our team runs the necessary checks before deciding the next step."}], "swapped": [{"h": "Is this parcel addressed to you?", "t": "Do the recipient name and delivery address on the parcel belong to you? If yes, please contact your seller or platform for further help."}], "wrongitem": [{"h": "Is the packaging in good condition?", "t": "If the packaging is in good condition with no visible damage, please contact your seller or platform for help with the parcel contents."}, {"h": "Prepare supporting evidence", "t": "If the packaging is damaged or looks tampered with, keep the parcel and take clear photos before continuing."}], "cod": [{"h": "Why is the COD amount different, and can I change it?", "t": "For an incorrect COD amount or a request to change it, please contact the seller directly. The COD amount is set by the seller and can only be changed by them."}], "damaged": [{"h": "My packaging or its contents are damaged. What should I do?", "t": "• Keep the parcel and packaging. Don’t discard the outer packaging, inner protection or the item while the case is reviewed.\n• Take clear photos of the damaged item, outer packaging, inner packaging and the AWB or shipping label."}], "scan": [{"h": "The pickup scan can take up to 24 hours", "t": "There may be a short delay before the latest pickup scan appears in tracking. Please allow up to 24 hours for the status to update."}], "method": [{"h": "Before we open a case — please take note", "t": "Terms for self-collection at a Ninja Point\n• The parcel must not be cash on delivery (COD).\n• The parcel must be small or medium size.\nYou’ll receive a 6-digit one-time password (OTP) or QR code by SMS or Ninja Chat (Facebook Messenger, Telegram or Viber). You can collect the parcel once it arrives.\nFind a point: ninjavan.co/en-my/support/find-ninja-point\nAny change is subject to Ninja Point availability."}], "resched": [{"h": "Before you request a change", "t": "Any change is subject to availability and the parcel’s current status.\nRequesting a change may delay delivery, as additional processing or rerouting may be needed.\nIf the parcel is at an advanced stage of delivery or already out for delivery, we may not be able to make the change."}], "sales": [{"h": "How can I start shipping with Ninja Van?", "t": "Create an account and start shipping through Ship with Ninja Van, or send your details through the Sales form and the team will contact you."}], "pudo": [{"h": "How can I become a Ninja Van collection-point partner?", "t": "Submit your business details through the Ninja Van Agent Sales Network form. The team will review your application and contact you if they need more information."}], "s_scan": [{"h": "Has it been more than 24 hours since the parcel was collected?", "t": "There may be a short delay before the latest pickup scan appears in tracking. Please allow up to 24 hours for the status to update."}], "s_reserve": [{"h": "How do I create a new pickup reservation?", "t": "You can create a new pickup reservation yourself in the Ninja Dashboard. Follow the steps in the Dashboard Playbook."}], "s_awb": [{"h": "How do I print my Air Waybill (AWB)?", "t": "You can download your AWB or receipt directly from the Ninja Dashboard. The Dashboard Playbook shows where to find it."}], "s_rewards": [{"h": "How do I claim a Ninja Reward?", "t": "Visit Ninja Rewards, select the reward you want and click Claim to redeem it."}], "s_supplies": [{"h": "Packaging supplies", "t": "You can use your own suitable packaging, such as boxes, bubble wrap, protective fillers and secure tape, depending on the item.\nFor fragile items, use enough protective material and a sturdy outer box to reduce the risk of damage in transit.\nSupply requests are subject to availability, account type and order history."}], "s_billing": [{"h": "Billing and Peakflo", "t": "Your invoices, payments, billing cycle and account status are in Peakflo. Please refer to your Peakflo account or invoice for these details."}], "s_order": [{"h": "How do I create a new order in the Ninja Dashboard?", "t": "You can create a new order directly in the Ninja Dashboard. See the Dashboard Playbook for the steps."}], "s_report": [{"h": "How do I generate a report?", "t": "• Go to Reports.\n• Choose a report type: COD Reconciliation, Delivery Status or Delivery Failure.\n• Set filters: created date, completed date, or upload a CSV file.\n• Click Generate Report.Order information is available for up to 365 days before today."}], "s_damaged": [{"h": "Was the parcel packed to our packaging guidelines?", "t": "Proper packaging protects your parcel through sorting, loading, unloading and delivery. Parcels should be packed to withstand normal handling across the whole journey.\nSee the Ninja Van Packaging Guidelines. To continue, please provide all the required details and photos in the form."}]}, "AUD": {"customer": {"label": "Customer", "long": "I’m receiving a parcel", "verb": "receiving", "cats": [{"name": "My parcel hasn’t arrived", "icon": "clock", "items": [{"id": "c-where", "name": "Where is my parcel?", "faq": "where", "mode": "auto", "form": null, "reply": null, "queue": null, "esc": null, "backend": ["Delivery > General inquiry"], "subject": "Parcel Status", "path": "self"}, {"id": "c-delivered", "name": "My parcel was delivered, but I didn’t receive it", "faq": "delivered", "mode": "resolve", "form": "T2", "reply": "Template 2", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["Courier > Delivery > Fake success"], "subject": "Reporting Delivery Completed but Parcel Not Received", "path": "faqform"}, {"id": "c-noattempt", "name": "I was available, but no delivery was attempted", "faq": null, "form": "T1", "reply": "Template 2", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["Courier > Delivery > Fake fail", "Courier > Cannot Make it (CMI)"], "subject": "Reporting No Delivery Attempt", "path": "form"}, {"id": "c-onhold", "name": "My parcel is on hold", "faq": "onhold", "mode": "resolve", "form": "T2", "reply": "Template 2", "queue": "MY CS Email New", "esc": "MY CS Email New", "backend": ["Parcel issues > On hold > Missing", "Parcel issues > On hold > Damage", "Parcel issues > On hold > PE/SI"], "subject": "Reporting Parcel Status On Hold", "path": "faqform"}, {"id": "c-delay", "name": "Why is my parcel delayed?", "faq": null, "form": "T1", "reply": "Template 2", "queue": "MY CS Email New", "esc": "MY CS Email New", "backend": ["Delivery ETA > Within SLA", "Delivery ETA > Beyond SLA", "Delivery > Latlong issue", "Delivery > Missing > No PETS ticket"], "subject": "Reporting Delivery Delay", "path": "form"}]}, {"name": "I have a problem with my parcel", "icon": "box", "items": [{"id": "c-swapped", "name": "I received someone else’s parcel", "faq": "swapped", "mode": "resolve", "form": "T2", "reply": "Template 3", "queue": "MY Reso Rec", "esc": "MY Reso Rec", "backend": ["Parcel issues > Completed > Swapped"], "subject": "Reporting Received Another Customer’s Parcel", "path": "faqform"}, {"id": "c-wrongitem", "name": "I received the wrong item or something is missing", "faq": "wrongitem", "mode": "resolve", "form": "T2", "reply": "Template 3", "queue": "MY Reso Rec", "esc": "MY Reso Rec", "backend": ["Parcel issues > Completed > Wrong / incomplete content"], "subject": "Reporting Wrong or Incomplete Item Received", "path": "faqform"}, {"id": "c-cod", "name": "The COD amount is incorrect", "faq": "cod", "mode": "auto", "form": null, "reply": null, "queue": null, "esc": null, "backend": ["Courier > COD mismatch", "Delivery > Change COD"], "subject": "Incorrect COD Amount", "path": "self"}, {"id": "c-damaged", "name": "My packaging or its contents are damaged", "faq": "damaged", "mode": "resolve", "form": "T2", "reply": "Template 3", "queue": "MY Reso Rec", "esc": "MY Reso Rec", "backend": ["Parcel issues > Completed > Content damaged", "Parcel issues > Completed > Packaging damaged"], "subject": "Reporting Parcel Received Damaged", "path": "faqform"}, {"id": "c-driver", "name": "I have an issue with the delivery driver", "faq": null, "form": "T1", "reply": "Template 2", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["Courier > Rude behaviour", "Courier > Parcel dumping"], "subject": "Delivery Driver Feedback", "path": "form"}, {"id": "c-track", "name": "I can’t track my parcel", "faq": null, "form": "T1", "reply": "Template 1", "queue": "OST", "esc": "OST", "backend": ["Tracking ID not found"], "subject": "The Tracking ID Issue", "path": "form"}]}, {"name": "I have a problem with my return parcel", "icon": "return", "items": [{"id": "c-scan", "name": "My parcel was collected, but the tracking status wasn’t updated", "faq": "scan", "mode": "gate", "gateQ": "Has it been more than 24 hours since the parcel was collected?", "form": "T5", "reply": "Template 2", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["Pickup > Pickup scan issue"], "subject": "Issue with Pickup", "path": "faqform"}, {"id": "c-pickupfail", "name": "My pickup was unsuccessful", "faq": null, "form": "T1", "reply": "Template 2", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["Courier > Pickup > Fake fail", "Pickup > Missed pickup"], "subject": "Reporting Unsuccessful or Missed Pickup", "path": "form"}, {"id": "c-dpmissed", "name": "My collection-point pickup was missed", "faq": null, "form": "T1", "reply": "Template 2", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["DP Complaints > Pickup-related > Missed pickup"], "subject": "Pickup at Collection Point Not Completed", "path": "form"}, {"id": "c-wrongpick", "name": "The wrong parcel was collected", "faq": null, "form": "T4", "reply": "Template 2", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["Pickup > Wrongly picked up item"], "subject": "Wrong Parcel Collected", "path": "form", "flag": "Workbook assigns Webform T4 (change delivery method). Its fields don’t fit a wrong-collection report; T5 looks closer."}]}, {"name": "I want to change my delivery details or method", "icon": "edit", "items": [{"id": "c-method", "name": "I want to change my delivery or collection method", "faq": "method", "mode": "notice", "form": "T4", "reply": "Template 1", "queue": "MY CS Email New", "esc": "MY CS Email New", "backend": ["PUDO > Change from doorstep delivery to self-collection", "PUDO > Change from self-collection to doorstep delivery", "PUDO > Change PUDO location"], "subject": "Requesting Change Delivery Method", "path": "faqform"}, {"id": "c-resched", "name": "I want to reschedule or change my delivery details", "faq": "resched", "mode": "notice", "form": "T3", "reply": "Template 1", "queue": "MY CS Email New", "esc": "MY CS Email New", "backend": ["Delivery > Special instructions", "Delivery > Reschedule", "Delivery > Change delivery details"], "subject": "Requesting Change Delivery Details", "path": "form"}]}, {"name": "I need information about my delivery", "icon": "info", "items": [{"id": "c-code", "name": "I need help with my collection verification code", "faq": null, "form": "T1", "reply": "Template 1", "queue": "MY CS Email New", "esc": "MY CS Email New", "backend": ["PUDO > Verification code"], "subject": "Collection Verification Code Issue", "path": "form"}, {"id": "c-pod", "name": "I need proof of delivery", "faq": null, "form": "T1", "reply": "Template 1", "queue": "MY CS Email New", "esc": "MY CS Email New", "backend": ["Delivery > POD request"], "subject": "Requesting Proof of Delivery (POD)", "path": "form"}]}, {"name": "I have another question", "icon": "chat", "items": [{"id": "c-feedback", "name": "I want to share feedback", "faq": null, "form": "T1", "reply": "Template 2", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["Feedback and compliments"], "subject": "Feedback and Compliments", "path": "form"}, {"id": "c-other", "name": "My issue isn’t listed here", "faq": null, "form": "T1", "reply": "Template 1", "queue": "MY CS Email New", "esc": "MY CS Email New", "backend": ["Delivery > General inquiry"], "subject": "General Enquiry", "path": "form"}]}, {"name": "Sales & business enquiries", "icon": "store", "items": [{"id": "c-sales", "name": "I have a business or shipping enquiry", "faq": "sales", "mode": "auto", "form": null, "reply": null, "queue": null, "esc": null, "backend": ["Sales"], "subject": "Sales enquiry", "path": "self"}, {"id": "c-pudo", "name": "I’m interested in becoming a collection-point partner", "faq": "pudo", "mode": "auto", "form": null, "reply": null, "queue": null, "esc": null, "backend": ["PUDO > Interested to be PUDO"], "subject": "Collection-point partner", "path": "self"}]}]}, "shipper": {"label": "Shipper", "long": "I send parcels with Ninja Van", "verb": "sending", "cats": [{"name": "I have a pickup issue", "icon": "truck", "items": [{"id": "s-scan", "name": "My parcel was collected, but the tracking status wasn’t updated", "faq": "s_scan", "mode": "gate", "gateQ": "Has it been more than 24 hours since the parcel was collected?", "form": "S3", "reply": "Template 2", "queue": "MY SS Email New", "esc": "MY OS Inbox", "backend": ["Pickup > Pickup scan issue"], "subject": "Issue with Pickup", "path": "faqform"}, {"id": "s-reserve", "name": "I want to create a new pickup reservation", "faq": "s_reserve", "mode": "auto", "form": null, "reply": null, "queue": null, "esc": null, "backend": ["Pickup > Create new reservation"], "subject": "New Pickup Reservation", "path": "self"}, {"id": "s-wrongpick", "name": "The wrong parcel was collected", "faq": null, "form": "S3", "reply": "Template 2", "queue": "MY SS Email New", "esc": "MY Reso Rec", "backend": ["Pickup > Wrongly picked up item"], "subject": "Wrong Parcel Collected", "path": "form"}, {"id": "s-pickupfail", "name": "My pickup was unsuccessful", "faq": null, "form": "S1", "reply": "Template 2", "queue": "MY SS Email New", "esc": "MY OS Inbox", "backend": ["Courier > Pickup > Fake fail", "Pickup > Missed pickup"], "subject": "Reporting Unsuccessful or Missed Pickup", "path": "form"}]}, {"name": "I need information about my delivery", "icon": "info", "items": [{"id": "s-awb", "name": "I need an AWB or receipt", "faq": "s_awb", "mode": "auto", "form": null, "reply": null, "queue": null, "esc": null, "backend": ["Shipper-related > AWB / receipt request"], "subject": "AWB or Receipt Request", "path": "self"}]}, {"name": "I have another question", "icon": "chat", "items": [{"id": "s-rewards", "name": "I have a question about Ninja Rewards", "faq": "s_rewards", "mode": "auto", "form": null, "reply": null, "queue": null, "esc": null, "backend": ["Shipper-related > Ninja Rewards"], "subject": "Ninja Rewards Inquiry", "path": "self"}, {"id": "s-supplies", "name": "I need packaging supplies", "faq": "s_supplies", "mode": "notice", "form": "S2", "reply": "Template 1", "queue": "Flyers request G-form → (NVMY) INV_FLYERS REQUEST", "queueShort": "INV_FLYERS REQUEST", "esc": "N/A", "backend": ["Shipper-related > Pouch / fragile sticker"], "subject": "Packaging Supplies Request", "path": "off", "offNote": "Auto-resolved: linked with OPv2 to capture Global ID, submitted on the NV-Flyers Request template. Handled outside CRM."}]}, {"name": "Issue with my account", "icon": "user", "items": [{"id": "s-billing", "name": "I have a billing or finance issue", "faq": null, "form": "S4", "reply": "Template 1", "queue": "Finance queue · routing key FINANCE_BILLING", "queueShort": "Finance queue", "routeKey": "FINANCE_BILLING", "esc": "N/A", "backend": ["Finance > Invoice disputes", "Finance > Frozen shippers"], "subject": "Finance & Billing Support", "path": "off", "offNote": "Sent to the backend with routing key FINANCE_BILLING. Finance verifies account, billing and linked-account details internally. The server resolves the Finance destination from protected configuration; the browser never sees it."}, {"id": "s-order", "name": "I can’t create a new order", "faq": "s_order", "mode": "staged", "form": "S1", "reply": "Template 1", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["Shipper-related > Issues with account"], "subject": "Shipper Account Issue", "path": "faqform", "flag": "Workbook marks this Auto Resolved = Yes but also assigns Webform S1 and MY OS Inbox, with Template Type N/A. Shown here as FAQ-first with Template 1."}, {"id": "s-report", "name": "I can’t generate a report", "faq": "s_report", "mode": "auto", "form": null, "reply": null, "queue": null, "esc": null, "backend": ["Shipper-related > Issues with account"], "subject": "Report generation", "path": "self", "flag": "Auto Resolved = No, but no webform or queue is assigned. Shown as FAQ only."}]}, {"name": "My parcel hasn’t arrived", "icon": "clock", "items": [{"id": "s-onhold", "name": "My parcel is on hold", "faq": "onhold", "mode": "resolve", "form": "T2", "reply": "Template 2", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["Parcel issues > On hold > Missing", "Parcel issues > On hold > Damage", "Parcel issues > On hold > PE/SI"], "subject": "Reporting Parcel Status On Hold", "path": "faqform"}, {"id": "s-noattempt", "name": "My customer was available, but no delivery was attempted", "faq": null, "form": "T1", "reply": "Template 2", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["Courier > Delivery > Fake fail", "Courier > Cannot Make it (CMI)"], "subject": "Reporting No Delivery Attempt", "path": "form"}, {"id": "s-delivered", "name": "Status says delivered, but my customer didn’t receive it", "faq": "delivered", "mode": "resolve", "form": "T2", "reply": "Template 2", "queue": "MY OS Inbox", "esc": "MY OS Inbox", "backend": ["Courier > Delivery > Fake success"], "subject": "Reporting Delivery Completed but Parcel Not Received", "path": "faqform"}, {"id": "s-delay", "name": "Why is my parcel delayed?", "faq": null, "form": "T1", "reply": "Template 2", "queue": "MY CS Email New", "esc": "MY CS Email New", "backend": ["Delivery ETA > Within SLA", "Delivery ETA > Beyond SLA", "Delivery > Latlong issue", "Delivery > Missing > No PETS ticket"], "subject": "Reporting Delivery Delay", "path": "form"}]}, {"name": "I want to change the delivery details", "icon": "edit", "items": [{"id": "s-resched", "name": "I want to reschedule or change the delivery details", "faq": "resched", "mode": "notice", "form": "T3", "reply": "Template 1", "queue": "MY CS Email New", "esc": "MY CS Email New", "backend": ["Delivery > Special instructions", "Delivery > Reschedule", "Delivery > Change delivery details"], "subject": "Requesting Change Delivery Details", "path": "form"}]}, {"name": "I have a problem with my parcel", "icon": "box", "items": [{"id": "s-damaged", "name": "My customer received a damaged parcel or item", "faq": "s_damaged", "mode": "resolve", "form": "T2", "reply": "Template 3", "queue": "MY Reso Rec", "esc": "MY Reso Rec", "backend": ["Parcel issues > Completed > Content damaged", "Parcel issues > Completed > Packaging damaged"], "subject": "Reporting Parcel Received Damaged", "path": "faqform"}]}]}}};
+const AUD = WF.AUD, FAQ = WF.FAQ;
+const REPLY_GIST = {"Template 1":"Received, under review","Template 2":"Escalated for investigation","Template 3":"Escalated, 3–5 working days"};
+const ITEMS = {}; Object.entries(AUD).forEach(([a,A])=>A.cats.forEach(c=>c.items.forEach(i=>{ i.aud=a; i.catName=c.name; ITEMS[i.id]=i; })));
+const FLOWS = {Start:{name:'Start',c:'--fS'},Shared:{name:'Tracking ID',c:'--fS'},A:{name:'My parcel hasn’t arrived',c:'--fA'},B:{name:'Problem with my parcel',c:'--fB'},C:{name:'Return or pickup problem',c:'--fC'},D:{name:'Change delivery details or method',c:'--fD'},E:{name:'Information or account',c:'--fE'},F:{name:'Another question',c:'--fF'},H:{name:'Agent handoff',c:'--fH'},G:{name:'Global',c:'--fS'}};
+const CATF = {"My parcel hasn’t arrived":'A',"I have a problem with my parcel":'B',"I have a problem with my return parcel":'C',"I have a pickup issue":'C',"I want to change my delivery details or method":'D',"I want to change the delivery details":'D',"I need information about my delivery":'E',"Issue with my account":'E',"I have another question":'F',"Sales & business enquiries":'F'};
 const P = {
   NVMY1001:{code:'transit', status:'In transit', hub:'Shah Alam Hub', last:'Today, 9:14 AM', eta:'Wed, 30 Sep', late:false, stale:false},
   NVMY1002:{code:'transit', status:'In transit', hub:'Bukit Raja Hub', last:'Mon, 21 Sep, 6:02 PM', eta:'Thu, 24 Sep', late:true, stale:true},
@@ -222,31 +209,94 @@ const P = {
   NVMY2002:{code:'failed', status:'Delivery failed', hub:'Klang Station', last:'Mon, 28 Sep, 11:05 AM', eta:'-', attempt:'Mon, 28 Sep, 11:05 AM', why:'Recipient not available', attempts:2},
   NVMY3001:{code:'done', status:'Delivered', hub:'Puchong Station', last:'Fri, 25 Sep, 4:32 PM', eta:'-', delivered:'Fri, 25 Sep, 4:32 PM', receiver:'Left at guard house'}
 };
-
 const S = {};
 function reset(){
-  Object.assign(S,{lang:null, flow:null, tid:null, p:null, tries:0, path:[], trace:[], pend:[], tag:null, pri:null, remarks:null, photos:null, change:null, caseId:null, csat:null, idcheck:null});
+  Object.assign(S,{lang:null, aud:null, cat:null, item:null, flow:null, tid:null, p:null, tries:0, path:[], trace:[], pend:[], tag:null, pri:null, remarks:null, photos:null, change:null, changeWhat:null, caseId:null, csat:null, idcheck:null, queue:null, reply:null, contact:null, gateNo:false});
   log.innerHTML=''; setComposer(null);
 }
-
 const card = (h, rows) => `<div class="scard"><div class="h">${h}</div>${rows.map(([k,v])=>`<div class="r"><span>${k}</span><b>${v}</b></div>`).join('')}</div>`;
 const statusCard = p => card('Parcel ' + esc(S.tid), [['Status', p.status], ['Last update', p.last], ['Location', p.hub], ['Estimated delivery', p.eta]]);
+const catFlow = c => CATF[c] || 'F';
+const faqHtml = key => (FAQ[key]||[]).map(b=>`<b>${esc(b.h)}</b><br>${esc(b.t).replace(/\n/g,'<br>')}`);
+const needsTid = it => it.aud==='customer' ? (it.id==='c-where' || !(it.path==='self') && !['c-feedback','c-other'].includes(it.id))
+  : ['s-onhold','s-noattempt','s-delivered','s-delay','s-damaged','s-resched','s-wrongpick','s-scan'].includes(it.id);
+const CHANGE_OPTS = ['Change address','Change contact number','Change address and contact number','Special instruction','Change delivery date'];
+const T4_OPTS = ['Self-collection to doorstep delivery','Doorstep delivery to self-collection','Change self-collect location'];
+const ATTACH = '📎 Attach a photo (sample)';
 
 const N = {
   W0: () => ({flow:'Start', title:'Language', noGlobal:1,
     text:["Hi! I'm Ninja Bot 👋 Please choose your language.<br><span class='soft'>Sila pilih bahasa anda.</span>"],
     buttons:[{t:'English', do:()=>S.lang='English', go:'W1'}, {t:'Bahasa Melayu', do:()=>S.lang='Bahasa Melayu', go:'W1'}]}),
-  W1: () => ({flow:'Start', title:'Main menu', noGlobal:1,
-    text:["How can we help you today?" + (S.lang==='Bahasa Melayu' ? "<br><span class='soft'>(This preview shows English text only.)</span>" : '')],
-    list:1,
-    buttons: MENU.map(m => ({t:m.t, do:()=>{S.flow=m.f}, go:()=> m.f==='F' ? 'F1' : (S.tid ? START[m.f] : 'T0')})).concat([{t:'Talk to an agent', sec:1, go:'H1'}])}),
+  W1: () => {
+    if(!S.aud) return {flow:'Start', title:'Who are you?', noGlobal:1,
+      text:["Which best describes you?" + (S.lang==='Bahasa Melayu' ? "<br><span class='soft'>(This preview shows English text only.)</span>" : '')], list:1,
+      buttons:['customer','shipper'].map(a=>({t:AUD[a].long, do:()=>{S.aud=a; S.cat=null; S.item=null}, go:'W1'}))};
+    const other = S.aud==='customer' ? 'shipper' : 'customer';
+    return {flow:'Start', title:'What do you need help with?', noGlobal:1, text:["What do you need help with?"], list:1,
+      buttons: AUD[S.aud].cats.map(c=>({t:c.name, do:()=>{S.cat=c}, go:'WI'})).concat([{t:AUD[other].long, sec:1, do:()=>{S.aud=other; S.cat=null}, go:'W1'}, {t:'Talk to an agent', sec:1, go:'H1'}])};
+  },
+  WI: () => ({flow:catFlow(S.cat.name), title:S.cat.name, noGlobal:1, text:["Please choose the issue that fits best."], list:1,
+    buttons: S.cat.items.map(it=>({t:it.name, do:()=>{S.item=it; S.flow=catFlow(S.cat.name); S.tag=it.backend[0]; S.queue=it.queue||null; S.reply=it.reply||null}, go:'IT'}))
+      .concat([{t:'Back', sec:1, go:'W1'}, {t:'Talk to an agent', sec:1, go:'H1'}])}),
+  IT: () => ({flow:S.flow, title:'Issue chosen', silent:1, text:[], then:()=> needsTid(S.item) && !S.tid ? 'T0' : (needsTid(S.item) && S.p ? 'ST' : 'IF')}),
+  ST: () => { const it=S.item, p=S.p; const t=["Here's your parcel status:" + statusCard(p)];
+    if(it.id==='c-noattempt' && p.code==='failed') t.push("Our record shows a delivery attempt:" + card('Delivery attempt', [['Date & time', p.attempt], ['Reason given', p.why], ['Attempt no.', p.attempts]]));
+    if(it.id==='c-delivered' && p.code==='done') t.push("Our record shows it was delivered on <b>"+p.delivered+"</b>.<br><span class='soft'>For your privacy, we don't show delivery photos, signatures or names in chat.</span>");
+    if(it.id==='c-onhold' && p.code==='hold') t.push("Reason on record: <b>"+p.reason+"</b>.");
+    return {flow:S.flow, title:'Parcel status', text:t, then:'IF'}; },
+  IF: () => ({flow:S.flow, title:'Route', silent:1, text:[], then:()=>{ const it=S.item;
+    if(it.path==='self') return 'FQ';
+    if(it.path==='off') return 'OFF';
+    if(it.id==='c-track') return 'TR';
+    if(it.mode==='gate') return 'GT';
+    if(it.faq) return 'FQ';
+    return 'FM'; }}),
+  FQ: () => { const it=S.item; const t=faqHtml(it.faq);
+    if(it.path==='self') return {flow:S.flow, title:'Answer', noGlobal:1, text:t};
+    if(S.gateNo) return {flow:S.flow, title:'Answer', noGlobal:1, text:t};
+    if(it.mode==='notice') return {flow:S.flow, title:'Before you continue', text:t, buttons:[{t:'Continue', go:'FM'}]};
+    return {flow:S.flow, title:'Before we open a case', text:t.concat(['Has this resolved your issue?']), buttons:[{t:'Yes, this resolved my issue', do:()=>S.csat='Yes', go:'END'}, {t:'No, I still need help', do:()=>S.csat='No', go:'FM'}]}; },
+  GT: () => ({flow:S.flow, title:'Quick check', text:[S.item.gateQ], buttons:[{t:'Yes', go:'FM'}, {t:'No', do:()=>S.gateNo=true, go:'FQ'}]}),
+  TR: () => ({flow:'Shared', title:'Tracking ID found', text:["Good news, we can see this parcel in our system (status above). Did that solve the tracking problem?"], buttons:[{t:'Yes, this resolved my issue', do:()=>S.csat='Yes', go:'END'}, {t:'No, I still need help', do:()=>S.csat='No', go:'FM'}]}),
+  OFF: () => { const it=S.item; return {flow:S.flow, title:'Sent to the team', noGlobal:1,
+    text:[`Thanks. This request goes to our <b>${esc(it.queueShort||it.queue||'support')}</b> team and is handled outside the chat. You'll get a reply by email.`, `<span class='soft'>${esc(it.offNote||'')}</span>`]}; },
 
-  T0: () => ({flow:'Shared', title:'Enter tracking ID',
+  FM: () => ({flow:S.flow, title:'Form', silent:1, text:[], then:()=>({T3:'F3a',T4:'F4a'})[S.item.form] || 'FD'}),
+  F3a: () => ({flow:S.flow, title:'Which details to change', text:["Which details do you want to change?"], list:1,
+    buttons:CHANGE_OPTS.map(o=>({t:o, do:()=>{S.changeWhat=o.toLowerCase(); if(/address|contact/.test(o)) S.idcheck='Needed before change'}, go:'F3b'}))}),
+  F3b: () => ({flow:S.flow, title:'New details', text:[`Enter the new details for: <b>${esc(S.changeWhat)}</b>.`],
+    input:{ph:'New address, phone number, instruction or date', submit:v=>{S.change=S.changeWhat+': '+v; S.remarks=S.change; return 'FC'}}}),
+  F4a: () => ({flow:S.flow, title:'Which change', text:["Which change do you need?"], list:1,
+    buttons:T4_OPTS.map(o=>({t:o, do:()=>{S.changeWhat=o; S.idcheck='Needed before change'}, go:'F4b'}))}),
+  F4b: () => ({flow:S.flow, title:'New delivery details', text:[`Tell us the new delivery details for: <b>${esc(S.changeWhat)}</b>.`],
+    input:{ph:'e.g. Ninja Point name or new address', submit:v=>{S.change=S.changeWhat+': '+v; S.remarks=S.change; return 'FC'}}}),
+  FD: () => ({flow:S.flow, title:'Describe the issue', text:["Please describe what happened."],
+    input:{ph:'Description', submit:v=>{S.remarks=v; const f=S.item.form; return f==='T2'?'FI':f==='T5'?'FP':f==='S2'?'FS':'FC'}}}),
+  FI: () => ({flow:S.flow, title:'Item details', text:["Tell us about the item: name, brand, quantity and colour."],
+    input:{ph:'e.g. Bluetooth speaker, DemoBrand, 1, black', submit:v=>{S.remarks=(S.remarks||'')+' / Item: '+v; return 'FA'}}}),
+  FP: () => ({flow:S.flow, title:'Pickup details', text:["Tell us the pickup date and time, pickup address and number of parcels."],
+    input:{ph:'e.g. 22 Sep 2026 2:30 PM, address, 3 parcels', submit:v=>{S.remarks=(S.remarks||'')+' / Pickup: '+v; return 'FA'}}}),
+  FS: () => ({flow:S.flow, title:'Supplies needed', text:["Which supplies and how many? (Flyers XS, S, M, L, Pocket Pouch, Fragile Sticker)"],
+    input:{ph:'e.g. Flyers M x 50', submit:v=>{S.remarks=(S.remarks||'')+' / Supplies: '+v; return 'FC'}}}),
+  FA: () => ({flow:S.flow, title:'Attach a photo', text:["Please attach a photo (parcel or item)."], buttons:[{t:ATTACH, do:()=>S.photos='1 photo attached', go:'FC'}]}),
+  FC: () => ({flow:S.flow, title:'Contact details', text:["Last step. Tell us your name, contact number and email so we can reply."],
+    input:{ph:'Name, contact number, email', submit:v=>{S.contact=v; return 'CS'}}}),
+  CS: () => { const it=S.item; S.caseId = S.caseId || 'CS-' + rnd(6);
+    S.pri = (it.reply==='Template 3' || /Fake (fail|success)/.test(it.backend[0])) ? 'High' : 'Normal';
+    if(it.id==='c-noattempt' && S.p && S.p.attempts>=2) S.pri='Urgent';
+    if(it.id==='c-pod' || /Change/.test(it.name)) S.idcheck = S.idcheck || 'Needed before sharing / changing';
+    S.tag = it.backend[0];
+    return {flow:'H', title:'Case created', noGlobal:1,
+    text:[`Thanks, we've logged case <b>${S.caseId}</b>.` + card('Case', [['Issue', esc(it.subject||it.name)], ['CRM queue', esc(it.queueShort||it.queue||'-')], ['Reply', esc((it.reply||'Template 1')+': '+REPLY_GIST[it.reply||'Template 1'])]]) + `<span class='soft'>We'll email you an update. (Reply timing: TO CONFIRM)</span>`],
+    buttons:[{t:'Chat with an agent now', go:'H1'}, {t:'Main menu', sec:1, go:'W1'}]}; },
+
+  T0: () => ({flow:'Shared', title:'Enter tracking ID', noGlobal:0,
     text:["Please type your tracking ID.<br><span class='soft'>You'll find it on your order page in the shopping app, or in the SMS from Ninja Van.</span>"],
     input:{ph:'e.g. NVMY1001', submit:v=>{
       const id = v.replace(/\s+/g,'').toUpperCase();
       S.pend.push({int:'INT01', call:'GET /parcels/'+id, resp: P[id] ? '200 · status='+P[id].status+', last_scan='+P[id].last : '404 not_found (try '+(S.tries+1)+' of 2)'});
-      if(P[id]){ S.tid=id; S.p=P[id]; return START[S.flow]; }
+      if(P[id]){ S.tid=id; S.p=P[id]; return 'ST'; }
       S.tries++;
       if(S.tries>=2){ S.tag='Tracking ID not found'; return 'H1'; }
       return 'T2';
@@ -259,107 +309,6 @@ const N = {
     text:["We couldn't find that tracking ID. Please check for typos and try again."],
     buttons:[{t:'Try again', go:'T0'}, {t:"I can't find it", go:'T1'}]}),
 
-  A1: () => ({flow:'A', title:'Parcel status', text:["Here's your parcel status:" + statusCard(S.p)],
-    then: () => ({transit: S.p.late ? 'A3' : 'A2', ofd:'A4', pending:'A5', hold:'A6', failed:'B1', done:'C1'})[S.p.code]}),
-  A2: () => ({flow:'A', title:'On track', tag:'Delivery ETA > Within SLA', text:[`Good news, your parcel is on track and should arrive by <b>${S.p.eta}</b>. You'll get an SMS when it's out for delivery.`], noGlobal:1}),
-  A3: () => ({flow:'A', title:'Delayed', tag:'Delivery ETA > Beyond SLA', noGlobal:1,
-    text:[`Sorry, your parcel is taking longer than expected. It was due on <b>${S.p.eta}</b> and hasn't moved since ${S.p.last}. Delays like this are usually resolved within a few days.`]}),
-  A4: () => ({flow:'A', title:'Out for delivery', text:["Your parcel is out for delivery today. Please keep your phone nearby in case the courier calls."], noGlobal:1}),
-  A5: () => ({flow:'A', title:'Waiting for seller', tag:'Delivery > General inquiry',
-    text:["The seller has created your order but hasn't handed the parcel to us yet. Please check with the seller for the shipping date."], noGlobal:1}),
-  A6: () => ({flow:'A', title:'On hold', tag:'Parcel issues > On hold > PE/SI', noGlobal:1,
-    text:[`Your parcel is on hold. Reason: <b>${S.p.reason}</b>. Once the issue is fixed, your parcel will move again.`]}),
-
-  B1: () => {
-    const p=S.p;
-    if(p.code!=='failed') return {flow:'B', title:'No failed attempt', text:["We don't see a failed delivery attempt on this parcel. Here's where it is now."], then:'A1'};
-    return {flow:'B', title:'Last attempt',
-      text:["Our record shows a delivery attempt:" + card('Delivery attempt', [['Date & time', p.attempt], ['Reason given', p.why], ['Attempt no.', p.attempts]]), "Were you at the address at that time?"],
-      buttons:[{t:'Yes, I was there', go:()=>{ if(p.attempts>=2){ S.tag='Courier > Delivery > Fake fail'; S.pri='Urgent'; return 'B3'; } return 'B2'; }},
-               {t:"No, I wasn't", go:'B4'}]};
-  },
-  B2: () => ({flow:'B', title:'Fix options', tag:'Courier > Delivery > Fake fail',
-    text:["We're sorry about that. How would you like us to fix it?"], list:1,
-    buttons:[{t:'Deliver again next working day', go:'B5'}, {t:'Choose another date', go:'D4'}, {t:'Collect at a pickup point', go:'D5'}, {t:'Report this delivery', go:'B3'}]}),
-  B3: () => ({flow:'B', title:'Report attempt', pri: S.pri==='Urgent' ? 'Urgent' : 'High', tag:'Courier > Delivery > Fake fail',
-    text:[(S.pri==='Urgent' ? "This is the <b>2nd failed attempt</b> on your parcel, so we'll treat it as urgent.<br>" : '') + "Please tell us what happened (e.g. I was home all day, no call received)."],
-    input:{ph:'What happened?', submit:v=>{ S.remarks=v; return 'H2'; }}}),
-  B4: () => ({flow:'B', title:'Rearrange delivery', tag:'Delivery > Reschedule',
-    text:["No problem. What would you like to do?"], list:1,
-    buttons:[{t:'Choose a delivery date', go:'D4'}, {t:'Collect at a pickup point', go:'D5'}, {t:'Leave a note for the courier', go:'D3'}]}),
-  B5: () => { S.caseId = S.caseId || 'CS-' + rnd(6); S.change='Redelivery on Tue, 29 Sep';
-    return {flow:'B', title:'Redelivery booked', text:[`Done! We'll deliver again on <b>Tue, 29 Sep</b>. We've also logged case <b>${S.caseId}</b> so our team can review the last attempt.`], then:'G1'}; },
-
-  C1: () => {
-    const p=S.p;
-    if(p.code!=='done') return {flow:'C', title:'Not delivered yet', text:["Our record doesn't show this parcel as delivered yet. Here's where it is now."], then:'A1'};
-    return {flow:'C', title:'Delivery confirmed',
-      text:["Our record shows your parcel was delivered:" + card('Delivery', [['Date & time', p.delivered]]) + "<span class='soft'>For your privacy, we don't show delivery photos, signatures or names in chat.</span>"],
-      buttons:[{t:'I found it', go:'END'}, {t:"Still can't find it", go:'C2'}]};
-  },
-  C2: () => ({flow:'C', title:'Quick checklist',
-    text:["Please check with:<br>• Neighbours<br>• Guard house or reception<br>• Family members<br>• Your mailbox or parcel locker"],
-    buttons:[{t:'Found it', go:'END'}, {t:'Still missing', go:'C3'}]}),
-  C3: () => ({flow:'C', title:'Report not received', tag:'Courier > Delivery > Fake success', pri:'High',
-    text:["Sorry about this. We'll open a case. Please tell us where and when you last checked.<br><span class='soft'>Our agent will verify your identity before sharing any delivery details.</span>"],
-    input:{ph:'e.g. Checked guard house and neighbours at 6pm', submit:v=>{ S.remarks=v; S.idcheck='Needed before sharing POD'; return 'H2'; }}}),
-
-  D1: () => {
-    const p=S.p;
-    if(p.code==='done') return {flow:'D', title:'Change not possible', text:["This parcel has already been delivered, so changes are no longer possible."]};
-    if(p.code==='ofd') return {flow:'D', title:'Change options (limited)', text:["Your parcel is already out for delivery, so today you can only leave a note for the courier."], buttons:[{t:'Leave a note for the courier', go:'D3'}]};
-    return {flow:'D', title:'Change options', text:["What would you like to change?"], list:1,
-      buttons:[{t:'Address', do:()=>S.changeWhat='address', go:'D2'}, {t:'Contact number', do:()=>S.changeWhat='contact number', go:'D2'}, {t:'Address and contact number', do:()=>S.changeWhat='address and contact number', go:'D2'}, {t:'Map pin location', go:'D9'}, {t:'Note for the courier', go:'D3'}, {t:'Delivery date', go:'D4'},
-               {t:'Collect at a pickup point', go:'D5'}, {t:'Deliver to my door instead', go:'D6'}, {t:'Keep at pickup point longer', go:'D7'}, {t:'Cancel delivery', go:'D8'}]};
-  },
-  D2: () => { const w=S.changeWhat||'address and contact number'; return {flow:'D', title:'Change '+w, tag:'Delivery > Change delivery details',
-    text:[`For your security, changes to the delivery ${w} are made by our agent after a quick identity check.`],
-    buttons:[{t:'Talk to an agent', do:()=>{S.idcheck='Needed before change'; S.remarks='Change requested: '+w}, go:'H1'}]}; },
-  D3: () => ({flow:'D', title:'Note for courier', tag:'Delivery > Special instructions',
-    text:["Type a note for the courier.<br><span class='soft'>e.g. Leave at guard house, call before arriving</span>"],
-    input:{ph:'Note for courier (max 200 characters)', max:200, submit:v=>{ S.change='Courier note: "' + v + '"'; return 'D10'; }}}),
-  D4: () => ({flow:'D', title:'Delivery date', tag: S.tag==='Courier > Delivery > Fake fail' ? S.tag : 'Delivery > Reschedule',
-    text:["Pick a new delivery date:"],
-    buttons:['Tue, 29 Sep','Wed, 30 Sep','Thu, 1 Oct'].map(d=>({t:d, do:()=>S.change='New delivery date: '+d, go:'D10'}))}),
-  D5: () => ({flow:'D', title:'Pickup point', tag:'PUDO > Change from doorstep delivery to self-collection',
-    text:["For your security, switches to a pickup point are made by our agent after a quick identity check."],
-    buttons:[{t:'Talk to an agent', do:()=>{S.idcheck='Needed before change'}, go:'H1'}]}),
-  D6: () => ({flow:'D', title:'Deliver to my door', tag:'PUDO > Change to doorstep (TO CONFIRM)',
-    text:["We'll deliver to the address on your order. Confirm?"],
-    buttons:[{t:'Confirm', do:()=>S.change='Switched to doorstep delivery', go:'D10'}, {t:'Change address', do:()=>S.changeWhat='address', go:'D2'}]}),
-  D7: () => ({flow:'D', title:'Keep longer', tag:'PUDO > Extend holding (TO CONFIRM)',
-    text:["Your parcel is at your pickup point until <b>Fri, 2 Oct</b>. Extend by 3 days?"],
-    buttons:[{t:'Yes, extend to Mon, 5 Oct', do:()=>S.change='Holding extended to Mon, 5 Oct', go:'D10'}, {t:'Back', go:'D1'}]}),
-  D8: () => ({flow:'D', title:'Cancel delivery', tag:'Delivery > Cancellation request',
-    text:["To cancel, please contact the seller you bought from. They can cancel the order and ask us to return the parcel.<br><span class='soft'>(Policy wording: TO CONFIRM)</span>"]}),
-  D9: () => ({flow:'D', title:'Map pin', tag:'Delivery > Latlong issue',
-    text:["For your security, location changes are made by our agent after a quick identity check."],
-    buttons:[{t:'Talk to an agent', do:()=>{S.idcheck='Needed before change'}, go:'H1'}]}),
-  D10: () => { const ref='REQ-'+rnd(5);
-    return {flow:'D', title:'Change saved', text:[`Done! Your change is saved.<br><b>${esc(S.change||'')}</b><br><span class='soft'>Reference: ${ref}</span>`], then:'G1'}; },
-
-  E1: () => ({flow:'E', title:'Parcel problem', text:["Sorry to hear that. What's wrong with your parcel?"], list:1,
-    buttons:[{t:'Damaged', do:()=>{S.tag='Parcel issues > Completed > Damaged (TO CONFIRM)'; S.pri='High'}, go:'EP'},
-             {t:'Wrong or swapped item', do:()=>{S.tag='Parcel issues > Completed > Swapped'; S.pri='High'}, go:'EP'},
-             {t:'Items missing inside', do:()=>{S.tag='Parcel issues > Completed > Wrong / incomplete content'; S.pri='High'}, go:'EP'},
-             {t:'Parcel not moving', go:'E5'}]}),
-  EP: () => ({flow:'E', title:'Upload photos',
-    text:["Please upload photos of:<br>1. The outer box<br>2. The item<br>3. The airway bill label"],
-    buttons:[{t:'📎 Attach 3 photos (sample)', do:()=>S.photos='3 photos attached', go:'ED'}]}),
-  ED: () => ({flow:'E', title:'Describe the problem', text:["Thanks, photos received. Briefly describe the problem."],
-    input:{ph:'e.g. Received a blue shirt, ordered black shoes', submit:v=>{ S.remarks=v; return 'H2'; }}}),
-  E5: () => ({flow:'E', title:'Parcel not moving', text:[`Your parcel's last update was <b>${S.p.last}</b> at ${S.p.hub}.`],
-    buttons:[{t:'Flag it to the team', go:()=>{ if(S.p.stale){ S.tag='Parcel issues > On hold > Missing'; S.pri='High'; return 'H2'; } return 'E5ok'; }}]}),
-  E5ok: () => ({flow:'E', title:'Still moving', text:["Your parcel was scanned recently, so it's still moving. No need to worry yet."], then:'A2'}),
-
-  F1: () => ({flow:'F', title:'Other help', text:["What do you need help with?"], list:1,
-    buttons:[{t:'Operating hours', go:'F2'}, {t:'What does my status mean?', go:'F3'}, {t:'Send a parcel with Ninja Van', go:'F4'}, {t:'Pickup for my business', go:'F5'}]}),
-  F2: () => ({flow:'F', title:'Operating hours', text:["Our chat agents are available <b>Mon–Sat, 9 AM – 6 PM</b>. Ninja Bot is available 24/7.<br><span class='soft'>(Hours: TO CONFIRM)</span>"]}),
-  F3: () => ({flow:'F', title:'Status meanings', text:["<b>In transit</b>: moving between our hubs<br><b>Out for delivery</b>: with the courier today<br><b>Delivery failed</b>: the courier couldn't deliver<br><b>On hold</b>: we need something fixed before delivering<br><b>Delivered</b>: the courier completed the delivery"],
-    buttons:[{t:'Track my parcel', do:()=>S.flow='A', go:()=> S.tid ? 'A1' : 'T0'}]}),
-  F4: () => ({flow:'F', title:'Send a parcel', tag:'Sales', text:["Want to send with Ninja Van? You can book a shipment on our website or at any Ninja Point."], buttons:[{t:'Talk to sales', go:'H1'}]}),
-  F5: () => ({flow:'F', title:'Business pickup', tag:'Pickup > General inquiry', text:["For pickups of your business parcels, you can schedule one in your shipper dashboard."]}),
-
   H1: () => ({flow:'H', title:'Talk to an agent', noGlobal:1,
     text:[(S.tag==='Tracking ID not found' && S.tries>=2 ? "We still couldn't find that tracking ID, so let's get an agent to help.<br>" : '') +
       "Before we connect you, tell us briefly what happened.<br><span class='soft'>Our agent will see your answers from this chat, so you won't need to repeat them.</span>"],
@@ -367,48 +316,36 @@ const N = {
     buttons:[{t:'Main menu', sec:1, go:'W1'}]}),
   HC: () => ({flow:'H', title:'Connected to agent', noGlobal:1,
     text:["Connecting you to an agent… Our agent can already see:" + card('Agent view', [
-      ['Tracking ID', S.tid ? esc(S.tid) : '-'], ['Parcel status', S.p ? S.p.status : '-'], ['Customer chose', S.flow ? plain(S.flow) : '-'],
+      ['Audience', S.aud ? esc(AUD[S.aud].label) : '-'], ['Issue chosen', S.item ? esc(S.item.name) : '-'], ['Tracking ID', S.tid ? esc(S.tid) : '-'], ['Parcel status', S.p ? S.p.status : '-'],
       ['Auto-tag', esc(S.tag || 'Agent to select')], ['Priority', S.pri || 'Normal'], ['Identity check', S.idcheck || 'Not needed'], ['Customer says', esc(S.remarks || '-')]]) + "<span class='soft'>Only the agent sees POD, receiver name and address.</span>"],
     buttons:[{t:'Simulate: customer says nothing for 2 min', sim:1, go:'G2'}]}),
-  H2: () => { S.caseId = S.caseId || 'CS-' + rnd(6);
-    return {flow:'H', title:'Case created', noGlobal:1,
-      text:[`Thanks, we've logged case <b>${S.caseId}</b>. Our team will contact you within 24 hours.<br><span class='soft'>(Response time: TO CONFIRM)</span>`],
-      buttons:[{t:'Chat with an agent now', go:'H1'}, {t:'Main menu', sec:1, go:'W1'}]}; },
-  G1: () => ({flow:'G', title:'Did this help?', noGlobal:1, text:["Did this solve your issue?"],
-    buttons:[{t:'Yes', do:()=>S.csat='Yes', go:'END'}, {t:'No', do:()=>S.csat='No', go:'H1'}]}),
-  G2: () => ({flow:'G', title:'Inactivity nudge', noGlobal:1,
-    text:["Are you still there? Tell us briefly what happened so we can help."],
+  G2: () => ({flow:'G', title:'Inactivity nudge', noGlobal:1, text:["Are you still there? Tell us briefly what happened so we can help."],
     input:{ph:'Type your reply', submit:v=>{ S.remarks = S.remarks ? S.remarks + ' / ' + v : v; return 'HC'; }},
     buttons:[{t:'Simulate: 5 more minutes of silence', sim:1, go:'CLOSED'}]}),
   CLOSED: () => ({flow:'G', title:'Chat closed', noGlobal:1, tag:'Silent call / chat > General inquiry',
-    text:["We've closed this chat because we didn't hear back. Message us anytime."],
-    buttons:[{t:'Start again', go:'RESTART'}]}),
+    text:["We've closed this chat because we didn't hear back. Message us anytime."], buttons:[{t:'Start again', go:'RESTART'}]}),
   END: () => ({flow:'G', title:'Resolved', noGlobal:1, text:["Great! Thanks for chatting with Ninja Bot. 👋"],
     buttons:[{t:'Start again', go:'RESTART'}, {t:'Main menu', sec:1, go:'W1'}]})
 };
 
 let cur = null, queue = [], runId = 0;
-
 function flowVar(f){ return `var(${FLOWS[f].c})`; }
-
 function addBot(html){ const d=document.createElement('div'); d.className='b bot'; d.innerHTML=html; log.appendChild(d); scroll(); }
 function addUser(t){ const d=document.createElement('div'); d.className='b user'; d.textContent=t; log.appendChild(d); scroll(); }
 function scroll(){ log.scrollTop = log.scrollHeight; }
 function clearChips(){ log.querySelectorAll('.chips').forEach(c=>c.remove()); }
-
 async function typing(my){
   const t=document.createElement('div'); t.className='typing'; t.innerHTML='<i></i><i></i><i></i>'; log.appendChild(t); scroll();
   await wait(450); t.remove(); return my===runId;
 }
-
 async function go(id){
   if(id==='RESTART'){ start(); return; }
   const my = runId;
   const def = N[id]();
+  if(def.silent){ const nx = def.then(); return go(nx); }
   cur = {id, def};
   S.path.push(id);
   if(def.tag) S.tag = def.tag;
-  if(def.pri) S.pri = def.pri;
   setComposer(null);
   traceStep(id, def);
   updatePanel();
@@ -420,13 +357,11 @@ async function go(id){
   renderActions(def);
   runQueue(my);
 }
-
 function allButtons(def){
   const b = (def.buttons||[]).slice();
   if(!def.noGlobal){ b.push({t:'Main menu', sec:1, go:'W1'}); b.push({t:'Talk to an agent', sec:1, go:'H1'}); }
   return b;
 }
-
 function renderActions(def){
   const btns = allButtons(def);
   if(btns.length){
@@ -441,7 +376,6 @@ function renderActions(def){
   }
   setComposer(def.input || null);
 }
-
 function choose(b){
   clearChips(); setComposer(null);
   addUser(b.t);
@@ -449,7 +383,6 @@ function choose(b){
   const nx = typeof b.go==='function' ? b.go() : b.go;
   go(nx);
 }
-
 let activeInput=null;
 function setComposer(inp){
   activeInput=inp;
@@ -458,7 +391,6 @@ function setComposer(inp){
   msg.maxLength = inp && inp.max ? inp.max : 500;
   if(!inp) msg.value='';
 }
-
 $('#composer').addEventListener('submit', e=>{
   e.preventDefault();
   if(!activeInput) return;
@@ -466,11 +398,8 @@ $('#composer').addEventListener('submit', e=>{
   const inp = activeInput, def = cur.def;
   clearChips(); setComposer(null);
   addUser(v);
-  const err = inp.validate ? inp.validate(v) : null;
-  if(err){ addBot(err); renderActions(def); return; }
   go(inp.submit(v));
 });
-
 async function runQueue(my){
   if(!queue.length) return;
   await wait(750);
@@ -481,44 +410,38 @@ async function runQueue(my){
     if(b) choose(b); else queue=[];
   } else if(a.input!==undefined && activeInput){
     msg.value=a.input; $('#composer').requestSubmit();
-  }
+  } else queue=[];
 }
 
-const INTN={INT01:'Parcel tracking',INT02:'Attempt history',INT03:'Delivery change',INT04:'Pickup point',INT05:'CRM case',INT06:'Live agent',INT07:'Attachments',INT08:'SMS',INT09:'Analytics / CSAT',INT10:'Config'};
-const RULE_TXT={R01:'Language chosen, go to Main menu',R02:'Option 1-5 and no tracking ID yet, ask for it',R03:'Tracking ID already known, skip the question',R04:'Option 6, no tracking ID needed',R05:'Tracking ID found, go to the chosen flow',R06:'ID not found and tries < 2, try again',R07:'2nd failed ID, hand to agent',R08:'Customer cannot find ID, show help',R09:'In transit, ETA not passed. FAQ answer, chat ends',R10:'In transit, ETA passed (Beyond SLA). FAQ answer, chat ends',R11:'Out for delivery. FAQ answer, chat ends',R12:'Waiting for seller. FAQ answer, chat ends',R13:'On hold or RTS. FAQ answer, chat ends',R14:'Delivery failed, go to Courier didn\'t come',R15:'Delivered, go to Delivered not received',R16:'No failed attempt on record, show status',R17:'2nd failed attempt, priority Urgent',R18:'1st failed attempt, fix options',R19:'Customer was not there, rearrange',R20:'Redeliver, create case',R21:'Not delivered yet, show status',R22:'Still missing, case and identity check',R23:'Delivered, changes no longer possible',R24:'Out for delivery, note for courier only',R25:'Identity check needed, agent handles change',R26:'Courier note saved',R27:'Change saved',R28:'Photos then description, case with priority High',R29:'No scan for [X] days, case',R30:'Handoff payload sent to agent',R31:'No reply [2] min, nudge',R32:'No reply [5] more min, close chat',R33:'Did this help? logged',R34:'Main menu / Talk to an agent button'};
+// ---------- ops preview, rules, tools
+const INTN={INT01:'Parcel tracking',INT02:'Attempt history',INT05:'CRM case',INT06:'Live agent',INT07:'Attachments',INT09:'Analytics / CSAT',INT10:'Content and config'};
+const RULE_TXT={Q01:'Language chosen, ask who the customer is',Q02:'Audience chosen, show the categories',Q03:'Category chosen, show the issues',Q04:'Issue needs a tracking ID, ask for it',Q05:'Tracking ID found, show the parcel status',Q06:'ID not found and tries < 2, try again',Q07:'2nd failed ID, hand to agent',Q08:'FAQ-only issue: answer, chat ends',Q09:'FAQ-first issue: FAQ, then "Has this resolved your issue?"',Q10:'Resolved: log CSAT, chat ends',Q11:'Not resolved: collect the details the web form template asks for',Q12:'Gate question: under 24 hours gets the FAQ, otherwise the form',Q13:'Notice issue: show the notice, then the form',Q14:'Details complete: create the CRM case in the issue\'s queue',Q15:'Address, contact or method change: identity check flag',Q16:'2nd failed delivery attempt: priority Urgent',Q17:'No reply for [2] min nudge, [5] more min close',Q18:'Talk to an agent: handoff payload sent'};
 function rulesFor(id){
-  const p=S.p, prev=S.path[S.path.length-2], r=[];
-  const m={W1:['R01'],T0:['R02'],T2:['R06'],T1:['R08'],A2:['R09'],A3:['R10'],A4:['R11'],A5:['R12'],A6:['R13'],
-    B2:['R18'],B3:S.pri==='Urgent'?['R17']:[],B4:['R19'],B5:['R20'],C2:['R22'],C3:['R22'],D2:['R25'],D5:['R25'],D9:['R25'],
-    EP:['R28'],ED:['R28'],E5ok:['R29'],HC:['R30'],G2:['R31'],CLOSED:['R32'],G1:['R33'],END:['R33'],F1:['R04']};
-  (m[id]||[]).forEach(x=>r.push(x));
-  if(id==='B1') r.push(p&&p.code==='failed'?'R14':'R16');
-  if(id==='C1') r.push(p&&p.code==='done'?(prev==='A1'?'R15':'R05'):'R21');
-  if(id==='D1'&&p) r.push(p.code==='done'?'R23':p.code==='ofd'?'R24':'R05');
-  if(id==='D10') r.push(String(S.change||'').startsWith('Courier note')?'R26':'R27');
-  if(id==='H1') r.push(S.tries>=2&&S.tag==='Tracking ID not found'?'R07':'R34');
-  if(id==='H2'&&prev==='E5') r.push('R29');
-  if(['A1','E1'].includes(id)&&prev==='T0') r.push('R05');
-  if(['A1','E1'].includes(id)&&prev==='W1') r.push('R03');
+  const it=S.item, r=[], prev=S.path[S.path.length-2];
+  if(id==='W1') r.push(S.aud?'Q02':'Q01');
+  if(id==='WI') r.push('Q03');
+  if(id==='T0') r.push('Q04');
+  if(id==='T2') r.push('Q06');
+  if(id==='ST') r.push('Q05');
+  if(id==='FQ'&&it) r.push(it.path==='self'||S.gateNo?'Q08':it.mode==='notice'?'Q13':'Q09');
+  if(id==='GT') r.push('Q12');
+  if(id==='OFF') r.push('Q08');
+  if(['F3a','F4a','FD','TR'].includes(id)) r.push(id==='TR'?'Q05':'Q11');
+  if(id==='END') r.push('Q10');
+  if(id==='CS'){ r.push('Q14'); if(S.idcheck) r.push('Q15'); if(S.pri==='Urgent') r.push('Q16'); }
+  if(id==='H1') r.push(S.tries>=2&&S.tag==='Tracking ID not found'?'Q07':'Q18');
+  if(id==='HC') r.push('Q18');
+  if(id==='G2'||id==='CLOSED') r.push('Q17');
   return [...new Set(r)];
 }
 function toolsFor(id){
-  const p=S.p||{}, t=[];
-  const add=(i,call,resp)=>t.push({int:i,call,resp});
-  if(id==='A1') add('INT01','GET /parcels/'+S.tid, 'status='+p.status+', last_scan='+p.last+', eta='+p.eta);
-  if(id==='B1') add('INT02','GET /parcels/'+S.tid+'/attempts', p.attempt?'attempt_no='+p.attempts+', reason='+p.why:'no failed attempt');
-  if(id==='C1') add('INT01','GET /parcels/'+S.tid, 'status='+p.status+', delivered_at='+(p.delivered||'-')+' (POD never shown, INT11 is agent-only)');
-  if(id==='D1') add('INT01','GET /parcels/'+S.tid, 'status='+p.status+' → options filtered');
-  if(id==='A3') add('INT10','GET /config/sla', 'eta_passed=true (no case created, FAQ only)');
-  if(id==='E5') add('INT01','GET /parcels/'+S.tid, 'last_scan='+p.last+', stale='+!!p.stale);
-  if(id==='F2') add('INT10','GET /config/hours','Mon–Sat 9 AM – 6 PM');
-  if(id==='EP') add('INT07','POST /attachments','3 files → photo_refs');
-  if(id==='D10') add('INT03','POST /parcels/'+S.tid+'/changes', S.change+' → request saved');
-  if(id==='H2') add('INT05','POST /cases','issue_type='+(S.tag||'-')+', priority='+(S.pri||'Normal')+', origin=CS - SNS Chat, tracking_id='+(S.tid||'-')+' → '+S.caseId);
-  if(id==='B5') add('INT05','POST /cases','issue_type=Courier > Delivery > Fake fail → '+S.caseId);
-  if(id==='HC') add('INT06','POST /handoff','tracking_id='+(S.tid||'-')+', status='+(p.status||'-')+', flow='+(S.flow||'-')+', tag='+(S.tag||'-')+', priority='+(S.pri||'Normal')+', identity_check='+(S.idcheck||'no')+', remarks="'+(S.remarks||'')+'"');
-  if(id==='D5'||id==='D7') add('INT04','GET /pickup/'+S.tid, 'holding_expiry=Fri, 2 Oct');
-  if(id==='G1'||id==='END') add('INT09','POST /analytics','path='+S.path.join('>')+(S.csat?', csat='+S.csat:''));
+  const p=S.p||{}, it=S.item, t=[]; const add=(i,call,resp)=>t.push({int:i,call,resp});
+  if(id==='ST'){ add('INT01','GET /parcels/'+S.tid,'status='+p.status+', last_scan='+p.last+', eta='+p.eta); if(it&&it.id==='c-noattempt'&&p.attempt) add('INT02','GET /parcels/'+S.tid+'/attempts','attempt_no='+p.attempts+', reason='+p.why); }
+  if(id==='FQ'&&it) add('INT10','GET /content/faq/'+it.faq,'FAQ text from the Webform 2.0 workbook');
+  if(id==='FA') add('INT07','POST /attachments','1 file → photo_ref');
+  if(id==='CS') add('INT05','POST /cases','issue_type='+it.backend[0]+', queue='+(it.queueShort||it.queue)+', reply='+(it.reply||'Template 1')+', priority='+S.pri+', origin=CS - SNS Chat → '+S.caseId);
+  if(id==='HC') add('INT06','POST /handoff','tracking_id='+(S.tid||'-')+', issue='+(it?it.name:'-')+', tag='+(S.tag||'-')+', priority='+(S.pri||'Normal')+', identity_check='+(S.idcheck||'no')+', remarks="'+(S.remarks||'')+'"');
+  if(id==='END') add('INT09','POST /analytics','path='+S.path.join('>')+', csat='+(S.csat||'-'));
   if(id==='CLOSED') add('INT05','POST /cases','issue_type=Silent call / chat > General inquiry, closed_by=timeout');
   return t;
 }
@@ -535,146 +458,143 @@ function renderTrace(){
   box.scrollTop=box.scrollHeight;
 }
 function updatePanel(){
-  const def = cur.def, f = FLOWS[def.flow];
+  const def = cur.def;
   const now = $('#now'); now.style.setProperty('--fc', flowVar(def.flow));
   now.innerHTML = `<span class="title" style="font-size:20px">${esc(def.title)}</span><span class="pill">${esc(plain(def.flow))}</span><span class="code">${cur.id}</span>`;
   const path = $('#path');
   pathFlow[cur.id] = def.flow; titles[cur.id] = def.title;
   path.innerHTML = S.path.map(id=>`<span data-id="${id}">${esc(titles[id]||id)}<span class="code"> ${id}</span></span>`).join('<span style="background:none;color:var(--muted)">›</span>');
   path.querySelectorAll('[data-id]').forEach(s=>{ s.style.setProperty('--fc', flowVar(pathFlow[s.dataset.id] || 'Start')); });
-
   const rows = [
-    ['Language', S.lang], ['Customer chose', S.flow ? plain(S.flow) : null], ['Tracking ID', S.tid], ['Parcel status', S.p && S.p.status],
-    ['Auto-tag (issue type)', S.tag], ['Priority', S.pri || (S.path.length>1 ? 'Normal' : null)], ['Customer remarks', S.remarks], ['Photos', S.photos],
-    ['Identity check', S.idcheck], ['Change made', S.change], ['Case ID', S.caseId], ['Did this help?', S.csat], ['Case origin', 'CS - SNS Chat']
+    ['Language', S.lang], ['Audience', S.aud && AUD[S.aud].label], ['Category', S.cat && S.cat.name], ['Issue chosen', S.item && S.item.name], ['Tracking ID', S.tid], ['Parcel status', S.p && S.p.status],
+    ['Auto-tag (issue type)', S.tag], ['CRM queue', S.queue], ['Priority', S.pri], ['Customer remarks', S.remarks], ['Photos', S.photos],
+    ['Identity check', S.idcheck], ['Contact', S.contact], ['Case ID', S.caseId], ['Did this help?', S.csat], ['Case origin', 'CS - SNS Chat']
   ];
   $('#cap').innerHTML = rows.map(([k,v])=>`<dt>${k}</dt><dd class="${v?'':'empty'}${k==='Priority' && (v==='High'||v==='Urgent') ? ' tag-hi':''}">${v?esc(v):'not yet'}</dd>`).join('');
 }
 const pathFlow = {}; const titles = {};
-function plain(f){ return FLOWS[f].name.replace(/^[A-Z] · /,''); }
+function plain(f){ return FLOWS[f].name; }
 
-const SCEN = [
-  {t:'Courier didn\'t come (fake fail)', pct:22.3, f:'B', id:'NVMY2001', opt:"Courier didn't come", end:'Show attempt, book redelivery', q:[{btn:'Yes, I was there'},{btn:'Deliver again'}]},
-  {t:'Where is my parcel (general inquiry)', pct:16.4, f:'A', id:'NVMY1004', opt:"Where's my parcel?", end:'FAQ answer, chat ends', q:[]},
-  {t:'Says delivered, not received (fake success)', pct:11.4, f:'C', id:'NVMY3001', opt:'Says delivered', end:'Checklist, then case with identity check', q:[{btn:"Still can't"},{btn:'Still missing'},{input:'Checked guard house and neighbours at 6pm'}]},
-  {t:'Delivery ETA within SLA', pct:9.3, f:'A', id:'NVMY1001', opt:"Where's my parcel?", end:'FAQ answer, chat ends', q:[]},
-  {t:'Silent call / chat', pct:5.5, f:'H', id:null, opt:'Talk to an agent', end:'Nudge, then chat auto-closed', q:[{input:'Hello'},{btn:'Simulate: customer says'},{btn:'Simulate: 5 more'}]},
-  {t:'Special instructions', pct:5.3, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Note saved, no agent', q:[{btn:'Note for the courier'},{input:'Please leave at the guard house'}]},
-  {t:'Change delivery details', pct:3.4, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Agent with identity check', q:[{btn:'Address and contact number'},{btn:'Talk to an agent'},{input:'I moved, need to change my address'}]},
-  {t:'Wrong item received (swapped)', pct:3.3, f:'E', id:'NVMY3001', opt:'Problem with my parcel', end:'Photos, then case', q:[{btn:'Wrong or swapped'},{btn:'📎 Attach'},{input:'Received a blue shirt, ordered black shoes'}]},
-  {t:'Doorstep to self-collection', pct:2.8, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Agent with identity check', q:[{btn:'Collect at a pickup'},{btn:'Talk to an agent'},{input:'I want to collect it myself'}]},
-  {t:'Delivery ETA beyond SLA', pct:2.7, f:'A', id:'NVMY1002', opt:"Where's my parcel?", end:'FAQ answer, chat ends', q:[]},
-  {t:'Tracking ID not found', pct:2.6, f:'Shared', id:'NVMX12345', opt:"Where's my parcel?", end:'Retry, then agent', q:[{btn:'Try again'},{input:'NVMY99999'}]},
-  {t:'On hold: missing', pct:2.0, f:'E', id:'NVMY1002', opt:'Problem with my parcel', end:'No scan for days, case', q:[{btn:'Parcel not moving'},{btn:'Flag it'}]},
-  {t:'POD request', pct:1.7, f:'C', id:'NVMY3001', opt:'Says delivered', end:'Bot never shows POD, agent verifies first', q:[{btn:"Still can't"},{btn:'Still missing'},{input:'I need the proof of delivery photo'}]},
-  {t:'Map pin (latlong) issue', pct:1.5, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Agent with identity check', q:[{btn:'Map pin'},{btn:'Talk to an agent'},{input:'The pin is on the wrong street'}]},
-  {t:'On hold: PE/SI', pct:1.3, f:'A', id:'NVMY1005', opt:"Where's my parcel?", end:'FAQ answer with reason, chat ends', q:[]},
-  {t:'Pickup general inquiry', pct:0.7, f:'F', id:null, opt:'Something else', end:'Info, no agent', q:[{btn:'Pickup for my business'}]},
-  {t:'Wrong or incomplete content', pct:0.7, f:'E', id:'NVMY3001', opt:'Problem with my parcel', end:'Photos, then case', q:[{btn:'Items missing'},{btn:'📎 Attach'},{input:'Two of the three items are missing'}]},
-  {t:'Cancellation request', pct:0.6, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'Told to contact the seller', q:[{btn:'Cancel delivery'}]},
-  {t:'RTS: cannot revert', pct:0.6, f:'A', id:'NVMY1005', opt:"Where's my parcel?", end:'Uses the On hold sample. FAQ answer, chat ends', q:[]},
-  {t:'Reschedule', pct:0.5, f:'D', id:'NVMY1001', opt:'Change my delivery', end:'New date saved, no agent', q:[{btn:'Delivery date'},{btn:'Tue, 29 Sep'}]},
-  {t:'Sales', pct:0.5, f:'F', id:null, opt:'Something else', end:'Sales info, then agent', q:[{btn:'Send a parcel'},{btn:'Talk to sales'},{input:'I want to ship 50 parcels a month'}]}
+// ---------- top 21 issue types mapped to the web form selections
+const TOP=[
+ ['Courier > Delivery > Fake fail',5936,'c-noattempt','NVMY2001'],
+ ['Delivery > General inquiry',4370,'c-where','NVMY1004'],
+ ['Courier > Delivery > Fake success',3041,'c-delivered','NVMY3001'],
+ ['Delivery ETA > Within SLA',2467,'c-delay','NVMY1001'],
+ ['Silent call / chat > General inquiry',1470,null,null],
+ ['Delivery > Special instructions',1396,'c-resched','NVMY1001','Special instruction'],
+ ['Delivery > Change delivery details',914,'c-resched','NVMY1001','Change address'],
+ ['Parcel issues > Completed > Swapped',869,'c-swapped','NVMY3001'],
+ ['PUDO > Change from doorstep delivery to self-collection',751,'c-method','NVMY1001','Doorstep delivery to self-collection'],
+ ['Delivery ETA > Beyond SLA',712,'c-delay','NVMY1002'],
+ ['Tracking ID not found',704,'c-track','NVMX12345'],
+ ['Parcel issues > On hold > Missing',533,'c-onhold','NVMY1005'],
+ ['Delivery > POD request',442,'c-pod','NVMY3001'],
+ ['Delivery > Latlong issue',393,'c-delay','NVMY1002'],
+ ['Parcel issues > On hold > PE/SI',354,'c-onhold','NVMY1005'],
+ ['Pickup > General inquiry',189,'c-other','NVMY1001'],
+ ['Parcel issues > Completed > Wrong / incomplete content',180,'c-wrongitem','NVMY3001'],
+ ['Delivery > Cancellation request',163,'c-other','NVMY1001'],
+ ['Delivery > RTS tagged > Cannot revert',157,'c-other','NVMY1005'],
+ ['Delivery > Reschedule',142,'c-resched','NVMY1001','Change delivery date'],
+ ['Sales',142,'c-sales',null]
 ];
-
-
-const ISS=[
- ['Courier > Delivery > Fake fail',5936,'self','B1, B2, B3, B5','Shows the attempt on record, books a redelivery or logs a report. A 2nd failed attempt is Urgent.'],
- ['Delivery > General inquiry',4370,'faq','A1, A5','Status shown after the tracking ID. Waiting-for-seller answer ends the chat.'],
- ['Courier > Delivery > Fake success',3041,'case','C1, C2, C3','Delivered date, checklist, then a case. The agent verifies identity before sharing POD.'],
- ['Delivery ETA > Within SLA',2467,'faq','A1, A2','ETA shown. The chat ends.'],
- ['Silent call / chat > General inquiry',1470,'auto','G2, CLOSED','Nudge after [2] min, chat closes after [5] more.'],
- ['Delivery > Special instructions',1396,'self','D3, D10','Free-text note saved to the parcel.'],
- ['Delivery > Change delivery details',914,'agent','D2, H1','Agent changes address or phone after an identity check.'],
- ['Parcel issues > Completed > Swapped',869,'case','E3, EP, ED','Photos of item and label, what was ordered, then a case.'],
- ['PUDO > Change from doorstep delivery to self-collection',751,'agent','D5, H1','Agent switches to a pickup point after an identity check (risk TO CONFIRM with Legal).'],
- ['Delivery ETA > Beyond SLA',712,'faq','A1, A3','Apology and expected timing. The chat ends, no case.'],
- ['Tracking ID not found',704,'agent','T0, T2, T1, H1','One retry and help finding the ID, then an agent after the 2nd failed try.'],
- ['Parcel issues > On hold > Missing',533,'case','E5, H2','Case only when there is no scan for [X] days.'],
- ['Delivery > POD request',442,'agent','C3, H1','The bot never shows POD. The agent verifies identity first.'],
- ['Delivery > Latlong issue',393,'agent','D9, H1','Agent changes the map pin after an identity check.'],
- ['Parcel issues > On hold > PE/SI',354,'faq','A1, A6','Reason shown. The chat ends.'],
- ['Pickup > General inquiry',189,'faq','F5','Business pickup info. The chat ends.'],
- ['Parcel issues > Completed > Wrong / incomplete content',180,'case','E4, EP, ED','Photos and which items are missing, then a case.'],
- ['Delivery > Cancellation request',163,'faq','D8','Told to contact the seller (wording TO CONFIRM).'],
- ['Delivery > RTS tagged > Cannot revert',157,'faq','A1, A6','Shown as On hold / returning. The chat ends.'],
- ['Delivery > Reschedule',142,'self','D4, D10','New date picked and saved.'],
- ['Sales',142,'faq','F4','Sales info and link. The chat ends.']
-];
-const CLS={faq:'FAQ answer',self:'Self-serve',case:'Case',agent:'Live agent',auto:'Auto'};
-const CLSHELP={faq:'Bot answers and the chat ends',self:'Bot completes the request',case:'Bot collects details and logs a case',agent:'Handed to a live agent',auto:'Nudge, then the chat closes'};
-const ISSBY={}; ISS.forEach((r,i)=>{ISSBY[r[0]]={cases:r[1],i}});
-const TOTAL=ISS.reduce((a,r)=>a+r[1],0);
+const TOTAL=TOP.reduce((a,r)=>a+r[1],0);
+const CLS={faq:'FAQ answer',faqcase:'FAQ, then case',case:'Case',agent:'Live agent',auto:'Auto'};
+const CLSHELP={faq:'FAQ answer and the chat ends',faqcase:'FAQ first, then a case if it does not help',case:'Details collected, case logged in the CRM queue',agent:'Handed to a live agent',auto:'Nudge, then the chat closes'};
+const clsOf=r=>{ const it=r[2]&&ITEMS[r[2]]; if(!it) return 'auto'; if(r[2]==='c-track') return 'agent'; if(it.path==='self') return 'faq'; if(it.path==='faqform'&&it.mode!=='notice') return 'faqcase'; return 'case'; };
+const howOf=r=>{ const it=r[2]&&ITEMS[r[2]]; if(!it) return 'Nudge after [2] min, chat closes after [5] more. No case.'; const q=(it.queueShort||it.queue||''), tp=it.reply||'Template 1';
+  if(r[2]==='c-track') return 'Retry once and show help. After the 2nd failed ID, a live agent takes over.';
+  if(it.path==='self') return 'FAQ answer' + (needsTid(it)?' with the parcel status':'') + ', then the chat ends.';
+  if(it.mode==='notice') return 'Notice first, then the '+it.form+' details in chat, then a case in '+q+' ('+tp+').';
+  if(it.path==='faqform') return 'FAQ, then "Has this resolved your issue?". If not: the '+it.form+' details in chat, then a case in '+q+' ('+tp+').';
+  return 'The '+it.form+' details in chat, then a case in '+q+' ('+tp+').'; };
 const fmt=n=>Math.round(n).toLocaleString('en-US');
 const pctf=n=>(n*100).toFixed(1)+'%';
-const INTS=[['INT01','Parcel tracking / order lookup','Read','T0, A1, C1, D1, E5','TO CONFIRM which API'],['INT02','Delivery attempt history','Read','B1','TO CONFIRM'],['INT03','Delivery change service','Write','D3, D4, D6, D7','TO CONFIRM (East/West Malaysia change is a blocker)'],['INT04','Pickup point (PUDO) service','Read / Write','D5, D7','TO CONFIRM'],['INT05','CRM / case management','Write','H2, B3, B5, ED, E5','TO CONFIRM field names'],['INT06','Live agent platform','Write','H1, HC','TO CONFIRM queues'],['INT07','Attachment storage','Write','EP','TO CONFIRM size and type limits'],['INT08','SMS / notification','Write','D10','Optional'],['INT09','Analytics / CSAT log','Write','G1, END','TO CONFIRM'],['INT10','Config (thresholds, hours, wording)','Read','A3, E5, F2, H2, D8','Values owed by CX and Legal'],['INT11','Proof of delivery (agent only)','Read','C3 → agent','Bot never shows POD']];
+const INTS=[['INT01','Parcel tracking / order lookup','Read','Tracking ID step, status card','TO CONFIRM which API'],['INT02','Delivery attempt history','Read','Issue: I was available, but no delivery was attempted','TO CONFIRM'],['INT05','CRM / case management','Write','Case created (queue, template, priority, tag)','Queue names come from the web form workbook'],['INT06','Live agent platform','Write','Talk to an agent, Connected to agent','TO CONFIRM queues'],['INT07','Attachment storage','Write','Attach a photo (T2, T5)','TO CONFIRM size and type limits'],['INT09','Analytics / CSAT log','Write','Resolved, Did this help?','TO CONFIRM'],['INT10','Content and config','Read','FAQ text, hours, thresholds','FAQ wording is the web form FAQ sheet']];
 const NOTCOV=[['Shipper-related',72],['Tech issues',69],['Feedback and compliments',27],['Spam',11],['Finance',8],['Non-CS/SS Department issues',3],['Outbound call',1]];
-const OPEN=['Tracking ID format and the retry limit (Tech).','Whether the delivery attempt details match what the public tracking page shows (Legal).','Risk level for switching a parcel to a pickup point (Legal).','L3 names for "Change to doorstep" and "Extend holding" (CX).','Cancellation wording: the seller cancels, not Ninja Van (CX and Legal).','[X] days without a scan before a missing-parcel case is opened (CX).','Case reply time, operating hours and idle timers (CX).','Bahasa Melayu copy for every screen (CX).','East and West Malaysia address changes are blocked (Ops, link with OPv2 – AV tools).','Whether the "Where\'s my parcel" answers should still offer Main menu and Talk to an agent (CX).'];
+const OPEN=['The chat asks for a tracking ID for parcel issues. The web form asks for it inside the form. Confirm this is wanted.','Web form flag: the workbook assigns Webform T4 (change delivery method) to "The wrong parcel was collected". Its fields do not fit; T5 looks closer.','Web form flag: "I can’t create a new order" is marked auto-resolved but also has a form and queue.','Web form flag: "I can’t generate a report" has no form or queue, so it is FAQ only.','Silent chats, pickup general inquiries, cancellation requests and RTS have no web form issue. They land on "My issue isn’t listed here".','Tracking ID format and the retry limit (Tech).','Case reply timing wording (CX). The web form templates say 3–5 working days for Template 3.','Bahasa Melayu copy for every screen (CX).','East and West Malaysia address changes are blocked (Ops, link with OPv2 – AV tools).','Whether "Where is my parcel?" should keep Main menu and Talk to an agent after the answer (CX).'];
 
-function runScenario(s){
-  const q=[{btn:'English'},{btn:s.opt}];
-  if(s.id) q.push({input:s.id});
-  showView('journey'); start(q.concat(s.q));
-  if(window.innerWidth<860) document.querySelector('.phone').scrollIntoView({behavior: reduce?'auto':'smooth', block:'start'});
+function formSteps(it,o){ o=o||{}; const t=it.form, s=[];
+  if(t==='T3') s.push({btn:o.what||'Change address'},{input:o.detail||'New details here'});
+  else if(t==='T4') s.push({btn:o.method||'Doorstep delivery to self-collection'},{input:'Ninja Point, Bangsar'});
+  else { s.push({input:o.desc||'Sample description of the problem'}); if(t==='T2') s.push({input:'Blue shirt, DemoBrand, 1, blue'},{btn:'📎 Attach'}); if(t==='T5') s.push({input:'22 Sep 2026 2:30 PM, Test address, 3 parcels'},{btn:'📎 Attach'}); }
+  s.push({input:'Test Submitter, +60 12 000 0000, test@example.com'}); return s; }
+function scenarioQ(r){
+  const q=[{btn:'English'}];
+  if(!r[2]){ q.push({btn:AUD.customer.long},{btn:'Talk to an agent'},{input:'Hello'},{btn:'Simulate: customer says'},{btn:'Simulate: 5 more'}); return q; }
+  const it=ITEMS[r[2]]; q.push({btn:AUD[it.aud].long},{btn:it.catName},{btn:it.name});
+  if(needsTid(it)&&r[3]) q.push({input:r[3]});
+  if(r[2]==='c-track'){ q.push({btn:'Try again'},{input:'NVMY99999'},{input:'I cannot track my parcel'}); return q; }
+  if(it.path==='self') return q;
+  if(it.mode==='gate') q.push({btn:'Yes'});
+  else if(it.mode==='notice') q.push({btn:'Continue'});
+  else if(it.faq) q.push({btn:'No, I still need help'});
+  return q.concat(formSteps(it,{what:r[4],method:r[4]}));
 }
+function runScenario(i){ showView('journey'); start(scenarioQ(TOP[i]));
+  if(window.innerWidth<860) document.querySelector('.phone').scrollIntoView({behavior: reduce?'auto':'smooth', block:'start'}); }
 function showView(v){
   ['journey','map','impact'].forEach(k=>{ $('#view-'+k).hidden = k!==v; const t=$('#tab-'+k); t.setAttribute('aria-selected', k===v?'true':'false'); });
 }
 function renderOps(){
-  const id=cur.id, def=cur.def; let d=['Bot handles it','self'];
+  const id=cur.id, def=cur.def, it=S.item; let d=['Bot handles it','faq'];
   if(id==='H1'||id==='HC') d=['Live agent','agent'];
-  else if(id==='H2'||id==='B5') d=['CRM case','case'];
+  else if(id==='CS') d=['CRM case','case'];
   else if(id==='CLOSED') d=['Chat closed','auto'];
-  else if(['A2','A3','A4','A5','A6'].includes(id)) d=['FAQ answer, chat ends','faq'];
-  else if(id==='END') d=['Resolved in bot','self'];
-  const h=ISSBY[S.tag];
+  else if(it&&it.path==='self'&&['FQ','ST'].includes(id)) d=['FAQ answer, chat ends','faq'];
+  else if(it&&['FQ','GT','TR'].includes(id)) d=['FAQ first','faqcase'];
+  else if(id==='END') d=['Resolved in the bot','faq'];
+  const hist=TOP.find(r=>r[0]===S.tag);
   const row=(k,v)=>`<div class="lr"><span>${k}</span><b>${v}</b></div>`;
   $('#label').innerHTML=`<div class="lt">${esc(def.title)} <code>${id}</code></div>`+
     row('Backend issue type', S.tag?esc(S.tag):'<i>not tagged yet</i>')+
-    row('Cases so far in this issue type', h?`${fmt(h.cases)} <small>(${pctf(h.cases/TOTAL)} of top 21)</small>`:'-')+
+    row('Cases so far in this issue type', hist?`${fmt(hist[1])} <small>(${pctf(hist[1]/TOTAL)} of top 21)</small>`:'-')+
+    row('CRM queue', S.queue?esc(S.queue):'-')+
+    row('Reply template', S.reply?esc(S.reply+': '+REPLY_GIST[S.reply]):'-')+
     row('Priority', S.pri||'Normal')+
     row('Destination', `<span class="pp p-${d[1]}">${d[0]}</span>`)+
-    row('Reply to customer', S.caseId?`Case ${S.caseId}, team replies within [Case SLA] <small>(TO CONFIRM)</small>`:'-')+
     row('Identity check', S.idcheck?esc(S.idcheck):'-');
 }
 function initUI(){
-  // scenario chips
   const box=$('#scen');
-  SCEN.forEach((s,i)=>{
-    const b=document.createElement('button'); b.type='button'; b.className='sc'; b.style.setProperty('--fc',`var(--p-${ISS[i][2]})`);
-    b.innerHTML=`<span class="dot"></span>${esc(s.t)}<span class="rk">${s.pct}%</span>`;
-    b.title=`${ISS[i][0]}`; b.addEventListener('click',()=>runScenario(s)); box.appendChild(b);
+  TOP.forEach((r,i)=>{
+    const c=clsOf(r), b=document.createElement('button'); b.type='button'; b.className='sc'; b.style.setProperty('--fc',`var(--p-${c})`);
+    const it=r[2]&&ITEMS[r[2]]; b.title=r[0]+(it?'  →  '+it.name:'');
+    b.innerHTML=`<span class="dot"></span>${esc(it?it.name:'Silent chat')}${r[4]?' · '+esc(r[4]):''}<span class="rk">${(r[1]/TOTAL*100).toFixed(1)}%</span>`;
+    b.addEventListener('click',()=>runScenario(i)); box.appendChild(b);
   });
-  $('#legend').innerHTML=Object.keys(CLS).map(k=>`<span class="pp p-${k}" title="${CLSHELP[k]}">${CLS[k]}</span>`).join('');
-  const IDS=[['NVMY1001','In transit, on time','Where\'s my parcel: ETA answer, chat ends'],['NVMY1002','In transit, past ETA, no scan for days','Where\'s my parcel: delayed answer. Problem with parcel > Parcel not moving: case'],['NVMY1003','Out for delivery','Where\'s my parcel: out-for-delivery answer. Change my delivery: note only'],['NVMY1004','Waiting for seller','Where\'s my parcel: waiting-for-seller answer'],['NVMY1005','On hold (needs address details)','Where\'s my parcel: on-hold reason'],['NVMY2001','Delivery failed, 1st attempt','Courier didn\'t come: fix options, redelivery'],['NVMY2002','Delivery failed, 2nd attempt','Courier didn\'t come: Urgent case'],['NVMY3001','Delivered','Says delivered: checklist, case. Problem with parcel: photos, case'],['NVMX12345','Not found (any unknown ID)','Tracking ID not found: retry, then agent']];
+  const IDS=[['NVMY1001','In transit, on time','Why is my parcel delayed? · Where is my parcel?'],['NVMY1002','In transit, past ETA, no scan for days','Why is my parcel delayed? · My parcel is on hold'],['NVMY1003','Out for delivery','Where is my parcel?'],['NVMY1004','Waiting for seller','Where is my parcel?'],['NVMY1005','On hold (needs address details)','My parcel is on hold'],['NVMY2001','Delivery failed, 1st attempt','I was available, but no delivery was attempted'],['NVMY2002','Delivery failed, 2nd attempt','I was available, but no delivery was attempted (Urgent)'],['NVMY3001','Delivered','My parcel was delivered, but I didn’t receive it · Wrong item · Someone else’s parcel'],['NVMX12345','Not found (any unknown ID)','I can’t track my parcel']];
   $('#ids-table').innerHTML='<thead><tr><th>ID</th><th>Parcel</th><th>Try it with</th><th></th></tr></thead><tbody>'+IDS.map(r=>`<tr><td class="mono"><b>${r[0]}</b></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td><button type="button" class="open" data-id="${r[0]}">Use</button></td></tr>`).join('')+'</tbody>';
-  $('#ids-table').querySelectorAll('button.open').forEach(b=>b.addEventListener('click',()=>{ if(!msg.disabled){ msg.value=b.dataset.id; msg.focus(); } else { msg.placeholder='Pick a menu option first, then use a tracking ID'; } }));
-  // tabs
+  $('#ids-table').querySelectorAll('button.open').forEach(b=>b.addEventListener('click',()=>{ if(!msg.disabled){ msg.value=b.dataset.id; msg.focus(); } else { msg.placeholder='Pick an issue that needs a tracking ID first'; } }));
+  $('#legend').innerHTML=Object.keys(CLS).map(k=>`<span class="pp p-${k}" title="${CLSHELP[k]}">${CLS[k]}</span>`).join('');
   document.querySelectorAll('[data-view]').forEach(t=>t.addEventListener('click',()=>showView(t.dataset.view)));
-  // map
   let filt='all';
   const seg=$('#map-seg'); seg.innerHTML=['all',...Object.keys(CLS)].map(k=>`<button type="button" data-f="${k}" aria-pressed="${k==='all'}">${k==='all'?'All':CLS[k]}</button>`).join('');
   const draw=()=>{
-    $('#map-table').innerHTML=`<thead><tr><th>#</th><th>Backend issue type</th><th class="n">Cases</th><th class="n">Share</th><th>Path</th><th>Screens</th><th>How it is handled</th><th></th></tr></thead><tbody>`+
-    ISS.map((r,i)=>filt==='all'||filt===r[2]?`<tr data-i="${i}"><td class="mono">${i+1}</td><td><b>${esc(r[0])}</b></td><td class="n mono">${fmt(r[1])}</td><td class="n mono">${pctf(r[1]/TOTAL)}</td><td><span class="pp p-${r[2]}">${CLS[r[2]]}</span></td><td class="mono">${esc(r[3])}</td><td>${esc(r[4])}</td><td><button type="button" class="open" data-i="${i}">Open</button></td></tr>`:'').join('')+'</tbody>';
-    $('#map-table').querySelectorAll('button.open').forEach(b=>b.addEventListener('click',()=>runScenario(SCEN[+b.dataset.i])));
+    $('#map-table').innerHTML=`<thead><tr><th>#</th><th>Backend issue type</th><th class="n">Cases</th><th class="n">Share</th><th>Path</th><th>Selection in the chat</th><th>How it is handled</th><th></th></tr></thead><tbody>`+
+    TOP.map((r,i)=>{ const c=clsOf(r); if(filt!=='all'&&filt!==c) return ''; const it=r[2]&&ITEMS[r[2]];
+      return `<tr><td class="mono">${i+1}</td><td><b>${esc(r[0])}</b></td><td class="n mono">${fmt(r[1])}</td><td class="n mono">${pctf(r[1]/TOTAL)}</td><td><span class="pp p-${c}">${CLS[c]}</span></td><td>${it?esc(AUD[it.aud].label+' › '+it.catName)+'<br><b>'+esc(it.name)+'</b>'+(r[4]?'<br><small>'+esc(r[4])+'</small>':''):'<i>No web form selection</i>'}${r[2]==='c-other'?'<br><small>Falls to "My issue isn’t listed here"</small>':''}</td><td>${esc(howOf(r))}</td><td><button type="button" class="open" data-i="${i}">Open</button></td></tr>`; }).join('')+'</tbody>';
+    $('#map-table').querySelectorAll('button.open').forEach(b=>b.addEventListener('click',()=>runScenario(+b.dataset.i)));
     seg.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===filt)));
   };
   seg.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;filt=b.dataset.f;draw()}); draw();
   $('#map-legend').innerHTML=Object.keys(CLS).map(k=>`<span><i class="sw p-${k}"></i>${CLS[k]}: ${CLSHELP[k]}</span>`).join('');
-  $('#int-table').innerHTML='<thead><tr><th>ID</th><th>Tool</th><th>Direction</th><th>Used at screens</th><th>Open point</th></tr></thead><tbody>'+INTS.map(r=>`<tr><td class="mono">${r[0]}</td><td><b>${esc(r[1])}</b></td><td>${r[2]}</td><td class="mono">${esc(r[3])}</td><td>${esc(r[4])}</td></tr>`).join('')+'</tbody>';
-  // impact
-  const by=c=>ISS.filter(r=>r[2]===c).reduce((a,r)=>a+r[1],0);
+  $('#int-table').innerHTML='<thead><tr><th>ID</th><th>Tool</th><th>Direction</th><th>Used at</th><th>Open point</th></tr></thead><tbody>'+INTS.map(r=>`<tr><td class="mono">${r[0]}</td><td><b>${esc(r[1])}</b></td><td>${r[2]}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td></tr>`).join('')+'</tbody>';
   const rf=$('#r-faq'), rs=$('#r-self');
+  const by=c=>TOP.filter(r=>clsOf(r)===c).reduce((a,r)=>a+r[1],0);
   const calc=()=>{
     const f=+rf.value/100, s=+rs.value/100; $('#r-faq-v').textContent=rf.value+'%'; $('#r-self-v').textContent=rs.value+'%';
-    const faq=by('faq'), self=by('self'), cs=by('case'), ag=by('agent'), au=by('auto');
-    const resolved=f*faq+s*self+au, agent=ag+(1-f)*faq+(1-s)*self;
-    $('#stats').innerHTML=[['Top 21 issue types',fmt(TOTAL),'cases, 25 Jun – 24 Sep'],['Resolved in the bot',pctf(resolved/TOTAL),fmt(resolved)+' cases (projected)'],['Live agent chats',fmt(agent),`from ${fmt(TOTAL)} today, ${pctf(1-agent/TOTAL)} fewer`],['CRM cases',fmt(cs),'team follows up, no live chat']].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b><small>${x[2]}</small></div>`).join('');
-    $('#stack').innerHTML=Object.keys(CLS).map(k=>`<i class="p-${k}" style="flex:${by(k)}" title="${CLS[k]} ${fmt(by(k))}"></i>`).join('');
+    const faq=by('faq'), fc=by('faqcase'), cs=by('case'), ag=by('agent'), au=by('auto');
+    const resolved=s*faq+f*fc+au, cases=(1-s)*faq*0+cs+(1-f)*fc, agentN=ag+(1-s)*faq;
+    $('#stats').innerHTML=[['Top 21 issue types',fmt(TOTAL),'cases, 25 Jun – 24 Sep'],['Resolved in the bot',pctf(resolved/TOTAL),fmt(resolved)+' cases (projected)'],['CRM cases',fmt(cases),'projected, after FAQ resolution'],['Live agent chats',fmt(agentN),'tracking ID failures and unresolved FAQ-only cases']].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b><small>${x[2]}</small></div>`).join('');
+    $('#stack').innerHTML=Object.keys(CLS).map(k=>`<i class="p-${k}" style="flex:${by(k)||0.0001}" title="${CLS[k]} ${fmt(by(k))}"></i>`).join('');
     $('#stack-legend').innerHTML=Object.keys(CLS).map(k=>`<span><i class="sw p-${k}"></i>${CLS[k]} <b class="mono">${fmt(by(k))}</b> · ${pctf(by(k)/TOTAL)}</span>`).join('');
-    const mx=TOTAL, bar=(l,h,p,c)=>`<div class="hb"><div class="hl">${l}</div><div class="ht"><i class="g" style="width:${h/mx*100}%"></i><i class="c p-${c}" style="width:${p/mx*100}%"></i></div><div class="hv mono">${fmt(h)} → ${fmt(p)}</div></div>`;
-    $('#qbars').innerHTML=bar('Live agent chats',TOTAL,agent,'agent')+bar('CRM cases (team follows up)',0,cs,'case')+bar('Resolved in the bot',0,resolved,'self');
+    // by queue
+    const Q={}; TOP.forEach(r=>{ const it=r[2]&&ITEMS[r[2]]; if(!it||it.path==='self'||r[2]==='c-track') return; const q=it.queueShort||it.queue; const c=clsOf(r); const proj=r[1]*(c==='faqcase'?1-f:1); (Q[q]=Q[q]||[0,0]); Q[q][0]+=r[1]; Q[q][1]+=proj; });
+    const mx=Math.max(...Object.values(Q).map(v=>v[0]),1);
+    $('#qbars').innerHTML=Object.entries(Q).sort((a,b)=>b[1][0]-a[1][0]).map(([q,v])=>`<div class="hb"><div class="hl">${esc(q)}</div><div class="ht"><i class="g" style="width:${v[0]/mx*100}%"></i><i class="c p-case" style="width:${v[1]/mx*100}%"></i></div><div class="hv mono">${fmt(v[0])} → ${fmt(v[1])}</div></div>`).join('')+
+      `<div class="hb"><div class="hl">Live agent</div><div class="ht"><i class="g" style="width:${(ag)/mx*100}%"></i><i class="c p-agent" style="width:${agentN/mx*100}%"></i></div><div class="hv mono">${fmt(ag)} → ${fmt(agentN)}</div></div>`;
   };
   rf.addEventListener('input',calc); rs.addEventListener('input',calc); calc();
   $('#gaps').innerHTML=NOTCOV.map(r=>`<div class="gap"><span>${esc(r[0])}</span><b class="mono">${r[1]}</b></div>`).join('');
@@ -686,7 +606,6 @@ function start(q){
   for(const k in pathFlow) delete pathFlow[k];
   reset(); go('W0');
 }
-
 $('#restart').addEventListener('click', ()=>start());
 if($('#showIds'))$('#showIds').addEventListener('change', e=>document.body.classList.toggle('show-ids', e.target.checked));
 initUI();
