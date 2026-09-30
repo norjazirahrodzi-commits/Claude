@@ -561,7 +561,7 @@ function initUI(){
   TOP.forEach((r,i)=>{
     const c=clsOf(r), b=document.createElement('button'); b.type='button'; b.className='sc'; b.style.setProperty('--fc',`var(--p-${c})`);
     const it=r[2]&&ITEMS[r[2]]; b.title=r[0]+(it?'  →  '+it.name:'');
-    b.innerHTML=`<span class="dot"></span>${esc(it?it.name:'Silent chat')}${r[4]?' · '+esc(r[4]):''}<span class="rk">${(r[1]/TOTAL*100).toFixed(1)}%</span>`;
+    const dup=it&&TOP.filter(x=>x[2]===r[2]).length>1&&!r[4]; b.innerHTML=`<span class="dot"></span>${esc(it?it.name:'Silent chat')}${r[4]?' · '+esc(r[4]):''}${dup?' · '+esc(r[0].split(' > ').slice(-1)[0]):''}<span class="rk">${(r[1]/TOTAL*100).toFixed(1)}%</span>`;
     b.addEventListener('click',()=>runScenario(i)); box.appendChild(b);
   });
   const IDS=[['NVMY1001','In transit, on time','Why is my parcel delayed? · Where is my parcel?'],['NVMY1002','In transit, past ETA, no scan for days','Why is my parcel delayed? · My parcel is on hold'],['NVMY1003','Out for delivery','Where is my parcel?'],['NVMY1004','Waiting for seller','Where is my parcel?'],['NVMY1005','On hold (needs address details)','My parcel is on hold'],['NVMY2001','Delivery failed, 1st attempt','I was available, but no delivery was attempted'],['NVMY2002','Delivery failed, 2nd attempt','I was available, but no delivery was attempted (Urgent)'],['NVMY3001','Delivered','My parcel was delivered, but I didn’t receive it · Wrong item · Someone else’s parcel'],['NVMX12345','Not found (any unknown ID)','I can’t track my parcel']];
