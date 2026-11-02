@@ -1,0 +1,4 @@
+substrait==0.37.0
+substrait-extensions==0.106.0
+substrait-protobuf==0.106.0
+protobuf==6.33.6

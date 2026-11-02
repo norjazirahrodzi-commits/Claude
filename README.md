@@ -24,9 +24,9 @@ at the start of a session.
   | `go.mod`               | `go mod download`     |
   | `Gemfile`              | `bundle install`      |
 
-  Since the repo currently has no dependency manifests, none of these steps
-  run today — they'll kick in automatically as soon as the matching file is
-  added, with no changes needed to the hook itself.
+  The repo currently has a `requirements.txt` (the pinned `substrait` Python
+  package and its dependencies), so the pip step runs at session start. Other
+  steps kick in automatically as soon as the matching file is added.
 
 - The hook runs in **async mode** (`{"async": true, "asyncTimeout": 300000}`),
   so a Claude Code on the web session starts immediately while dependency
